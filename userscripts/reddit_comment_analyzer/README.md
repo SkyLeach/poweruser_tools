@@ -2,6 +2,8 @@
 
 A multi-function utility to make browsing reddit far more powerful in the browser, specifically firefox.
 
+![Basic Showcase](../../localhost_common/static/img/comment_analyzer.gif?raw=true)
+
 ## Primary Objectives
 
 Provide a simple interface for the average user to powerful tools that make participation in threads at a high level intuitive.  Provide the user with the ability to quickly reference metadata about a thread, similar threads, historical meta-iformation, source tracing and much more.  The list of functionality below is what the script currently does or functions under development or already planned for development.
