@@ -1,0 +1,3 @@
+### Content for local REST servers
+
+Anything that remains relatively static and can be shared between various REST services (WSGI and Node.js for the moment).  Things like static or cross-platform templates (html), css, javascript, handlebars templates, etc...
