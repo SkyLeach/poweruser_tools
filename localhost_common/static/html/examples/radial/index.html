@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<!-- vim: ft=html ts=2 sw=2 sts=2 et -->
+<!-- Page Style -->
+<style>
+
+.node circle {
+  fill: #999;
+}
+
+.node text {
+  font: 10px sans-serif;
+}
+
+.node--internal circle {
+  fill: #555;
+}
+
+.node--internal text {
+  text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
+}
+
+.link {
+  fill: none;
+  stroke: #555;
+  stroke-opacity: 0.4;
+  stroke-width: 1.5px;
+}
+.svgcanvas {
+  border:1px dotted #ccc;
+  background-color: #ccc;
+}
+.canvasdiv {
+  /*height: 800px;
+  width: 800px;*/
+  max-height: 95%;
+  max-width: 95%;
+  border:2px solid #000;
+  overflow: scroll;
+  margin: 0 auto;
+}
+/* Add style for draggable area*/
+.grabbable {
+    cursor: move; /* fallback if grab cursor is unsupported */
+    cursor: grab;
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+}
+
+ /* (Optional) Apply a "closed-hand" cursor during drag operation. */
+.grabbable:active { 
+    cursor: grabbing;
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing;
+}
+</style>
+<!-- end Page Style -->
+<span><a href='' id='rootlink'>Jump To Root Node</a></span>
+<div class="canvasdiv grabbable" id="canvasdiv">
+  <svg class="svgcanvas" width="2000" height="2000"></svg>
+</div>
+<script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script>
+
+var svg = d3.select("svg"),
+    width = +svg.attr("width"),
+    height = +svg.attr("height"),
+    g = svg.append("g").attr("transform", "translate(" + (width / 2 + 40) + "," + (height / 2 + 90) + ")");
+
+/*var tree = d3.cluster()
+    .size([height, width - 160]);*/
+
+var tree = d3.tree()
+    //.size([2 * Math.PI, 500])
+    .size([2 * Math.PI, height])
+    .separation(function(a, b) { return (a.parent == b.parent ? 1 : 2) / a.depth; });
+
+var root_id; //set below
+
+d3.json("treeData.json", function(error, treeData) {
+  if (error) throw error;
+  //grab the root id and set the href of the jump-to-root link
+  root_id = treeData.id;
+  var rootlink = document.getElementById('rootlink');
+  rootlink.setAttribute("href", '#nodetext_' + root_id);
+  rootlink.onclick = jump_to_node;
+  var root = d3.hierarchy(treeData);
+  tree(root);
+
+  var link = g.selectAll(".link")
+    .data(root.links())
+    .enter().append("path")
+      .attr("class", "link")
+      .attr("d", d3.linkRadial()
+          .angle(function(d) { return d.x; })
+          .radius(function(d) { return d.y; }));
+
+  var node = g.selectAll(".node")
+    .data(root.descendants())
+    .enter().append("g")
+      .attr("class", function(d) { return "node" + (d.children ? " node--internal" : " node--leaf"); })
+      .attr("transform", function(d) { return "translate(" + radialPoint(d.x, d.y) + ")"; });
+
+
+  node.append("circle")
+      .attr("r", 2.5);
+
+  node.append("text")
+      .attr("dy", "0.31em")
+      .attr("x", function(d) { return d.x < Math.PI === !d.children ? 6 : -6; })
+      .attr("text-anchor", function(d) { return d.x < Math.PI === !d.children ? "start" : "end"; })
+      .attr("transform", function(d) { return "rotate(" + (d.x < Math.PI ? d.x - Math.PI / 2 : d.x + Math.PI / 2) * 180 / Math.PI + ")"; })
+      .text(function(d) { 
+        return d.data.user;
+      }).attr('id',function(d){return 'nodetext_'+d.data.id;}); //add an idea to each nodetext for reference selection
+
+  function set_div_size() {
+    var cdiv = $('div#canvasdiv');
+    if(cdiv.height() > $(window).height()) cdiv.height($(window).height()*0.95);
+  }
+  $(window).on('resize', set_div_size);
+  set_div_size();
+});
+
+function radialPoint(x, y) {
+  return [(y = +y) * Math.cos(x -= Math.PI / 2), y * Math.sin(x)];
+}
+
+//see if we can move to a specific link by id now (autoscroll)
+function jump_to_node(node) {
+  /*********************************************************************************************
+   * In the case where this is being viewed in bl.ocks.org change the canvasdiv width/height to
+   * match the containing span, which can only yield width/heigh reliably using jquery.
+   */
+  // find out if we are in an iframe.  If so, set the canvasdiv width/height to the iframe width/height.
+  if(self !== top) {
+    $('#canvasdiv').width($(window).width()).height($(window).height());
+  }
+  cdiv = $('div#canvasdiv');
+  var svg = d3.select("svg"),
+      width = +svg.attr("width"),
+      height = +svg.attr("height");
+  console.log({'svgwidth' : width, 'svgheight' : height, 'divwidth' : cdiv.width(), 'divheight' : cdiv.height() });
+  cdiv.scrollLeft((width/2)-(cdiv.width()/2));
+  cdiv.scrollTop((height/2)-(cdiv.height()/2));
+}
+// Canvas Window dragging
+document.getElementById('canvasdiv').onmousedown = function() {
+  this.dragging = true;
+  return true;
+};
+document.getElementById('canvasdiv').onmouseup = function() {
+  this.dragging = false;
+  return true;
+};
+document.getElementById('canvasdiv').onmousemove = function(event) {
+  if(this.dragging) {
+    this.scrollLeft += (this.ppageX-event.pageX)*0.02;
+    this.scrollTop += (this.ppageY-event.pageY)*0.02;
+  } else {
+    this.ppageX = event.pageX;
+    this.ppageY = event.pageY;
+  }
+  return true;
+};
+//make sure the document is ready before auto-scrolling.
+document.addEventListener("DOMContentLoaded", function(event) { 
+  jump_to_node(root_id);
+
+});
+</script>
+
