@@ -241,14 +241,16 @@ $(document).ready(function() {
   });
 
   $('#gmHideVisibleComments').on('click', function(){
-    var selection = $('[id^=thing_t1_]');
-    console.log(selection); //why it no work!?
-    selection.toggleClass('collapsed', true);
-    selection.toggleClass('noncollapsed', false);
+    $('[id^=thing_t1_]').each(function(i,e){
+      $(e).toggleClass('collapsed', true).toggleClass('noncollapsed', false)
+        .find('div.entry > p.tagline > a.expand').text('[+]');
+    });
   });
   $('#gmShowHiddenComments').on('click', function(){
-    $('[id^=thing_t1_]').toggleClass('collapsed', false);
-    $('[id^=thing_t1_]').toggleClass('noncollapsed', true);
+    $('[id^=thing_t1_]').each(function(i,e){
+      $(e).toggleClass('collapsed', false).toggleClass('noncollapsed', true)
+        .find('div.entry > p.tagline > a.expand').text('[-]');
+    });
   });
 
 
