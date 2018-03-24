@@ -1,29 +1,37 @@
 #!/usr/bin/env python2.7
-#global
+# vim: ts=4 sw=4 sts=4 et
+
+# global
 import tempfile
 import os
 import sys
 import unittest
 import logging
-logger = logging.getLogger(__name__)
 import pprint
 import shutil
-from pathlib import Path
-import pathlib
 
-# test-specific imports
-testdatadir = os.path.join('.','test', 'test_data')#: where to dump test data
-# TODO: make this more dynamic, possibly config.py
-rawdata_dir=os.path.join(os.path.expanduser('~'),'Downloads')
-# TODO: relocate this to the CSV after initial testing.
+# module-level logger
+logger = logging.getLogger(__name__)
+
+# module-global test-specific imports
+# where to put test output data for compare.
+testdatadir = os.path.join('.', 'test', 'test_data')
+rawdata_dir = os.path.join(os.path.expanduser('~'), 'Downloads')
 testfiles = (
         'bogus.data',
     )
 purge_results = False
-output_dir = os.path.join('test_data','example_out')
+output_dir = os.path.join('test_data', 'example_out')
+
 
 def cleanPath(path):
-    for root,files,dirs in os.walk(path):
+    """cleanPath
+    Recursively removes everything below a path
+
+    :param path:
+    the path to clean
+    """
+    for root, files, dirs in os.walk(path):
         for fn in files:
             os.unlink(fn)
         for dn in dirs:
@@ -35,24 +43,26 @@ def cleanPath(path):
                 # callback and ignore_errors.
                 raise
 
+
 class TestChangeMe(unittest.TestCase):
     '''
         TestChangeMe
     '''
-    testdatadir = None #: where to dump test data
+    testdatadir = None
     rawdata_dir = None
     testfiles   = None
     output_dir  = output_dir
+
     def __init__(self, *args, **kwargs):
         self.testdatadir = os.path.join(os.path.dirname(
-            os.path.abspath(__file__)),testdatadir)
+            os.path.abspath(__file__)), testdatadir)
         super(TestChangeMe, self).__init__(*args, **kwargs)
-        # check for options
+        # check for kwargs
         # this allows test control by instance
-        self.testdatadir = kwargs.get('testdatadir',testdatadir)
-        self.rawdata_dir = kwargs.get('rawdata_dir',rawdata_dir)
-        self.testfiles = kwargs.get('testfiles',testfiles)
-        self.output_dir = kwargs.get('output_dir',output_dir)
+        self.testdatadir = kwargs.get('testdatadir', testdatadir)
+        self.rawdata_dir = kwargs.get('rawdata_dir', rawdata_dir)
+        self.testfiles = kwargs.get('testfiles', testfiles)
+        self.output_dir = kwargs.get('output_dir', output_dir)
 
     def setUp(self):
         """setUp
@@ -62,7 +72,7 @@ class TestChangeMe(unittest.TestCase):
         if not os.path.exists(self.testdatadir):
             os.mkdir(self.testdatadir)
         else:
-            self.assertTrue(os.path.isdir(self.testdatadir)
+            self.assertTrue(os.path.isdir(self.testdatadir))
         self.assertTrue(os.path.exists(self.testdatadir))
         cleanPath(self.testdatadir)
 
@@ -89,11 +99,12 @@ class TestChangeMe(unittest.TestCase):
             self.assertTrue(os.path.exists(testfile))
 
 
-#stand-alone test execution
+# stand-alone test execution
 if __name__ == '__main__':
     import nose2
-    nose2.main(argv=['fake', '--log-capture',
-        'TestChangeMe.default_test',
-    ])
-
+    nose2.main(argv=[
+            'fake',
+            '--log-capture',
+            'TestChangeMe.default_test',
+        ])
 
