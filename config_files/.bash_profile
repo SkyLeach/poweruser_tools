@@ -27,18 +27,102 @@ export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/Home
 
 #   Set Paths
 #   ------------------------------------------------------------
-    #export PATH="$PATH:/usr/local/bin/"
+# needed below.  Leave
+export SHELL='/usr/local/bin/bash'
+export PATH="/usr/local/git/bin:/sw/bin:/usr/local/bin:/usr/local/sbin:/usr/local/mysql/bin:/usr/local/opt/libxml2/bin:~/sbin:$PATH"
 #    LDFLAGS:  -L/usr/local/opt/libxml2/lib
 #    CPPFLAGS: -I/usr/local/opt/libxml2/include
 #    LDFLAGS:  -L/usr/local/opt/qt/lib
 #    CPPFLAGS: -I/usr/local/opt/qt/include
 #For pkg-config to find this software you may need to set:
 #    PKG_CONFIG_PATH: /usr/local/opt/libxml2/lib/pkgconfig
+localpkgconfig="/usr/local/opt/atk/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/bash/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/cairo/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/ffmpeg/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/ffmpeg@3/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/fftw/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/fontconfig/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/freeglut/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/freetype/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/fribidi/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/gdk-pixbuf/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/glew/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/glib/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/gnu-scientific-library/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/gobject-introspection/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/graphite2/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/gsl/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/gtk/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/gtk+/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/harfbuzz/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/icu4c/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/ilmbase/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/isl/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/jemalloc/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/jpeg/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/libarchive/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/libass/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/libcdio/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/libevent/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/libffi/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/libidn2/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/libjpeg/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/libjpg/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/libogg/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/libpng/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/libtermkey/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/libtiff/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/libusb/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/libuv/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/libvorbis/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/libvpx/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/libvterm/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/libxml2/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/libxml2@2.9/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/luajit/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/lz4/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/lzo/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/mpfr/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/msgpack/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/mysql/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/mysql@5.7/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/oniguruma/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/opencv/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/opencv@3/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/openexr/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/openssl/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/openssl@1.0/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/openssl@1.1/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/opus/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/opusfile/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/pango/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/pcre/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/pcre1/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/pixman/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/postgres/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/postgresql/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/postgresql@10.2/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/python/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/python2/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/python3/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/python@2/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/python@3/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/qt/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/qt5/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/qt@5.10/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/qt@5.9/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/sqlite/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/sqlite3/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/theora/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/unibilium/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/x264/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/xz/lib/pkgconfig"
 if [ -z %{PKG_CONFIG_PATH} ]
 then
-    export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:/usr/local/opt/libxml2/lib/pkgconfig"
+    export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${localpkgconfig}"
 else
-    export PKG_CONFIG_PATH="/usr/local/opt/libxml2/lib/pkgconfig"
+    export PKG_CONFIG_PATH="${localpkgconfig}"
 fi
 # if [ -z %{PYTHONPATH} ]
 # then
@@ -46,16 +130,15 @@ fi
 # else
 #     export PYTHONPATH="$(brew --prefix)/lib/python3.6/site-packages"
 # fi
-export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:/usr/local/opt/qt/lib/pkgconfig"
 export ORACLE_HOME="/Users/magregor/Library/oracle_client/instantclient_12_1"
-export PATH="/usr/local/git/bin:/sw/bin:/usr/local/bin:/usr/local/sbin:/usr/local/mysql/bin:/usr/local/opt/libxml2/bin:$PATH"
 # Add QT to the path, but after system
 export PATH="$PATH:/usr/local/opt/qt/bin"
 export ECLIPSE_HOME="/Applications/sts-eclipse"
 
 #   Set Default Editor (change 'Nano' to the editor of your choice)
 #   ------------------------------------------------------------
-    export EDITOR=/usr/bin/vim
+    #export EDITOR=/usr/bin/vim
+    export EDITOR=/usr/local/bin/nvim
 
 #   Set default blocksize for ls, df, du
 #   from this: http://hints.macworld.com/comment.php?mode=view&cid=24491
@@ -337,6 +420,7 @@ export SENCHA_SDK_TOOLS_2_0_0_BETA3="/Applications/SenchaSDKTools-2.0.0-beta3"
 #Python virtual environment settings
 export WORKON_HOME=~/.virtualenvs/
 export VIRTUALENVWRAPPER_PYTHON='/usr/local/bin/python3'
+[[ -z %{PYENV_ROOT} ]] || export PYENV_ROOT=${VIRTUALENVWRAPPER_PYTHON}
 source /usr/local/bin/virtualenvwrapper.sh
 
 # go envvar
@@ -355,7 +439,8 @@ fi
 #     GIT_PROMPT_THEME=Default
 #     source "$(brew --prefix bash-git-prompt)/share/gitprompt.sh"
 # fi
-export HOMEBREW_GITHUB_API_TOKEN="242dba3738bbbbe7d77a01223e6f43999c5f7c79"
+#export HOMEBREW_GITHUB_API_TOKEN="242dba3738bbbbe7d77a01223e6f43999c5f7c79"
+export HOMEBREW_GITHUB_API_TOKEN='082fb98cbfa25fab5e37076d2c1a6f1087182884'
 
 #homebrew fortune :-)
 if [ -f $(brew --prefix)/bin/fortune ]; then
@@ -374,4 +459,9 @@ export LIBRARY_PATH=/usr/local/lib
 
 test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
 # set shell option histverify to on so we can edit history commands before executing
-setopt -s histverify
+# not on mac?  find out later, not imp now.
+# setopt -s histverify
+TRANS_SOCKET_LOC='/tmp/nvimsocket.tmp'
+if [ -f ${TRANS_SOCKET_LOC} ]; then
+    export NVIM_LISTEN_ADDRESS=$(cat ${TRANS_SOCKET_LOC})
+fi

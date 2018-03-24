@@ -11,7 +11,7 @@ set clipboard=unnamed
 " Enhance command-line completion
 set wildmenu
 " Allow cursor keys in insert mode
-set esckeys
+" set esckeys
 " Allow backspace in insert mode
 set backspace=indent,eol,start
 " Optimize for fast terminal connections
@@ -26,8 +26,8 @@ let mapleader=","
 set binary
 set noeol
 " Centralize backups, swapfiles and undo history
-set backupdir=~/.vim/backups
-set directory=~/.vim/swaps
+set backupdir=~/.config/nvim/backups
+set directory=~/.config/nvim/swaps
 if exists("&undodir")
         set undodir=~/.vim/undo
 endif
@@ -127,7 +127,7 @@ aug END
 " coding it out
 
 " Set color scheme!¬
-" colorscheme 0x7A69_dark
+colorscheme 0x7A69_dark
 colorscheme OceanicNext
 " Bufexplorer
 let g:bufExplorerSplitBelow=1        " Split new window below current.
@@ -187,9 +187,10 @@ let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 1
-let g:syntastic_python_python_exec = '/usr/local/bin/python'
+let g:syntastic_python_python_exec = '/Users/magregor/.virtualenvs/neovim3/bin/python'
 let g:syntastic_python_checkers=['flake8']
-let g:syntastic_python_flake8_exec='/usr/local/bin/python'
+"let g:syntastic_python_flake8_exec='/usr/local/bin/python'
+let g:syntastic_python_flake8_exec='/Users/magregor/.virtualenvs/neovim3/bin/python'
 let g:syntastic_python_flake8=['-m', 'flake8']
 " Use the following syntax to disable specific error codes in flake8
 " let g:syntastic_python_flake8_args='--ignore=E501,E225'
@@ -238,3 +239,11 @@ function! Wikit() range
   echo system('wikit '.shellescape(join(getline(a:firstline, a:lastline), '\n')).'| pbcopy')
 endfunction
 com! -range=% -nargs=0 Wikit :<line1>,<line2>call Wikit()
+
+" Nvim terminal mode:
+tnoremap <Esc> <C-\><C-n>
+" Nvim python environment settings
+let g:python_host_prog='/Users/magregor/.virtualenvs/neovim2/bin/python'
+let g:python3_host_prog='/Users/magregor/.virtualenvs/neovim3/bin/python'
+" Use deoplete.
+let g:deoplete#enable_at_startup = 1
