@@ -439,8 +439,7 @@ fi
 #     GIT_PROMPT_THEME=Default
 #     source "$(brew --prefix bash-git-prompt)/share/gitprompt.sh"
 # fi
-#export HOMEBREW_GITHUB_API_TOKEN="242dba3738bbbbe7d77a01223e6f43999c5f7c79"
-export HOMEBREW_GITHUB_API_TOKEN='082fb98cbfa25fab5e37076d2c1a6f1087182884'
+export HOMEBREW_GITHUB_API_TOKEN=$(cat ~/.gh_oa)
 
 #homebrew fortune :-)
 if [ -f $(brew --prefix)/bin/fortune ]; then
