@@ -7,4 +7,5 @@ I used it to get a visual representation of my time spent listening to various a
 Once the data is extracted, I use [audible_percentage_of_month.py](../../scripts/oneoff/audible_percentage_of_month.py) to clean up and format the data for import into Microsoft Excel.
 
 This is the result from Excel:
+![Image of Excel Chart](2016_percent_of_month_by_author.png)
 
