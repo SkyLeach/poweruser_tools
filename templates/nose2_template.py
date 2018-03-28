@@ -1,4 +1,5 @@
-#!/usr/bin/env python2.7
+
+#!/usr/bin/env python
 # vim: ts=4 sw=4 sts=4 et
 
 # global
@@ -18,19 +19,19 @@ logger = logging.getLogger(__name__)
 testdatadir = os.path.join('.', 'test', 'test_data')
 rawdata_dir = os.path.join(os.path.expanduser('~'), 'Downloads')
 testfiles = (
-        'bogus.data',
-    )
+    'bogus.data',
+)
 purge_results = False
 output_dir = os.path.join('test_data', 'example_out')
 
 
 def cleanPath(path):
-    """cleanPath
+    '''cleanPath
     Recursively removes everything below a path
 
     :param path:
     the path to clean
-    """
+    '''
     for root, files, dirs in os.walk(path):
         for fn in files:
             logger.debug('removing {}'.format(fn))
@@ -67,9 +68,9 @@ class TestChangeMe(unittest.TestCase):
         self.output_dir = kwargs.get('output_dir', output_dir)
 
     def setUp(self):
-        """setUp
+        '''setUp
         pre-test setup called before each test
-        """
+        '''
         logging.debug('setUp')
         if not os.path.exists(self.testdatadir):
             os.mkdir(self.testdatadir)
@@ -79,24 +80,24 @@ class TestChangeMe(unittest.TestCase):
         cleanPath(self.testdatadir)
 
     def tearDown(self):
-        """tearDown
+        '''tearDown
         post-test cleanup, if required
-        """
+        '''
         logging.debug('tearDown')
         if purge_results:
             cleanPath(self.output_dir)
 
     def test_something_0(self):
-        """test_something_0
+        '''test_something_0
             auto-run tests sorted by ascending alpha
-        """
+        '''
         pass
 
     def default_test(self):
-        """testFileDetection
+        '''testFileDetection
         Tests all data files for type and compares the results to the current
         stored results.
-        """
+        '''
         for testfile in self.testfiles:
             self.assertTrue(os.path.exists(testfile))
 
@@ -104,7 +105,8 @@ class TestChangeMe(unittest.TestCase):
 # stand-alone test execution
 if __name__ == '__main__':
     import nose2
-    nose2.main(argv=[
+    nose2.main(
+        argv=[
             'fake',
             '--log-capture',
             'TestChangeMe.default_test',
