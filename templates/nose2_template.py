@@ -33,10 +33,12 @@ def cleanPath(path):
     """
     for root, files, dirs in os.walk(path):
         for fn in files:
-            os.unlink(fn)
+            logger.debug('removing {}'.format(fn))
+            os.unlink(os.path.join(root, fn))
         for dn in dirs:
             # recursive
             try:
+                logger.debug('recursive del {}'.format(dn))
                 shutil.removedirs(dn)
             except Exception as err:
                 # for now, halt on all.  Override with shutil onerror
