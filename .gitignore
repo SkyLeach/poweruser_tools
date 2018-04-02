@@ -1,0 +1,10 @@
+Library/
+simgame/Library/
+simgame/blender_scenes/
+simgame/__pycache__/
+build/
+dist/
+flask_session/
+.DS_Store
+**/*.pyc
+

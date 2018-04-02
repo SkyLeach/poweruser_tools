@@ -1,0 +1,37 @@
+{
+  "name": "poweruser_flaskui",
+  "authors": [
+    "skyleach <skyleach@gmail.com>"
+  ],
+  "description": "Poweruser Flask tools",
+  "main": "",
+  "moduleType": [
+    "es6",
+    "globals"
+  ],
+  "keywords": [
+    "poweruser_flask"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "removed_deps": {
+    "repeatable-fields": "/home/brendan/repeatable-fields/bower.json"
+  },
+  "dependencies": {
+    "bootstrap": "^4.0.0",
+    "gsap": "^1.20.4",
+    "nvd3": "nvd3comm-nvd3#^1.7.1",
+    "jquery": "^3.3.1",
+    "bootswatch-darkly-wiredep": "*",
+    "animate.css": "^3.5.2",
+    "jquery-ui": "^1.12.1"
+  }
+}
