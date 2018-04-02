@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python
 # vim: ts=4 sw=4 sts=4 et
 
@@ -77,7 +76,7 @@ class TestChangeMe(unittest.TestCase):
         else:
             self.assertTrue(os.path.isdir(self.testdatadir))
         self.assertTrue(os.path.exists(self.testdatadir))
-        cleanPath(self.testdatadir)
+        cleanPath(self.output_dir)
 
     def tearDown(self):
         '''tearDown
