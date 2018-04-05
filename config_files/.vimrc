@@ -11,7 +11,7 @@ set clipboard=unnamed
 " Enhance command-line completion
 set wildmenu
 " Allow cursor keys in insert mode
-set esckeys
+" set esckeys
 " Allow backspace in insert mode
 set backspace=indent,eol,start
 " Optimize for fast terminal connections
@@ -26,10 +26,18 @@ let mapleader=","
 set binary
 set noeol
 " Centralize backups, swapfiles and undo history
-set backupdir=~/.vim/backups
-set directory=~/.vim/swaps
-if exists("&undodir")
-        set undodir=~/.vim/undo
+if has('nvim')
+  set backupdir=~/.config/nvim/backups
+  set directory=~/.config/nvim/swaps
+  if exists("&undodir")
+          set undodir=~/.config/nvim/undo
+  endif
+else
+  set backupdir=~/.vim/backups
+  set directory=~/.vim/swaps
+  if exists("&undodir")
+          set undodir=~/.vim/undo
+  endif
 endif
 
 set viminfo+=! " make sure vim history works
@@ -40,6 +48,8 @@ set wmh=0 " reduces splits to a single line
 " Enable per-directory .vimrc files and disable unsafe commands in them
 set exrc
 set secure
+" Make sure that filetype plugins are enabled
+filetype plugin on
 " Enable syntax highlighting
 syntax on
 " Highlight current line
@@ -79,14 +89,21 @@ set title
 " Show the (partial) command as it’s being typed
 set showcmd
 " set number of history lines
-set history=100
+set history=1000
 " Start scrolling three lines before the horizontal window border
 set scrolloff=3
 " Set folding options / preferences.
 set foldmethod=syntax
 " If you want to enable folding by default, uncomment below...
 " set foldenable
-
+" Triger `autoread` when files changes on disk
+" https://unix.stackexchange.com/questions/149209/refresh-changed-content-of-file-opened-in-vim/383044#383044
+" https://vi.stackexchange.com/questions/13692/prevent-focusgained-autocmd-running-in-command-line-editing-mode
+autocmd FocusGained,BufEnter,CursorHold,CursorHoldI * if mode() != 'c' | checktime | endif
+" Notification after file change
+" https://vi.stackexchange.com/questions/13091/autocmd-event-for-autoread
+autocmd FileChangedShellPost *
+  \ echohl WarningMsg | echo "File changed on disk. Buffer reloaded." | echohl None
 " Strip trailing whitespace (,ss)
 function! StripWhitespace()
         let save_cursor = getpos(".")
@@ -119,15 +136,25 @@ call pathogen#helptags()
 " #wsgi/python new file buffer for wsgi script
 au BufNewFile,BufRead *.wsgi set filetype=python
 " Set default template for new userscripts.
-aug new_userscript
+aug new_templates
     au!
-    au BufNewFile *.js 0r ~/.vim/templates/userscript.js
+    if has('nvim')
+      au BufNewFile *userscript*.js 0r ~/.config/nvim/templates/userscript.js
+      au BufNewFile *node*.js 0r ~/.config/nvim/templates/nodetmpl.js
+      au BufNewFile *test*.py 0r ~/.config/nvim/templates/utesttmpl.py
+      au BufNewFile *main*.py 0r ~/.config/nvim/templates/maintmpl.py
+    else
+      au BufNewFile *userscript*.js 0r ~/.vim/templates/userscript.js
+      au BufNewFile *node*.js 0r ~/.vim/templates/nodetmpl.js
+      au BufNewFile *test*.py 0r ~/.vim/templates/utesttmpl.py
+      au BufNewFile *main*.py 0r ~/.vim/templates/maintmpl.py
+    endif
 aug END
 " TODO: add template for new python scrips of various types when you feel like
 " coding it out
 
 " Set color scheme!¬
-" colorscheme 0x7A69_dark
+colorscheme 0x7A69_dark
 colorscheme OceanicNext
 " Bufexplorer
 let g:bufExplorerSplitBelow=1        " Split new window below current.
@@ -140,6 +167,9 @@ let g:pymode_rope_completion=0
 
 " text wrapping and visual queue
 set colorcolumn=+1
+" set default mapping for vim-pydocstring
+autocmd FileType python setlocal ts=4 sw=4 sts=4 et cc=80
+autocmd FileType python nnoremap <c-s-y>  :Pydocstring<cr>
 " temporary function for python docstring width of 72
 function! GetPythonTextWidth()
     if !exists('g:python_normal_text_width')
@@ -180,19 +210,30 @@ augroup END
 
 set statusline+=%#warningmsg#
 " syntastic doc recommended config.  
-set statusline+=%{SyntasticStatuslineFlag()}
+" use airline and ALE instead
+let g:airline#extensions#ale#enabled = 1
+let g:airline#extensions#virtualenv#enabled = 1
+"set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
 
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 1
-let g:syntastic_python_python_exec = '/usr/local/bin/python'
+let g:syntastic_python_python_exec = '/Users/magregor/.virtualenvs/neovim2/bin/python'
 let g:syntastic_python_checkers=['flake8']
-let g:syntastic_python_flake8_exec='/usr/local/bin/python'
+"let g:syntastic_python_flake8_exec='/usr/local/bin/python'
+let g:syntastic_python_flake8_exec='/Users/magregor/.virtualenvs/neovim2/bin/python'
 let g:syntastic_python_flake8=['-m', 'flake8']
 " Use the following syntax to disable specific error codes in flake8
 " let g:syntastic_python_flake8_args='--ignore=E501,E225'
+let g:syntastic_python3_python_exec = '/Users/magregor/.virtualenvs/neovim3/bin/python'
+let g:syntastic_python3_checkers=['flake8']
+"let g:syntastic_python3_flake8_exec='/usr/local/bin/python'
+let g:syntastic_python3_flake8_exec='/Users/magregor/.virtualenvs/neovim3/bin/python'
+let g:syntastic_python3_flake8=['-m', 'flake8']
+" Use the following syntax to disable specific error codes in flake8
+" let g:syntastic_python3_flake8_args='--ignore=E501,E225'
 let syntastic_mode_map = { 'passive_filetypes': ['html'] }
 let g:SuperTabClosePreviewOnPopupClose = 1
 autocmd CompleteDone * pclose
@@ -238,3 +279,62 @@ function! Wikit() range
   echo system('wikit '.shellescape(join(getline(a:firstline, a:lastline), '\n')).'| pbcopy')
 endfunction
 com! -range=% -nargs=0 Wikit :<line1>,<line2>call Wikit()
+
+" Nvim terminal mode:
+noremap <Esc> <C-\><C-n>
+" Nvim python environment settings
+let g:python_host_prog='/Users/magregor/.virtualenvs/neovim2/bin/python'
+let g:python3_host_prog='/Users/magregor/.virtualenvs/neovim3/bin/python'
+" configure python-language-server through vim-lsp so it can be used by ale
+" tsserver for typescript
+if executable('typescript-language-server')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'typescript-language-server',
+        \ 'cmd': {server_info->[&shell, &shellcmdflag, 'typescript-language-server', '--stdio']},
+        \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'tsconfig.json'))},
+        \ 'whitelist': ['typescript'],
+        \ })
+endif
+" tsserver for python through pyls IFF using vim-lsp, but there are issues
+" if executable('pyls')
+  " pip install python-language-server
+"   au User lsp_setup call lsp#register_server({
+"       \ 'name': 'pyls',
+"       \ 'cmd': {server_info->['pyls']},
+"       \ 'whitelist': ['python'],
+"       \ })
+"   autocmd FileType python nnoremap <buffer><silent> <c-]>  :LspDefinition<cr>
+"   autocmd FileType python nnoremap <buffer><silent> K :LspHover<cr>
+  " autocmd FileType python setlocal omnifunc=lsp#complete
+" endif
+" uncomment for asyncomplete
+" let g:asyncomplete_remove_duplicates = 1
+if has('nvim')
+  " Use deoplete for auto-completion.  Best choice.
+  " Temp disable while checking ALE w/ omnicomplete and tsserver through pyls
+  let g:deoplete#enable_at_startup = 1
+else
+  let g:ale_completion_enabled = 1
+  " uncomment max_suggestions in order to limit autocomplete suggestions
+  " let g:ale_completion_max_suggestions = 50
+  " set omnifunc=syntaxcomplete#Complete
+endif
+" ALE config
+let g:ale_virtualenv_dir_names = ['.virtualenvs']
+" Enable only these linters
+let g:ale_linters={
+\    'python'     : ['pyls'],
+\    'json'       : ['jsonlint'],
+\    'javascript' : ['eslint'],
+\    'cpp'        : ['clang'],
+\    'pyrex'      : ['cython'],
+\    'cmake'      : ['cmakelint'],
+\}
+let g:ale_fixers={
+\    'javascript': ['prettier_eslint'],
+\    'python'    : ['autopep8'],
+\}
+" let g:ale_typescript_tsserver_executable='tsserver'
+" enable completion where available.  Experimental
+autocmd FileType python nnoremap <buffer><silent> <c-]>  :ALEGoToDefinitionInTab<cr>
+autocmd FileType python nnoremap <buffer><silent> <c-s-l>  :ALELint<cr>

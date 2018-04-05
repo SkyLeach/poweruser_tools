@@ -26,10 +26,18 @@ let mapleader=","
 set binary
 set noeol
 " Centralize backups, swapfiles and undo history
-set backupdir=~/.config/nvim/backups
-set directory=~/.config/nvim/swaps
-if exists("&undodir")
-        set undodir=~/.vim/undo
+if has('nvim')
+  set backupdir=~/.config/nvim/backups
+  set directory=~/.config/nvim/swaps
+  if exists("&undodir")
+          set undodir=~/.config/nvim/undo
+  endif
+else
+  set backupdir=~/.vim/backups
+  set directory=~/.vim/swaps
+  if exists("&undodir")
+          set undodir=~/.vim/undo
+  endif
 endif
 
 set viminfo+=! " make sure vim history works
@@ -130,10 +138,17 @@ au BufNewFile,BufRead *.wsgi set filetype=python
 " Set default template for new userscripts.
 aug new_templates
     au!
-    au BufNewFile *userscript*.js 0r ~/.config/nvim/templates/userscript.js
-    au BufNewFile *node*.js 0r ~/.config/nvim/templates/nodetmpl.js
-    au BufNewFile *test*.py 0r ~/.config/nvim/templates/utesttmpl.py
-    au BufNewFile *main*.py 0r ~/.config/nvim/templates/maintmpl.py
+    if has('nvim')
+      au BufNewFile *userscript*.js 0r ~/.config/nvim/templates/userscript.js
+      au BufNewFile *node*.js 0r ~/.config/nvim/templates/nodetmpl.js
+      au BufNewFile *test*.py 0r ~/.config/nvim/templates/utesttmpl.py
+      au BufNewFile *main*.py 0r ~/.config/nvim/templates/maintmpl.py
+    else
+      au BufNewFile *userscript*.js 0r ~/.vim/templates/userscript.js
+      au BufNewFile *node*.js 0r ~/.vim/templates/nodetmpl.js
+      au BufNewFile *test*.py 0r ~/.vim/templates/utesttmpl.py
+      au BufNewFile *main*.py 0r ~/.vim/templates/maintmpl.py
+    endif
 aug END
 " TODO: add template for new python scrips of various types when you feel like
 " coding it out
@@ -266,7 +281,7 @@ endfunction
 com! -range=% -nargs=0 Wikit :<line1>,<line2>call Wikit()
 
 " Nvim terminal mode:
-tnoremap <Esc> <C-\><C-n>
+noremap <Esc> <C-\><C-n>
 " Nvim python environment settings
 let g:python_host_prog='/Users/magregor/.virtualenvs/neovim2/bin/python'
 let g:python3_host_prog='/Users/magregor/.virtualenvs/neovim3/bin/python'
@@ -280,7 +295,7 @@ if executable('typescript-language-server')
         \ 'whitelist': ['typescript'],
         \ })
 endif
-" tsserver for python through pyls
+" tsserver for python through pyls IFF using vim-lsp, but there are issues
 " if executable('pyls')
   " pip install python-language-server
 "   au User lsp_setup call lsp#register_server({
@@ -292,11 +307,18 @@ endif
 "   autocmd FileType python nnoremap <buffer><silent> K :LspHover<cr>
   " autocmd FileType python setlocal omnifunc=lsp#complete
 " endif
-" for asyncomplete
-let g:asyncomplete_remove_duplicates = 1
-" Use deoplete for auto-completion.  Best choice.
-" Temp disable while checking ALE w/ omnicomplete and tsserver through pyls
-let g:deoplete#enable_at_startup = 1
+" uncomment for asyncomplete
+" let g:asyncomplete_remove_duplicates = 1
+if has('nvim')
+  " Use deoplete for auto-completion.  Best choice.
+  " Temp disable while checking ALE w/ omnicomplete and tsserver through pyls
+  let g:deoplete#enable_at_startup = 1
+else
+  let g:ale_completion_enabled = 1
+  " uncomment max_suggestions in order to limit autocomplete suggestions
+  " let g:ale_completion_max_suggestions = 50
+  " set omnifunc=syntaxcomplete#Complete
+endif
 " ALE config
 let g:ale_virtualenv_dir_names = ['.virtualenvs']
 " Enable only these linters
@@ -314,7 +336,5 @@ let g:ale_fixers={
 \}
 " let g:ale_typescript_tsserver_executable='tsserver'
 " enable completion where available.  Experimental
-" let g:ale_completion_enabled = 1
-" set omnifunc=syntaxcomplete#Complete
 autocmd FileType python nnoremap <buffer><silent> <c-]>  :ALEGoToDefinitionInTab<cr>
 autocmd FileType python nnoremap <buffer><silent> <c-s-l>  :ALELint<cr>
