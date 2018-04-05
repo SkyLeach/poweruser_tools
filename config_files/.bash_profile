@@ -22,8 +22,9 @@ export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/Home
 
 #   Change Prompt
 #   ------------------------------------------------------------
-    export PS1="________________________________________________________________________________\n| \w @ \h (\u) \n| => "
-    export PS2="| => "
+    # export PS1="_☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠_\n| \w @ \h (\u) \n|💀> "
+    export PS1="_☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠_\n| \w @ work-mbp (abuser) \n|\T💀> "
+    export PS2="|💀> "
 
 #   Set Paths
 #   ------------------------------------------------------------
@@ -36,6 +37,7 @@ export PATH="/usr/local/git/bin:/sw/bin:/usr/local/bin:/usr/local/sbin:/usr/loca
 #    CPPFLAGS: -I/usr/local/opt/qt/include
 #For pkg-config to find this software you may need to set:
 #    PKG_CONFIG_PATH: /usr/local/opt/libxml2/lib/pkgconfig
+localpkgconfig="/usr/local/lib/pkgconfig"
 localpkgconfig="/usr/local/opt/atk/lib/pkgconfig"
 localpkgconfig+=":/usr/local/opt/bash/lib/pkgconfig"
 localpkgconfig+=":/usr/local/opt/cairo/lib/pkgconfig"
@@ -55,6 +57,7 @@ localpkgconfig+=":/usr/local/opt/graphite2/lib/pkgconfig"
 localpkgconfig+=":/usr/local/opt/gsl/lib/pkgconfig"
 localpkgconfig+=":/usr/local/opt/gtk/lib/pkgconfig"
 localpkgconfig+=":/usr/local/opt/gtk+/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/gtk+3/lib/pkgconfig"
 localpkgconfig+=":/usr/local/opt/harfbuzz/lib/pkgconfig"
 localpkgconfig+=":/usr/local/opt/icu4c/lib/pkgconfig"
 localpkgconfig+=":/usr/local/opt/ilmbase/lib/pkgconfig"
@@ -109,7 +112,7 @@ localpkgconfig+=":/usr/local/opt/python3/lib/pkgconfig"
 localpkgconfig+=":/usr/local/opt/python@2/lib/pkgconfig"
 localpkgconfig+=":/usr/local/opt/python@3/lib/pkgconfig"
 localpkgconfig+=":/usr/local/opt/qt/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/qt5/lib/pkgconfig"
+localpkgconfig+=":/usr/local/opt/qt@5.5/lib/pkgconfig"
 localpkgconfig+=":/usr/local/opt/qt@5.10/lib/pkgconfig"
 localpkgconfig+=":/usr/local/opt/qt@5.9/lib/pkgconfig"
 localpkgconfig+=":/usr/local/opt/sqlite/lib/pkgconfig"
@@ -118,6 +121,8 @@ localpkgconfig+=":/usr/local/opt/theora/lib/pkgconfig"
 localpkgconfig+=":/usr/local/opt/unibilium/lib/pkgconfig"
 localpkgconfig+=":/usr/local/opt/x264/lib/pkgconfig"
 localpkgconfig+=":/usr/local/opt/xz/lib/pkgconfig"
+localpkgconfig+="/usr/local/opt/sdl2/lib/pkgconfig"
+localpkgconfig+="/usr/local/opt/mlt/lib/pkgconfig"
 if [ -z %{PKG_CONFIG_PATH} ]
 then
     export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${localpkgconfig}"
@@ -132,7 +137,7 @@ fi
 # fi
 export ORACLE_HOME="/Users/magregor/Library/oracle_client/instantclient_12_1"
 # Add QT to the path, but after system
-export PATH="$PATH:/usr/local/opt/qt/bin"
+export PATH="$PATH:/usr/local/opt/qt@5.5/bin"
 export ECLIPSE_HOME="/Applications/sts-eclipse"
 
 #   Set Default Editor (change 'Nano' to the editor of your choice)
@@ -464,3 +469,11 @@ TRANS_SOCKET_LOC='/tmp/nvimsocket.tmp'
 if [ -f ${TRANS_SOCKET_LOC} ]; then
     export NVIM_LISTEN_ADDRESS=$(cat ${TRANS_SOCKET_LOC})
 fi
+# tsserver log
+#TSS_LOG='-level verbose -file c:\tmp\tsserver.log'
+# file defaults to __dirname\.log<PID>
+# setting the log file *will* break VimR.app
+# export TSS_LOG="-level verbose ~/tmp/tsserver.log"
+function title {
+    echo -ne "\033]0;"$*"\007"
+}
