@@ -283,8 +283,10 @@ com! -range=% -nargs=0 Wikit :<line1>,<line2>call Wikit()
 " Nvim terminal mode:
 noremap <Esc> <C-\><C-n>
 " Nvim python environment settings
-let g:python_host_prog='/Users/magregor/.virtualenvs/neovim2/bin/python'
-let g:python3_host_prog='/Users/magregor/.virtualenvs/neovim3/bin/python'
+if has('nvim')
+  let g:python_host_prog='/Users/magregor/.virtualenvs/neovim2/bin/python'
+  let g:python3_host_prog='/Users/magregor/.virtualenvs/neovim3/bin/python'
+endif
 " configure python-language-server through vim-lsp so it can be used by ale
 " tsserver for typescript
 if executable('typescript-language-server')
