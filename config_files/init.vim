@@ -11,7 +11,7 @@ set clipboard=unnamed
 " Enhance command-line completion
 set wildmenu
 " Allow cursor keys in insert mode
-" set esckeys
+set esckeys
 " Allow backspace in insert mode
 set backspace=indent,eol,start
 " Optimize for fast terminal connections
@@ -220,15 +220,10 @@ let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 1
-let g:syntastic_python_python_exec = '/Users/magregor/.virtualenvs/neovim2/bin/python'
-let g:syntastic_python_checkers=['flake8']
 "let g:syntastic_python_flake8_exec='/usr/local/bin/python'
 let g:syntastic_python_flake8_exec='/Users/magregor/.virtualenvs/neovim2/bin/python'
 let g:syntastic_python_flake8=['-m', 'flake8']
 " Use the following syntax to disable specific error codes in flake8
-" let g:syntastic_python_flake8_args='--ignore=E501,E225'
-let g:syntastic_python3_python_exec = '/Users/magregor/.virtualenvs/neovim3/bin/python'
-let g:syntastic_python3_checkers=['flake8']
 "let g:syntastic_python3_flake8_exec='/usr/local/bin/python'
 let g:syntastic_python3_flake8_exec='/Users/magregor/.virtualenvs/neovim3/bin/python'
 let g:syntastic_python3_flake8=['-m', 'flake8']
