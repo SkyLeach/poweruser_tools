@@ -1,4 +1,3 @@
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/Home
 #  ---------------------------------------------------------------------------
 #
 #  Description:  This file holds all my BASH configurations and aliases
@@ -30,99 +29,116 @@ export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/Home
 #   ------------------------------------------------------------
 # needed below.  Leave
 export SHELL='/usr/local/bin/bash'
-export PATH="/usr/local/git/bin:/sw/bin:/usr/local/bin:/usr/local/sbin:/usr/local/mysql/bin:/usr/local/opt/libxml2/bin:~/sbin:$PATH"
+# start building out path requirements
+[[ ":$PATH:" != *":~/sbin:${PATH}:"* ]] && PATH="~/sbin:${PATH}"
+[[ ":$PATH:" != *":/usr/local/opt/openssl/bin:${PATH}:"* ]] && PATH="/usr/local/opt/openssl/bin:${PATH}"
+[[ ":$PATH:" != *":/usr/local/Cellar/git/2.17.0/bin:${PATH}:"* ]] && PATH="/usr/local/Cellar/git/2.17.0/bin:${PATH}"
+[[ ":$PATH:" != *":/usr/local/opt/mysql/bin:${PATH}:"* ]] && PATH="/usr/local/opt/mysql/bin:${PATH}"
+[[ ":$PATH:" != *":/usr/local/opt/libxml2/bin:${PATH}:"* ]] && PATH="/usr/local/opt/libxml2/bin:${PATH}"
+[[ ":$PATH:" != *":/usr/local/opt/ruby/bin:${PATH}:"* ]] && PATH="/usr/local/opt/ruby/bin:${PATH}"
+[[ ":$PATH:" != *":/usr/local/bin:${PATH}:"* ]] && PATH="/usr/local/bin:${PATH}"
+[[ ":$PATH:" != *":/usr/local/opt/qt@5.5/bin:${PATH}:"* ]] && PATH="/usr/local/opt/qt@5.5/bin:${PATH}"
+[[ ":$PATH:" != *":/usr/local/sbin:${PATH}:"* ]] && PATH="/usr/local/sbin:${PATH}"
+[[ ":$PATH:" != *":/sw/bin:"* ]] && PATH="/sw/bin:${PATH}"
+export PATH
+# Add QT to the path, but after system
+# and make sure it's 5.5 due to linker issues
+# legacy/secondary darwinports
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/Home
 #    LDFLAGS:  -L/usr/local/opt/libxml2/lib
 #    CPPFLAGS: -I/usr/local/opt/libxml2/include
 #    LDFLAGS:  -L/usr/local/opt/qt/lib
 #    CPPFLAGS: -I/usr/local/opt/qt/include
 #For pkg-config to find this software you may need to set:
 #    PKG_CONFIG_PATH: /usr/local/opt/libxml2/lib/pkgconfig
+
 localpkgconfig="/usr/local/lib/pkgconfig"
-localpkgconfig="/usr/local/opt/atk/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/bash/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/cairo/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/ffmpeg/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/ffmpeg@3/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/fftw/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/fontconfig/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/freeglut/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/freetype/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/fribidi/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/gdk-pixbuf/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/glew/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/glib/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/gnu-scientific-library/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/gobject-introspection/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/graphite2/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/gsl/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/gtk/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/gtk+/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/gtk+3/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/harfbuzz/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/icu4c/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/ilmbase/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/isl/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/jemalloc/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/jpeg/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/libarchive/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/libass/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/libcdio/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/libevent/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/libffi/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/libidn2/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/libjpeg/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/libjpg/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/libogg/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/libpng/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/libtermkey/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/libtiff/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/libusb/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/libuv/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/libvorbis/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/libvpx/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/libvterm/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/libxml2/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/libxml2@2.9/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/luajit/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/lz4/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/lzo/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/mpfr/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/msgpack/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/mysql/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/mysql@5.7/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/oniguruma/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/opencv/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/opencv@3/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/openexr/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/openssl/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/openssl@1.0/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/openssl@1.1/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/opus/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/opusfile/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/pango/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/pcre/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/pcre1/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/pixman/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/postgres/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/postgresql/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/postgresql@10.2/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/python/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/python2/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/python3/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/python@2/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/python@3/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/qt/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/qt@5.5/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/qt@5.10/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/qt@5.9/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/sqlite/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/sqlite3/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/theora/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/unibilium/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/x264/lib/pkgconfig"
-localpkgconfig+=":/usr/local/opt/xz/lib/pkgconfig"
-localpkgconfig+="/usr/local/opt/sdl2/lib/pkgconfig"
-localpkgconfig+="/usr/local/opt/mlt/lib/pkgconfig"
+# tempt dissable extras and try to write script to minimize imports
+# localpkgconfig=":/usr/local/opt/atk/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/bash/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/cairo/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/ffmpeg/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/ffmpeg@3/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/fftw/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/fontconfig/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/freeglut/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/freetype/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/fribidi/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/gdk-pixbuf/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/glew/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/glib/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/gnu-scientific-library/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/gobject-introspection/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/graphite2/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/gsl/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/gtk/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/gtk+/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/gtk+3/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/harfbuzz/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/icu4c/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/ilmbase/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/isl/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/jemalloc/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/jpeg/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/libarchive/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/libass/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/libcdio/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/libevent/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/libffi/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/libidn2/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/libjpeg/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/libjpg/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/libogg/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/libpng/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/libtermkey/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/libtiff/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/libusb/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/libuv/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/libvorbis/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/libvpx/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/libvterm/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/libxml2/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/libxml2@2.9/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/luajit/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/lz4/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/lzo/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/mpfr/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/msgpack/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/mysql/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/mysql@5.7/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/oniguruma/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/opencv/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/opencv@3/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/openexr/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/openssl/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/openssl@1.0/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/openssl@1.1/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/opus/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/opusfile/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/pango/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/pcre/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/pcre1/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/pixman/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/postgres/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/postgresql/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/postgresql@10.2/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/python/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/python2/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/python3/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/python@2/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/python@3/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/qt/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/qt@5.5/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/qt@5.10/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/qt@5.9/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/sqlite/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/sqlite3/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/theora/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/unibilium/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/x264/lib/pkgconfig"
+# localpkgconfig+=":/usr/local/opt/xz/lib/pkgconfig"
+# localpkgconfig+="/usr/local/opt/sdl2/lib/pkgconfig"
+# localpkgconfig+="/usr/local/opt/mlt/lib/pkgconfig"
 if [ -z %{PKG_CONFIG_PATH} ]
 then
     export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${localpkgconfig}"
@@ -136,8 +152,6 @@ fi
 #     export PYTHONPATH="$(brew --prefix)/lib/python3.6/site-packages"
 # fi
 export ORACLE_HOME="/Users/magregor/Library/oracle_client/instantclient_12_1"
-# Add QT to the path, but after system
-export PATH="$PATH:/usr/local/opt/qt@5.5/bin"
 export ECLIPSE_HOME="/Applications/sts-eclipse"
 
 #   Set Default Editor (change 'Nano' to the editor of your choice)
@@ -157,9 +171,61 @@ export ECLIPSE_HOME="/Applications/sts-eclipse"
 #   export CLICOLOR=1
 #   export LSCOLORS=ExFxBxDxCxegedabagacad
 
+export WORKON_HOME="~/.virtualenvs/"
+export VIRTUALENVWRAPPER_PYTHON='/usr/local/bin/python3'
+[[ -z %{PYENV_ROOT} ]] || export PYENV_ROOT=${VIRTUALENVWRAPPER_PYTHON}
+[[ -f "/usr/local/bin/virtualenvwrapper.sh" ]] && . "/usr/local/bin/virtualenvwrapper.sh"
+# source "$(brew --prefix pyenv-virtualenvwrapper)/bin/pyenv-sh-virtualenvwrapper"
+
+# go envvar
+export GOPATH="/Users/magregor/.gopath"
+
+# python module options specific to me...
+export ARCHFLAGS="-arch x86_64"
+
+#homebrew bash completion
+[ -f /usr/local/etc/bash_completion ] && . /usr/local/etc/bash_completion
+
+export HOMEBREW_GITHUB_API_TOKEN=$(cat ~/.gh_oa)
+
+#HOMEBREW libarchive python fix
+# export LD_LIBRARY_PATH="$(brew --prefix)/opt/libarchive/lib"
+# for cx_Oracle
+[[ -z LD_LIBRARY_PATH ]] && export LD_LIBRARY_PATH="$ORACLE_HOME:${LD_LIBRARY_PATH}" || export LD_LIBRARY_PATH="$ORACLE_HOME"
+# export DYLD_LIBRARY_PATH="$LD_LIBRARY_PATH:${DYLD_LIBRARY_PATH}"
+export LA_LIBRARY_FILEPATH="$(brew --prefix)/opt/libarchive/lib/libarchive.13.dylib"
+# export LIBARCHIVE_PREFIX="$(brew --prefix)/opt/libarchive"
+# export C_INCLUDE_PATH=$(brew --cellar lzo)/2.09/include/lzo:$(brew --cellar lzo)/2.09/include/
+export LIBRARY_PATH=/usr/local/lib
+
+[[ -e "~/.iterm2_shell_integration.bash" ]] && . "~/.iterm2_shell_integration.bash"
+# set shell option histverify to on so we can edit history commands before executing
+# not on mac?  find out later, not imp now.
+# setopt -s histverify
+TRANS_SOCKET_LOC='/tmp/nvimsocket.tmp'
+if [ -f ${TRANS_SOCKET_LOC} ]; then
+    export NVIM_LISTEN_ADDRESS=$(cat ${TRANS_SOCKET_LOC})
+fi
+# tsserver log
+# TSS_LOG='-level verbose -file c:\tmp\tsserver.log'
+# file defaults to __dirname\.log<PID>
+# setting the log file *will* break VimR.app
+# export TSS_LOG="-level verbose ~/tmp/tsserver.log"
+
+case $- in
+  *i*)
+      # homebrew fortune :-) should already be in PATH
+      if [ -f "/usr/local/bin/fortune" ]; then
+          fortune -ao
+      fi;;
+  *) # we aren't interactive, so nothing below here matters
+      exit 0;;
+esac
+
+# END EXPORTS, EVERYTHING ELSE INTERACTIVE OR WASTEFUL FOR NON-INTERACTIVE
 
 #   -----------------------------
-#   2.  MAKE TERMINAL BETTER
+#   2.  MAKE INTERACTIVE TERMINAL BETTER
 #   -----------------------------
 
 alias cp='cp -iv'                           # Preferred 'cp' implementation
@@ -308,6 +374,9 @@ ffe () { /usr/bin/find . -name '*'"$@" ; }  # ffe:      Find file whose name end
 #   ------------------------------------------------------------
     my_ps() { ps $@ -u $USER -o pid,%cpu,%mem,start,time,bsdtime,command ; }
 
+function title {
+    echo -ne "\033]0;"$*"\007"
+}
 
 #   ---------------------------
 #   6.  NETWORKING
@@ -409,71 +478,6 @@ httpHeaders () { /usr/bin/curl -I -L $@ ; }             # httpHeaders:      Grab
 #   the above create files that are almost all zeros - if random bytes are desired
 #   then use: ~/Dev/Perl/randBytes 1048576 > 10MB.dat
 
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+# [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
 
-#RUBY local path change
-export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-
-export PATH=/usr/local/bin/Sencha/Cmd/5.0.3.324:$PATH
-
-export SENCHA_CMD_3_0_0="/usr/local/bin/Sencha/Cmd/5.0.3.324"
-
-#export PATH=/Applications/SenchaSDKTools-2.0.0-beta3:$PATH
-
-export SENCHA_SDK_TOOLS_2_0_0_BETA3="/Applications/SenchaSDKTools-2.0.0-beta3"
-
-#Python virtual environment settings
-export WORKON_HOME=~/.virtualenvs/
-export VIRTUALENVWRAPPER_PYTHON='/usr/local/bin/python3'
-[[ -z %{PYENV_ROOT} ]] || export PYENV_ROOT=${VIRTUALENVWRAPPER_PYTHON}
-source /usr/local/bin/virtualenvwrapper.sh
-
-# go envvar
-GOPATH="/Users/magregor/.gopath"
-
-# python module options specific to me...
-export ARCHFLAGS="-arch x86_64"
-
-#homebrew bash completion
-if [ -f $(brew --prefix)/etc/bash_completion ]; then
-    source $(brew --prefix)/etc/bash_completion
-fi
-
-# bash-git-prompt
-# if [ -f "$(brew --prefix bash-git-prompt)/share/gitprompt.sh" ]; then
-#     GIT_PROMPT_THEME=Default
-#     source "$(brew --prefix bash-git-prompt)/share/gitprompt.sh"
-# fi
-export HOMEBREW_GITHUB_API_TOKEN=$(cat ~/.gh_oa)
-
-#homebrew fortune :-)
-if [ -f $(brew --prefix)/bin/fortune ]; then
-    $(brew --prefix)/bin/fortune -ao
-fi
-
-#HOMEBREW libarchive python fix
-#export LD_LIBRARY_PATH="$(brew --prefix)/opt/libarchive/lib"
-# for cx_Oracle
-export LD_LIBRARY_PATH="$ORACLE_HOME:${LD_LIBRARY_PATH}"
-export DYLD_LIBRARY_PATH="$LD_LIBRARY_PATH:${DYLD_LIBRARY_PATH}"
-export LA_LIBRARY_FILEPATH="$(brew --prefix)/opt/libarchive/lib/libarchive.13.dylib"
-#export LIBARCHIVE_PREFIX="$(brew --prefix)/opt/libarchive"
-export C_INCLUDE_PATH=$(brew --cellar lzo)/2.09/include/lzo:$(brew --cellar lzo)/2.09/include/
-export LIBRARY_PATH=/usr/local/lib
-
-test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
-# set shell option histverify to on so we can edit history commands before executing
-# not on mac?  find out later, not imp now.
-# setopt -s histverify
-TRANS_SOCKET_LOC='/tmp/nvimsocket.tmp'
-if [ -f ${TRANS_SOCKET_LOC} ]; then
-    export NVIM_LISTEN_ADDRESS=$(cat ${TRANS_SOCKET_LOC})
-fi
-# tsserver log
-#TSS_LOG='-level verbose -file c:\tmp\tsserver.log'
-# file defaults to __dirname\.log<PID>
-# setting the log file *will* break VimR.app
-# export TSS_LOG="-level verbose ~/tmp/tsserver.log"
-function title {
-    echo -ne "\033]0;"$*"\007"
-}
+# Python virtual environment settings
