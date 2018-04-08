@@ -1,4 +1,8 @@
 # thunderbird-monterail
+## (SkyLeach poweruser copy)
+
+SkyLeach Full Dark (with userContent.css merged from Stylish userstyles):
+![alt text](screenshots/fulldark.png)
 
 This is a set of userChrome.css files to change the look of Thunderbird, inspired by the mockup by Monterail here:
 https://monterail.com/blog/2016/the-power-of-email-clients-why-did-we-redesign-thunderbird?utm_source=Thunderbird&utm_campaign=Dribbble&utm_medium=blogpost%22
@@ -33,13 +37,13 @@ You can customise various values, including almost all colors, the fonts and som
 
 ## Screenshots
 Light:
-![alt text](https://raw.githubusercontent.com/spymastermatt/thunderbird-monterail/master/screenshots/light.png)
+![alt text](screenshots/light.png)
 
 Dark:
-![alt text](https://raw.githubusercontent.com/spymastermatt/thunderbird-monterail/master/screenshots/dark.png)
+![alt text](screenshots/dark.png)
 
 Full Dark:
-![alt text](https://raw.githubusercontent.com/spymastermatt/thunderbird-monterail/master/screenshots/fulldark.png)
+![alt text](screenshots/fulldark.png)
 
 Monterail:
-![alt text](https://raw.githubusercontent.com/spymastermatt/thunderbird-monterail/master/screenshots/monterail.png)
+![alt text](screenshots/monterail.png)
