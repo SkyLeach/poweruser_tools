@@ -2,7 +2,7 @@
 ## (SkyLeach poweruser copy)
 
 SkyLeach Full Dark (with userContent.css merged from Stylish userstyles):
-![alt text](screenshots/fulldark.png)
+![alt text](screenshots/fulldark_skyleach.png)
 
 This is a set of userChrome.css files to change the look of Thunderbird, inspired by the mockup by Monterail here:
 https://monterail.com/blog/2016/the-power-of-email-clients-why-did-we-redesign-thunderbird?utm_source=Thunderbird&utm_campaign=Dribbble&utm_medium=blogpost%22
