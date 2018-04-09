@@ -6,7 +6,6 @@
 
 main,
 div[class^="global_"], div[class^="homepage__outer"], div#app {
-    /* background-color: #2A303C */
     color: #999;
     background: #161616 url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAH0lEQVQI12NgYGD4LycnB8cMKioqqAJwBlQlXACmEgCsthUB9mCnuQAAAABJRU5ErkJggg==") repeat;
 }
@@ -53,14 +52,7 @@ span[class^="package__privacy"],
 span[class^="package__name"] {
     background: rgba(20,20,20,100);
     color: rgba(20,100,20,100);
-    /*border: 1px solid #000;*/
 }
-/*main .black,
-main .hover-black:focus,
-main .hover-black:hover {
-    background-color: rgba(0,0,0,0);
-    color: #666;
-}*/
 main .black-80 {
     color: rgba(204, 204, 204, 0.8);
 }
@@ -73,69 +65,4 @@ main .black-50 {
 main .b--black-10 {
     border-color: rgba(255, 255, 255, 0.2);
 }
-/*
-.package__rightSidebar___9dMXo {
-    background: #20242d;
-}
-.package__install___3jWoO svg,
-.package__downloads___1Bmfo svg,
-.package__runkit___1iQd- svg .line,
-.package__runkit___1iQd- svg .line-round {
-    fill: #fff;
-}
-.tabs__tabs___17CUw {
-    background: #20242d;
-}
-.tabs__tab___1gHZ2.tabs__yellow___1c2N8 .tabs__tabLink___2tDwu,
-.tabs__tabLink___2tDwu,
-.tabs__tab___1gHZ2.tabs__purple___3sUHq .tabs__tabLink___2tDwu,
-.tabs__tab___1gHZ2.tabs__violet___rtKBH .tabs__tabLink___2tDwu {
-    color: #fff;
-}
-.footer__footer___20QpA {
-    background-color: #2A303C;
-}
-.footer__footer___20QpA h3 {
-    color: #fff;
-}
-.footer__footer___20QpA a {
-    color: #fff;
-}
-.markdown,
-.markdown p,
-.markdown li {
-    color: #fff;
-}
-.markdown blockquote,
-.readme__readme___tmT33 p code {
-    background: #20242d;
-}
-.markdown .deep-link .deep-link-icon {
-    fill: #fff;
-}
-.markdown .highlight,
-.readme__readme___tmT33 pre {
-    background-color: #20242d;
-}
-.markdown .storage.type,
-.markdown .keyword,
-.markdown .variable {
-    color: #82C7C7;
-}
-.markdown .highlight {
-    color: #BDCCF7;
-}
-.markdown .string,
-.markdown .entity.name.function {
-    color: #FB9DB5;
-}
-.markdown .support.constant,
-.markdown .support.function,
-.markdown .support.type {
-    color: #fff;
-}
-.markdown td,
-.markdown th {
-    color: #222;
-}*/
 }
