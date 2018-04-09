@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from builtins import object, super, input
 import sys
 import os
 import argparse
@@ -25,7 +26,6 @@ class CustomLogFormatter(logging.Formatter):
         self._fmt = format_orig
         return result
 
-
 #########################################################################
 # Custom logging formatter, module or whole app if __name__ == '__main__'
 # -logger - add custom loglevel
@@ -50,6 +50,10 @@ logging.basicConfig(
     handlers=[handler_hook])
 logger = logging.getLogger(__name__)
 
+class exampleObject(object):
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+
 # main loop
 if __name__ == "__main__":
     # Arguments
@@ -65,9 +69,7 @@ if __name__ == "__main__":
     logger.debug('Debug enabled.')
     logger.verbose('Verbose logging enabled.')
 
-    try:
-        input = raw_input
-    except NameError:
-        pass
+    for line in input:
+        logger.info(line)
 
     logger.verbose("Exit Main")

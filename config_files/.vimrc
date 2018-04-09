@@ -297,20 +297,35 @@ if executable('typescript-language-server')
         \ 'whitelist': ['typescript'],
         \ })
 endif
+" DOES NOT WORK RIGHT
 " tsserver for python through pyls IFF using vim-lsp, but there are issues
-" if executable('pyls')
-  " pip install python-language-server
-"   au User lsp_setup call lsp#register_server({
-"       \ 'name': 'pyls',
-"       \ 'cmd': {server_info->['pyls']},
-"       \ 'whitelist': ['python'],
-"       \ })
-"   autocmd FileType python nnoremap <buffer><silent> <c-]>  :LspDefinition<cr>
-"   autocmd FileType python nnoremap <buffer><silent> K :LspHover<cr>
-  " autocmd FileType python setlocal omnifunc=lsp#complete
-" endif
-" uncomment for asyncomplete
-" let g:asyncomplete_remove_duplicates = 1
+if !has('nvim')
+  if executable('pyls') 
+    " pip install python-language-server
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'pyls',
+        \ 'cmd': {server_info->['pyls']},
+        \ 'whitelist': ['python'],
+        \ })
+    autocmd FileType python nnoremap <buffer><silent> <c-]>  :LspDefinition<cr>
+    autocmd FileType python nnoremap <buffer><silent> K :LspHover<cr>
+    autocmd FileType python setlocal omnifunc=lsp#complete
+    let g:asyncomplete_auto_popup = 1
+
+    " function! s:check_back_space() abort
+    "     let col = col('.') - 1
+    "     return !col || getline('.')[col - 1]  =~ '\s'
+    " endfunction
+
+    " inoremap <silent><expr> <TAB>
+    "   \ pumvisible() ? "\<C-n>:
+    "   \ <SID>check_back_space() ? "\<TAB>:
+    "   \ asyncomplete#force_refresh()
+    " inoremap <expr><S-TAB> pumvisible() ? "\<C-p>: "\<C-h>"
+  endif
+  " uncomment for asyncomplete
+  " let g:asyncomplete_remove_duplicates = 1
+endif
 if has('nvim')
   " Use deoplete for auto-completion.  Best choice.
   " Temp disable while checking ALE w/ omnicomplete and tsserver through pyls
@@ -336,7 +351,11 @@ let g:ale_fixers={
 \    'javascript': ['prettier_eslint'],
 \    'python'    : ['autopep8'],
 \}
-" let g:ale_typescript_tsserver_executable='tsserver'
+let g:ale_typescript_tsserver_executable='tsserver'
+let g:ale_completion_max_suggestions = 50
 " enable completion where available.  Experimental
 autocmd FileType python nnoremap <buffer><silent> <c-]>  :ALEGoToDefinitionInTab<cr>
+autocmd FileType python nnoremap <buffer><silent> <c-[>  :ALEGoToDefinition<cr>
 autocmd FileType python nnoremap <buffer><silent> <c-s-l>  :ALELint<cr>
+
+let g:session_autoload = 'no'

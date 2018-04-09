@@ -4,14 +4,14 @@
 set nocompatible
 " Use the OS clipboard by default (on versions compiled with `+clipboard`)
 set clipboard=unnamed
-"set some mac terminal/handling options - should add a detection for GUI/shell
-"vim to this before uncommmenting - Matt
-"set term=builtin_beos-ansi "could probably do xterm-256colors but meh
+" set some mac terminal/handling options - should add a detection for GUI/shell
+" vim to this before uncommmenting - Matt
+" set term=builtin_beos-ansi "could probably do xterm-256colors but meh
 
 " Enhance command-line completion
 set wildmenu
 " Allow cursor keys in insert mode
-set esckeys
+" set esckeys
 " Allow backspace in insert mode
 set backspace=indent,eol,start
 " Optimize for fast terminal connections
@@ -210,20 +210,26 @@ augroup END
 
 set statusline+=%#warningmsg#
 " syntastic doc recommended config.  
+" set statusline+=%{SyntasticStatuslineFlag()}
 " use airline and ALE instead
 let g:airline#extensions#ale#enabled = 1
 let g:airline#extensions#virtualenv#enabled = 1
-"set statusline+=%{SyntasticStatuslineFlag()}
+let g:airline#extensions#vimagit#enabled = 1
 set statusline+=%*
 
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 1
+let g:syntastic_python_python_exec = '/Users/magregor/.virtualenvs/neovim2/bin/python'
+let g:syntastic_python_checkers=['flake8']
 "let g:syntastic_python_flake8_exec='/usr/local/bin/python'
 let g:syntastic_python_flake8_exec='/Users/magregor/.virtualenvs/neovim2/bin/python'
 let g:syntastic_python_flake8=['-m', 'flake8']
 " Use the following syntax to disable specific error codes in flake8
+" let g:syntastic_python_flake8_args='--ignore=E501,E225'
+let g:syntastic_python3_python_exec = '/Users/magregor/.virtualenvs/neovim3/bin/python'
+let g:syntastic_python3_checkers=['flake8']
 "let g:syntastic_python3_flake8_exec='/usr/local/bin/python'
 let g:syntastic_python3_flake8_exec='/Users/magregor/.virtualenvs/neovim3/bin/python'
 let g:syntastic_python3_flake8=['-m', 'flake8']
@@ -275,10 +281,10 @@ function! Wikit() range
 endfunction
 com! -range=% -nargs=0 Wikit :<line1>,<line2>call Wikit()
 
-" Nvim terminal mode:
-noremap <Esc> <C-\><C-n>
 " Nvim python environment settings
 if has('nvim')
+  " Nvim terminal mode, but for now comment out because reasons
+  " noremap <Esc> <C-\><C-n>
   let g:python_host_prog='/Users/magregor/.virtualenvs/neovim2/bin/python'
   let g:python3_host_prog='/Users/magregor/.virtualenvs/neovim3/bin/python'
 endif
@@ -292,20 +298,35 @@ if executable('typescript-language-server')
         \ 'whitelist': ['typescript'],
         \ })
 endif
+" DOES NOT WORK RIGHT
 " tsserver for python through pyls IFF using vim-lsp, but there are issues
-" if executable('pyls')
-  " pip install python-language-server
-"   au User lsp_setup call lsp#register_server({
-"       \ 'name': 'pyls',
-"       \ 'cmd': {server_info->['pyls']},
-"       \ 'whitelist': ['python'],
-"       \ })
-"   autocmd FileType python nnoremap <buffer><silent> <c-]>  :LspDefinition<cr>
-"   autocmd FileType python nnoremap <buffer><silent> K :LspHover<cr>
-  " autocmd FileType python setlocal omnifunc=lsp#complete
-" endif
-" uncomment for asyncomplete
-" let g:asyncomplete_remove_duplicates = 1
+if !has('nvim')
+  if executable('pyls') 
+    " pip install python-language-server
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'pyls',
+        \ 'cmd': {server_info->['pyls']},
+        \ 'whitelist': ['python'],
+        \ })
+    autocmd FileType python nnoremap <buffer><silent> <c-]>  :LspDefinition<cr>
+    autocmd FileType python nnoremap <buffer><silent> K :LspHover<cr>
+    autocmd FileType python setlocal omnifunc=lsp#complete
+    let g:asyncomplete_auto_popup = 1
+
+    " function! s:check_back_space() abort
+    "     let col = col('.') - 1
+    "     return !col || getline('.')[col - 1]  =~ '\s'
+    " endfunction
+
+    " inoremap <silent><expr> <TAB>
+    "   \ pumvisible() ? "\<C-n>:
+    "   \ <SID>check_back_space() ? "\<TAB>:
+    "   \ asyncomplete#force_refresh()
+    " inoremap <expr><S-TAB> pumvisible() ? "\<C-p>: "\<C-h>"
+  endif
+  " uncomment for asyncomplete
+  " let g:asyncomplete_remove_duplicates = 1
+endif
 if has('nvim')
   " Use deoplete for auto-completion.  Best choice.
   " Temp disable while checking ALE w/ omnicomplete and tsserver through pyls
@@ -331,7 +352,15 @@ let g:ale_fixers={
 \    'javascript': ['prettier_eslint'],
 \    'python'    : ['autopep8'],
 \}
-" let g:ale_typescript_tsserver_executable='tsserver'
+let g:ale_typescript_tsserver_executable='tsserver'
+let g:ale_completion_max_suggestions = 50
 " enable completion where available.  Experimental
 autocmd FileType python nnoremap <buffer><silent> <c-]>  :ALEGoToDefinitionInTab<cr>
+autocmd FileType python nnoremap <buffer><silent> <c-[>  :ALEGoToDefinition<cr>
 autocmd FileType python nnoremap <buffer><silent> <c-s-l>  :ALELint<cr>
+
+let g:session_autoload = 'no'
+
+" nyaovim options and plugin options
+let g:markdown_preview_auto = 1
+let g:markdown_preview_eager = 1

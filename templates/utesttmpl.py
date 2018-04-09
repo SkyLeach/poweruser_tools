@@ -31,7 +31,7 @@ def cleanPath(path):
     :param path:
     the path to clean
     '''
-    for root, files, dirs in os.walk(path):
+    for root, dirs, files in os.walk(path):
         for fn in files:
             logger.debug('removing {}'.format(fn))
             os.unlink(os.path.join(root, fn))
@@ -39,7 +39,7 @@ def cleanPath(path):
             # recursive
             try:
                 logger.debug('recursive del {}'.format(dn))
-                shutil.removedirs(dn)
+                shutil.rmtree(os.path.join(root, dn))
             except Exception as err:
                 # for now, halt on all.  Override with shutil onerror
                 # callback and ignore_errors.
