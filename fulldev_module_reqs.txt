@@ -1,5 +1,7 @@
+alabaster==0.7.10
 altgraph==0.15
 astropy==3.0.1
+Babel==2.5.3
 beautifulsoup4==4.6.0
 cefpython3==57.0
 certifi==2018.1.18
@@ -10,6 +12,7 @@ cycler==0.10.0
 Cython==0.28.1
 data==0.4
 decorator==4.2.1
+docutils==0.14
 dominate==2.3.1
 ephem==3.7.6.0
 Flask==0.12.2
@@ -25,6 +28,7 @@ future==0.16.0
 geos==0.2.1
 greenlet==0.4.13
 idna==2.6
+imagesize==1.0.0
 itsdangerous==0.24
 jedi==0.11.1
 Jinja2==2.10
@@ -40,6 +44,7 @@ msgpack==0.5.6
 neovim==0.2.4
 nose2==0.7.4
 numpy==1.14.1
+packaging==17.1
 panda3d==1.10.0
 parso==0.1.1
 Pillow==5.0.0
@@ -139,6 +144,8 @@ scipy==1.0.1
 shutilwhich==1.1.0
 six==1.11.0
 snowballstemmer==1.2.1
+Sphinx==1.7.2
+sphinxcontrib-websupport==1.0.1
 tempdir==0.7.1
 urllib3==1.22
 urwid==2.0.1
