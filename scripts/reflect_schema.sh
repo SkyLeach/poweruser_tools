@@ -22,11 +22,9 @@ DB_URL="sqlite:///Users/$(whoami)/Library/Application Support/Firefox/Profiles/8
 
 
 if [ "${1}" ]; then
-    ofile="${1}"
-else
-    ofile="stylish_modelbase.py"
+    ofile="--outfile ${1}"
 fi
 
-sqlacodegen "${DB_URL}" --outfile "${ofile}"
+sqlacodegen "${DB_URL}" ${ofile}
 
 
