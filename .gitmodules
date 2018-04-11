@@ -1,0 +1,3 @@
+[submodule "localhost_wsgi/mezzanine"]
+	path = localhost_wsgi/mezzanine
+	url = https://github.com/stephenmcd/mezzanine

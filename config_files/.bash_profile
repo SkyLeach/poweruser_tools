@@ -22,7 +22,7 @@
 #   Change Prompt
 #   ------------------------------------------------------------
     # export PS1="_☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠_\n| \w @ \h (\u) \n|💀> "
-    export PS1="_☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠_\n| \w @ work-mbp (abuser) \n|\T💀> "
+    export PS1="_☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠_\\n| \\w @ work-mbp (abuser) \\n|\\T💀> "
     export PS2="|💀> "
 
 #   Set Paths
@@ -30,7 +30,7 @@
 # needed below.  Leave
 export SHELL='/usr/local/bin/bash'
 # start building out path requirements
-[[ ":$PATH:" != *":~/sbin:${PATH}:"* ]] && PATH="~/sbin:${PATH}"
+[[ ":$PATH:" != *":${HOME}/sbin:${PATH}:"* ]] && PATH="${HOME}/sbin:${PATH}"
 [[ ":$PATH:" != *":/usr/local/opt/openssl/bin:${PATH}:"* ]] && PATH="/usr/local/opt/openssl/bin:${PATH}"
 [[ ":$PATH:" != *":/usr/local/Cellar/git/2.17.0/bin:${PATH}:"* ]] && PATH="/usr/local/Cellar/git/2.17.0/bin:${PATH}"
 [[ ":$PATH:" != *":/usr/local/opt/mysql/bin:${PATH}:"* ]] && PATH="/usr/local/opt/mysql/bin:${PATH}"
@@ -54,6 +54,8 @@ export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/Home
 #    CPPFLAGS: -I/usr/local/opt/qt/include
 #For pkg-config to find this software you may need to set:
 #    PKG_CONFIG_PATH: /usr/local/opt/libxml2/lib/pkgconfig
+
+brew_prefix="${brew_prefix}"
 
 # dunno why repack suggested, but add it if necessary
 localpkgconfig="/usr/local/lib/pkgconfig"
@@ -149,12 +151,11 @@ then
 else
     export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${localpkgconfig}"
 fi
-# if [ -z %{PYTHONPATH} ]
-# then
-#     export PYTHONPATH="${PYTHONPATH}:$(brew --prefix)/lib/python3.6/site-packages"
-# else
-#     export PYTHONPATH="$(brew --prefix)/lib/python3.6/site-packages"
-# fi
+if [ -z "${PYTHONPATH}" ]; then
+    export PYTHONPATH="${PYTHONPATH}:${brew_prefix}/lib/python3.6/site-packages"
+else
+    export PYTHONPATH="${brew_prefix}/lib/python3.6/site-packages"
+fi
 export ORACLE_HOME="/Users/magregor/Library/oracle_client/instantclient_12_1"
 export ECLIPSE_HOME="/Applications/sts-eclipse"
 
@@ -162,8 +163,8 @@ export ECLIPSE_HOME="/Applications/sts-eclipse"
 #   ------------------------------------------------------------
     #export EDITOR=/usr/bin/vim
 export EDITOR=/usr/local/bin/nvim
-export VIMHOME=~/.vim
-export NVIMHOME=~/.config/nvim
+export VIMHOME=${HOME}/.vim
+export NVIMHOME=${HOME}/.config/nvim
 export VEDITOR=/usr/local/bin/nyaovim
 
 #   Set default blocksize for ls, df, du
@@ -178,9 +179,10 @@ export VEDITOR=/usr/local/bin/nyaovim
 #   export CLICOLOR=1
 #   export LSCOLORS=ExFxBxDxCxegedabagacad
 
-export WORKON_HOME="~/.virtualenvs/"
+export WORKON_HOME="${HOME}/.virtualenvs/"
 export VIRTUALENVWRAPPER_PYTHON='/usr/local/bin/python3'
-[[ -z %{PYENV_ROOT} ]] || export PYENV_ROOT=${VIRTUALENVWRAPPER_PYTHON}
+[[ -z "${PYENV_ROOT}" ]] || export PYENV_ROOT=${VIRTUALENVWRAPPER_PYTHON}
+# shellcheck disable=SC1094
 [[ -f "/usr/local/bin/virtualenvwrapper.sh" ]] && . "/usr/local/bin/virtualenvwrapper.sh"
 # source "$(brew --prefix pyenv-virtualenvwrapper)/bin/pyenv-sh-virtualenvwrapper"
 
@@ -193,19 +195,19 @@ export ARCHFLAGS="-arch x86_64"
 #homebrew bash completion
 [ -f /usr/local/etc/bash_completion ] && . /usr/local/etc/bash_completion
 
-export HOMEBREW_GITHUB_API_TOKEN=$(cat ~/.gh_oa)
+export HOMEBREW_GITHUB_API_TOKEN=$(cat "${HOME}/.gh_oa")
 
 #HOMEBREW libarchive python fix
-# export LD_LIBRARY_PATH="$(brew --prefix)/opt/libarchive/lib"
+# export LD_LIBRARY_PATH="${brew_prefix}/opt/libarchive/lib"
 # for cx_Oracle
-[[ -z LD_LIBRARY_PATH ]] && export LD_LIBRARY_PATH="$ORACLE_HOME:${LD_LIBRARY_PATH}" || export LD_LIBRARY_PATH="$ORACLE_HOME"
+if [ -z "${LD_LIBRARY_PATH}" ]; then export LD_LIBRARY_PATH="$ORACLE_HOME:${LD_LIBRARY_PATH}" else export LD_LIBRARY_PATH="$ORACLE_HOME"; fi
 # export DYLD_LIBRARY_PATH="$LD_LIBRARY_PATH:${DYLD_LIBRARY_PATH}"
-export LA_LIBRARY_FILEPATH="$(brew --prefix)/opt/libarchive/lib/libarchive.13.dylib"
-# export LIBARCHIVE_PREFIX="$(brew --prefix)/opt/libarchive"
+export LA_LIBRARY_FILEPATH="${brew_prefix}/opt/libarchive/lib/libarchive.13.dylib"
+# export LIBARCHIVE_PREFIX="${brew_prefix}/opt/libarchive"
 # export C_INCLUDE_PATH=$(brew --cellar lzo)/2.09/include/lzo:$(brew --cellar lzo)/2.09/include/
 export LIBRARY_PATH=/usr/local/lib
 
-[[ -e "~/.iterm2_shell_integration.bash" ]] && . "~/.iterm2_shell_integration.bash"
+[[ -e "${HOME}/.iterm2_shell_integration.bash" ]] && . "${HOME}/.iterm2_shell_integration.bash"
 # set shell option histverify to on so we can edit history commands before executing
 # not on mac?  find out later, not imp now.
 # setopt -s histverify
@@ -217,7 +219,7 @@ fi
 # TSS_LOG='-level verbose -file c:\tmp\tsserver.log'
 # file defaults to __dirname\.log<PID>
 # setting the log file *will* break VimR.app
-# export TSS_LOG="-level verbose ~/tmp/tsserver.log"
+# export TSS_LOG="-level verbose ${HOME}/tmp/tsserver.log"
 
 case $- in
   *i*)
@@ -252,7 +254,7 @@ alias .6='cd ../../../../../../'          # Go back 6 directory levels
 alias edit='"${EDITOR}"'                  # edit:         Opens any file in ${EDITOR}
 alias vedit='"${VEDITOR}"'                # vedit:        Opens any file in ${VEDITOR}
 alias f='open -a Finder ./'               # f:            Opens current directory in MacOS Finder
-alias ~="cd ~"                            # ~:            Go Home
+# alias ~="cd ${HOME}"                            # ${HOME}:            Go Home
 alias c='clear'                           # c:            Clear terminal display
 alias which='type -all'                   # which:        Find executables
 alias path='echo -e ${PATH//:/\\n}'       # path:         Echo all executable Paths
@@ -260,10 +262,11 @@ alias show_options='shopt'                # Show_options: display bash options s
 alias fix_stty='stty sane'                # fix_stty:     Restore terminal settings when screwed up
 alias cic='set completion-ignore-case On' # cic:          Make tab-completion case-insensitive
 mcd () { mkdir -p "$1" && cd "$1"; }      # mcd:          Makes new Dir and jumps inside
-trash () { command mv "$@" ~/.Trash ; }   # trash:        Moves a file to the MacOS trash
+trash () { command mv "$@" ${HOME}/.Trash ; }   # trash:        Moves a file to the MacOS trash
 ql () { qlmanage -p "$*" >& /dev/null; }  # ql:           Opens any file in MacOS Quicklook Preview
-alias DT='tee ~/Desktop/terminalOut.txt'  # DT:           Pipe content to file on MacOS Desktop
+alias DT='tee ${HOME}/Desktop/terminalOut.txt'  # DT:           Pipe content to file on MacOS Desktop
 alias grep='grep --color'
+alias vim='/usr/bin/env vim' #something on OSX is forcing /usr/bin/vim instead of my environment vim
 
 #   lr:  Full Recursive Directory Listing
 #   ------------------------------------------
@@ -278,7 +281,7 @@ alias lr='ls -R | grep ":$" | sed -e '\''s/:$//'\'' -e '\''s/[^-][^\/]*\//--/g'\
 
 #   showa: to remind yourself of an alias (given some part of it)
 #   ------------------------------------------------------------
-    showa () { /usr/bin/grep --color=always -i -a1 "$@" ~/Library/init/bash/aliases.bash | grep -v '^\s*$' | less -FSRXc ; }
+    showa () { /usr/bin/grep --color=always -i -a1 "$@" ${HOME}/Library/init/bash/aliases.bash | grep -v '^\s*$' | less -FSRXc ; }
 
 
 #   -------------------------------
@@ -312,19 +315,19 @@ EOT
 #   extract:  Extract most know archives with one command
 #   ---------------------------------------------------------
     extract () {
-        if [ -f $1 ] ; then
-          case $1 in
-            *.tar.bz2)   tar xjf $1     ;;
-            *.tar.gz)    tar xzf $1     ;;
-            *.bz2)       bunzip2 $1     ;;
-            *.rar)       unrar e $1     ;;
-            *.gz)        gunzip $1      ;;
-            *.tar)       tar xf $1      ;;
-            *.tbz2)      tar xjf $1     ;;
-            *.tgz)       tar xzf $1     ;;
-            *.zip)       unzip $1       ;;
-            *.Z)         uncompress $1  ;;
-            *.7z)        7z x $1        ;;
+        if [ -f "$1" ] ; then
+          case "$1" in
+            *.tar.bz2)   tar xjf "$1"     ;;
+            *.tar.gz)    tar xzf "$1"     ;;
+            *.bz2)       bunzip2 "$1"     ;;
+            *.rar)       unrar e "$1"     ;;
+            *.gz)        gunzip "$1"      ;;
+            *.tar)       tar xf "$1"      ;;
+            *.tbz2)      tar xjf "$1"     ;;
+            *.tgz)       tar xzf "$1"     ;;
+            *.zip)       unzip "$1"       ;;
+            *.Z)         uncompress "$1"  ;;
+            *.7z)        7z x "$1"        ;;
             *)     echo "'$1' cannot be extracted via extract()" ;;
              esac
          else
@@ -485,7 +488,7 @@ httpHeaders () { /usr/bin/curl -I -L $@ ; }             # httpHeaders:      Grab
 #   e.g.: mkfile 10m 10MB.dat
 #   e.g.: hdiutil create -size 10m 10MB.dmg
 #   the above create files that are almost all zeros - if random bytes are desired
-#   then use: ~/Dev/Perl/randBytes 1048576 > 10MB.dat
+#   then use: ${HOME}/Dev/Perl/randBytes 1048576 > 10MB.dat
 
 # [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
 

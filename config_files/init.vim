@@ -21,7 +21,7 @@ set gdefault
 " Use UTF-8 without BOM
 set encoding=utf-8 nobomb
 " Change mapleader
-let mapleader=","
+let mapleader=";"
 " Don’t add empty newlines at the end of files
 set binary
 set noeol
@@ -327,16 +327,15 @@ if !has('nvim')
   " uncomment for asyncomplete
   " let g:asyncomplete_remove_duplicates = 1
 endif
-if has('nvim')
-  " Use deoplete for auto-completion.  Best choice.
-  " Temp disable while checking ALE w/ omnicomplete and tsserver through pyls
-  let g:deoplete#enable_at_startup = 1
-else
-  let g:ale_completion_enabled = 1
-  " uncomment max_suggestions in order to limit autocomplete suggestions
-  " let g:ale_completion_max_suggestions = 50
-  " set omnifunc=syntaxcomplete#Complete
-endif
+" Auto-Completion Framework
+" Use deoplete for auto-completion.  Best choice.
+" works with vim8 and neovim
+let g:deoplete#enable_at_startup = 1
+" let g:ale_completion_enabled = 1
+" uncomment max_suggestions in order to limit autocomplete suggestions
+" let g:ale_completion_max_suggestions = 50
+" set omnifunc=syntaxcomplete#Complete
+"
 " ALE config
 let g:ale_virtualenv_dir_names = ['.virtualenvs']
 " Enable only these linters
@@ -347,6 +346,7 @@ let g:ale_linters={
 \    'cpp'        : ['clang'],
 \    'pyrex'      : ['cython'],
 \    'cmake'      : ['cmakelint'],
+\    'sh'         : ['shellcheck'],
 \}
 let g:ale_fixers={
 \    'javascript': ['prettier_eslint'],
@@ -362,5 +362,17 @@ autocmd FileType python nnoremap <buffer><silent> <c-s-l>  :ALELint<cr>
 let g:session_autoload = 'no'
 
 " nyaovim options and plugin options
-let g:markdown_preview_auto = 1
+let g:markdown_preview_auto = 0
 let g:markdown_preview_eager = 1
+
+" neovim-specific terminal mappings
+if has('nvim')
+  " Start terminal in insert mode
+  au BufEnter * if &buftype == 'terminal' | :startinsert | endif
+  " the <leader>tt mapping conflicts with align, which I really like, and I don't really need that mapping.
+  " nnoremap <silent> <leader>tt :terminal<CR>
+  nnoremap <silent> <leader>tv :vnew<CR>:terminal<CR>
+  nnoremap <silent> <leader>th :new<CR>:terminal<CR>
+  " <C-x> interferres with pudb
+  tnoremap <c-s-z> <C-\><C-n>
+endif
