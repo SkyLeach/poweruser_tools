@@ -4,5 +4,5 @@
 
 # print a list of git fetch commands for all paths in the current working directory
 function git_fetch_origins() {
-    find . -mindepth 1 -maxdepth 1 -type d | while read dir; do cd $dir; git remote -v | sed -e 's/ (fetch)//' -e '/(push)/D' -e 's/^origin./git clone /' ; cd .. ; done
+    find . -mindepth 1 -maxdepth 1 -type d | while read repo; do cd $repo; git remote get-url origin; cd .. ; done
 }

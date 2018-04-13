@@ -18,7 +18,7 @@ die() {
 
 show_help() {
     echo "Usage: [options] $me" >&2
-    echo "    uses git clone to restore your bundles in your "+'$VIMHOME'+" or "+'$NVIMHOME'
+    echo "    uses git clone to restore your bundles in your "+'$VIMHOME'+" and/or "+'$NVIMHOME'
     echo "Options:"
     echo "    -h|--help:    print this help message"
     echo "    -n|--nvim:    only operate on "+'${NVIMHOME}'

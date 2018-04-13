@@ -14,7 +14,7 @@
 # this utility script into your python3 bin directory.
 # DB_URL="oracle://user:pass@host.class.tld:port/schema_or_id"
 # DB_URL="mysql+pymysql://user:pass@localhost/dbname"
-cwd=$(cwd)
+cwd=$(pwd -P)
 execdir="$( cd "$(dirname "$0")" ; pwd -P )"
 # TODO: Create plugin to handle model reflection and visualization using coffeescript and python3
 # DB_URL="sqlite:///Users/$(whoami)/Library/Application Support/Firefox/Profiles/$(${execdir}/get_ff_profile default)/stylish.sqlite"
@@ -25,6 +25,8 @@ if [ "${1}" ]; then
     ofile="--outfile ${1}"
 fi
 
-sqlacodegen "${DB_URL}" ${ofile}
+args=("${ofile}" $(printf %q "${DB_URL}"))
+
+sqlacodegen "${args[@]}"
 
 
