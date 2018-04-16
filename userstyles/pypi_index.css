@@ -1,18 +1,11 @@
 @-moz-document domain("pypi.python.org") {
 /*
- * Style:   Bathys Updated
- * Site:    Python Docs
- * Author:  torrentails
- * License: CC-BY-SA
- * File:    python/docs.css
+ * Style:   PyPi Smooth Dark
+ * Site:    pypi.python.org
+ * Author:  SkyLeach (skyleach@gmail.com) (https://www.github.com/SkyLeach)
+ * License: CC0
+ * File:    pypi_index.css
  */
-
-@namespace url(http://www.w3.org/1999/xhtml);
-
-
-}
-
-@-moz-document domain("pypi.python.org") {
 html{
         background: #161616 url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAH0lEQVQI12NgYGD4LycnB8cMKioqqAJwBlQlXACmEgCsthUB9mCnuQAAAABJRU5ErkJggg==") repeat;
 }
