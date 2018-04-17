@@ -124,9 +124,9 @@ noremap <leader>W :w !sudo tee % > /dev/null<CR>
 " the last pair in an object to have a trailing comma.
 " ===========================================================================
 " if has("autocmd")
-"         " Enable file type detection
+         " Enable file type detection
 "         filetype on
-"         " Treat .json files as .js
+         " Treat .json files as .js
 "         autocmd BufNewFile,BufRead *.json setfiletype json syntax=javascript
 " endif
 "anything installed by pathogen after this
@@ -169,7 +169,7 @@ let g:pymode_rope_completion=0
 set colorcolumn=+1
 " set default mapping for vim-pydocstring
 autocmd FileType python setlocal ts=4 sw=4 sts=4 et cc=80
-autocmd FileType python nnoremap <c-s-y>  :Pydocstring<cr>
+autocmd FileType python nnoremap <leader>ds  :Pydocstring<cr>
 " temporary function for python docstring width of 72
 function! GetPythonTextWidth()
     if !exists('g:python_normal_text_width')
@@ -202,7 +202,7 @@ function! GetPythonTextWidth()
     return normal_text_width
 endfunction
 
-" replace with syntastic python3
+" replace with syntastic python3 ?
 augroup pep8_textwidth
     au!
     autocmd CursorMoved,CursorMovedI * :if &ft == 'python' | :exe 'setlocal textwidth='.GetPythonTextWidth() | :endif
@@ -283,10 +283,12 @@ com! -range=% -nargs=0 Wikit :<line1>,<line2>call Wikit()
 
 " Nvim python environment settings
 if has('nvim')
-  " Nvim terminal mode, but for now comment out because reasons
-  " noremap <Esc> <C-\><C-n>
   let g:python_host_prog='/Users/magregor/.virtualenvs/neovim2/bin/python'
   let g:python3_host_prog='/Users/magregor/.virtualenvs/neovim3/bin/python'
+  " set the virtual env python used to launch the debugger
+  let g:pudb_python='/Users/magregor/.virtualenvs/SIM/bin/python'
+  " set the entry point (script) to use for pudb
+  let g:pudb_entry_point='/Users/magregor/src/poweruser_tools/test/test_templates.py'
 endif
 " configure python-language-server through vim-lsp so it can be used by ale
 " tsserver for typescript
@@ -298,35 +300,37 @@ if executable('typescript-language-server')
         \ 'whitelist': ['typescript'],
         \ })
 endif
-" DOES NOT WORK RIGHT
-" tsserver for python through pyls IFF using vim-lsp, but there are issues
-if !has('nvim')
-  if executable('pyls') 
-    " pip install python-language-server
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'pyls',
-        \ 'cmd': {server_info->['pyls']},
-        \ 'whitelist': ['python'],
-        \ })
-    autocmd FileType python nnoremap <buffer><silent> <c-]>  :LspDefinition<cr>
-    autocmd FileType python nnoremap <buffer><silent> K :LspHover<cr>
-    autocmd FileType python setlocal omnifunc=lsp#complete
-    let g:asyncomplete_auto_popup = 1
-
-    " function! s:check_back_space() abort
-    "     let col = col('.') - 1
-    "     return !col || getline('.')[col - 1]  =~ '\s'
-    " endfunction
-
-    " inoremap <silent><expr> <TAB>
-    "   \ pumvisible() ? "\<C-n>:
-    "   \ <SID>check_back_space() ? "\<TAB>:
-    "   \ asyncomplete#force_refresh()
-    " inoremap <expr><S-TAB> pumvisible() ? "\<C-p>: "\<C-h>"
-  endif
-  " uncomment for asyncomplete
-  " let g:asyncomplete_remove_duplicates = 1
-endif
+" Lsp with pyls causes collisions with ALE... which really sucks because ALE
+" has no hover and Lsp has no option to load definitions in tabs or splits
+" vim-lsp tsserver for python through pyls
+" if !has('nvim')
+"   if executable('pyls') 
+     " pip install python-language-server
+"     au User lsp_setup call lsp#register_server({
+"         \ 'name': 'pyls',
+"         \ 'cmd': {server_info->['pyls']},
+"         \ 'whitelist': ['python'],
+"         \ })
+"     autocmd FileType python nnoremap <buffer><silent> <leader><c-]>  :LspDefinition<cr>
+"     autocmd FileType python nnoremap <buffer><silent> <leader>H :LspHover<cr>
+     " use deoplete for this...
+     " autocmd FileType python setlocal omnifunc=lsp#complete
+"     let g:asyncomplete_auto_popup = 1
+" 
+     " function! s:check_back_space() abort
+     "     let col = col('.') - 1
+     "     return !col || getline('.')[col - 1]  =~ '\s'
+     " endfunction
+" 
+     " inoremap <silent><expr> <TAB>
+     "   \ pumvisible() ? "\<C-n>:
+     "   \ <SID>check_back_space() ? "\<TAB>:
+     "   \ asyncomplete#force_refresh()
+     " inoremap <expr><S-TAB> pumvisible() ? "\<C-p>: "\<C-h>"
+"   endif
+   " uncomment for asyncomplete
+   " let g:asyncomplete_remove_duplicates = 1
+" endif
 " Auto-Completion Framework
 " Use deoplete for auto-completion.  Best choice.
 " works with vim8 and neovim
@@ -340,13 +344,14 @@ let g:deoplete#enable_at_startup = 1
 let g:ale_virtualenv_dir_names = ['.virtualenvs']
 " Enable only these linters
 let g:ale_linters={
-\    'python'     : ['pyls'],
+\    'python'     : ['flake8', 'pyls'],
 \    'json'       : ['jsonlint'],
 \    'javascript' : ['eslint'],
 \    'cpp'        : ['clang'],
 \    'pyrex'      : ['cython'],
 \    'cmake'      : ['cmakelint'],
 \    'sh'         : ['shellcheck'],
+\    'vim'         : ['vint'],
 \}
 let g:ale_fixers={
 \    'javascript': ['prettier_eslint'],
@@ -367,12 +372,32 @@ let g:markdown_preview_eager = 1
 
 " neovim-specific terminal mappings
 if has('nvim')
+  function! PudbTabTerm(file)
+    tabnew
+    terminal
+    sleep 2
+    ! python -mpudb file
+    " !/usr/bin/env activate
+  endfunction
   " Start terminal in insert mode
   au BufEnter * if &buftype == 'terminal' | :startinsert | endif
   " the <leader>tt mapping conflicts with align, which I really like, and I don't really need that mapping.
   " nnoremap <silent> <leader>tt :terminal<CR>
+  function! DebugInTerm(venv)
+  endfunction
+  autocmd FileType python nnoremap <silent> <leader>td :tabnew term://source ${HOME}/.virtualenvs/$(cat .dbve)/bin/activate && python -mpudb %<CR>:startinsert<CR>
   nnoremap <silent> <leader>tv :vnew<CR>:terminal<CR>
   nnoremap <silent> <leader>th :new<CR>:terminal<CR>
   " <C-x> interferres with pudb
   tnoremap <c-s-z> <C-\><C-n>
 endif
+
+" easy-align mappings
+xmap <leader>ga <Plug>(EasyAlign)
+nmap <leader>ga <Plug>(EasyAlign)
+
+" UltiSnips Bindings
+let g:UltiSnipsEditSplit="horizontal"
+
+" FlyGrep bindings
+nnoremap <space>s/ :FlyGrep<cr>
