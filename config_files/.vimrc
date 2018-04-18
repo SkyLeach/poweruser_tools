@@ -202,7 +202,7 @@ function! GetPythonTextWidth()
     return normal_text_width
 endfunction
 
-" replace with syntastic python3
+" replace with syntastic python3 ?
 augroup pep8_textwidth
     au!
     autocmd CursorMoved,CursorMovedI * :if &ft == 'python' | :exe 'setlocal textwidth='.GetPythonTextWidth() | :endif
@@ -221,17 +221,17 @@ let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 1
-let g:syntastic_python_python_exec = '/Users/magregor/.virtualenvs/neovim2/bin/python'
+let g:syntastic_python_python_exec = '~/.virtualenvs/neovim2/bin/python'
 let g:syntastic_python_checkers=['flake8']
 "let g:syntastic_python_flake8_exec='/usr/local/bin/python'
-let g:syntastic_python_flake8_exec='/Users/magregor/.virtualenvs/neovim2/bin/python'
+let g:syntastic_python_flake8_exec='~/.virtualenvs/neovim2/bin/python'
 let g:syntastic_python_flake8=['-m', 'flake8']
 " Use the following syntax to disable specific error codes in flake8
 " let g:syntastic_python_flake8_args='--ignore=E501,E225'
-let g:syntastic_python3_python_exec = '/Users/magregor/.virtualenvs/neovim3/bin/python'
+let g:syntastic_python3_python_exec = '~/.virtualenvs/neovim3/bin/python'
 let g:syntastic_python3_checkers=['flake8']
 "let g:syntastic_python3_flake8_exec='/usr/local/bin/python'
-let g:syntastic_python3_flake8_exec='/Users/magregor/.virtualenvs/neovim3/bin/python'
+let g:syntastic_python3_flake8_exec='~/.virtualenvs/neovim3/bin/python'
 let g:syntastic_python3_flake8=['-m', 'flake8']
 " Use the following syntax to disable specific error codes in flake8
 " let g:syntastic_python3_flake8_args='--ignore=E501,E225'
@@ -289,6 +289,7 @@ if has('nvim')
   let g:pudb_python='/Users/magregor/.virtualenvs/SIM/bin/python'
   " set the entry point (script) to use for pudb
   let g:pudb_entry_point='/Users/magregor/src/poweruser_tools/test/test_templates.py'
+  let g:pudb_breakpoint_symbol='☠'
 endif
 " configure python-language-server through vim-lsp so it can be used by ale
 " tsserver for typescript
@@ -381,3 +382,13 @@ if has('nvim')
   " <C-x> interferres with pudb
   tnoremap <c-s-z> <C-\><C-n>
 endif
+
+" easy-align mappings
+xmap <leader>ga <Plug>(EasyAlign)
+nmap <leader>ga <Plug>(EasyAlign)
+
+" UltiSnips Bindings
+let g:UltiSnipsEditSplit="horizontal"
+
+" FlyGrep bindings
+nnoremap <space>s/ :FlyGrep<cr>

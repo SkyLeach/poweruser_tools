@@ -221,17 +221,17 @@ let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 1
-let g:syntastic_python_python_exec = '/Users/magregor/.virtualenvs/neovim2/bin/python'
+let g:syntastic_python_python_exec = '~/.virtualenvs/neovim2/bin/python'
 let g:syntastic_python_checkers=['flake8']
 "let g:syntastic_python_flake8_exec='/usr/local/bin/python'
-let g:syntastic_python_flake8_exec='/Users/magregor/.virtualenvs/neovim2/bin/python'
+let g:syntastic_python_flake8_exec='~/.virtualenvs/neovim2/bin/python'
 let g:syntastic_python_flake8=['-m', 'flake8']
 " Use the following syntax to disable specific error codes in flake8
 " let g:syntastic_python_flake8_args='--ignore=E501,E225'
-let g:syntastic_python3_python_exec = '/Users/magregor/.virtualenvs/neovim3/bin/python'
+let g:syntastic_python3_python_exec = '~/.virtualenvs/neovim3/bin/python'
 let g:syntastic_python3_checkers=['flake8']
 "let g:syntastic_python3_flake8_exec='/usr/local/bin/python'
-let g:syntastic_python3_flake8_exec='/Users/magregor/.virtualenvs/neovim3/bin/python'
+let g:syntastic_python3_flake8_exec='~/.virtualenvs/neovim3/bin/python'
 let g:syntastic_python3_flake8=['-m', 'flake8']
 " Use the following syntax to disable specific error codes in flake8
 " let g:syntastic_python3_flake8_args='--ignore=E501,E225'
@@ -289,6 +289,7 @@ if has('nvim')
   let g:pudb_python='/Users/magregor/.virtualenvs/SIM/bin/python'
   " set the entry point (script) to use for pudb
   let g:pudb_entry_point='/Users/magregor/src/poweruser_tools/test/test_templates.py'
+  let g:pudb_breakpoint_symbol='☠'
 endif
 " configure python-language-server through vim-lsp so it can be used by ale
 " tsserver for typescript
@@ -372,20 +373,10 @@ let g:markdown_preview_eager = 1
 
 " neovim-specific terminal mappings
 if has('nvim')
-  function! PudbTabTerm(file)
-    tabnew
-    terminal
-    sleep 2
-    ! python -mpudb file
-    " !/usr/bin/env activate
-  endfunction
   " Start terminal in insert mode
   au BufEnter * if &buftype == 'terminal' | :startinsert | endif
   " the <leader>tt mapping conflicts with align, which I really like, and I don't really need that mapping.
   " nnoremap <silent> <leader>tt :terminal<CR>
-  function! DebugInTerm(venv)
-  endfunction
-  autocmd FileType python nnoremap <silent> <leader>td :tabnew term://source ${HOME}/.virtualenvs/$(cat .dbve)/bin/activate && python -mpudb %<CR>:startinsert<CR>
   nnoremap <silent> <leader>tv :vnew<CR>:terminal<CR>
   nnoremap <silent> <leader>th :new<CR>:terminal<CR>
   " <C-x> interferres with pudb
