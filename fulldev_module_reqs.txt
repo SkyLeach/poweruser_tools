@@ -46,7 +46,6 @@ neovim-remote==2.0.5
 nose2==0.7.4
 numpy==1.14.1
 packaging==17.1
-panda3d==1.10.0
 parso==0.1.1
 Pillow==5.0.0
 Pmw==2.0.1

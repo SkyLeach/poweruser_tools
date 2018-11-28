@@ -28,4 +28,8 @@
 ```
 乇乂ㄒ尺卂 ㄒ卄丨匚匚
 ```
+## Arabic *sigh* ... unzip (dislodge)
+تنهد ... بفك
+## FU from all of us
+🖕🖕🏻🖕🏼🖕🏽🖕🏾🖕🏿
 

@@ -1,18 +1,7 @@
-# vim: ts=4 sts=4 sw=4 et ft=sh
-# base OS detection, do NOT touch this
-platform='unknown'
-unameraw=$(uname)
-if [[ "${unameraw}" == 'Darwin' ]]; then
-    platform='darwin'
-elif [[ "${unameraw}" == 'Linux' ]]; then
-    platform='linux'
-elif [[ "${unameraw}" == 'Bsd' ]]; then
-    platform='bsd'
-fi
-# OSX path_helper is really annoying
-# this MUST be at the very top of the .bash_profile, immediately after os detection
+# fuckin' OSX path_helper is bullshit, fuck that shit
+# this MUST be at the very top of the .bash_profile
 # see https://superuser.com/questions/544989/does-tmux-sort-the-path-variable
-if [[ -f /etc/profile ]] && [[ "${platform}" == 'darwin' ]]; then
+if [ -f /etc/profile ]; then
     # shellcheck disable=SC2123
     PATH=''
     source /etc/profile
@@ -217,31 +206,21 @@ ECLIPSE_HOME="/Applications/sts-eclipse"
 if [[ -d "${ECLIPSE_HOME}" ]]; then
     export ECLIPSE_HOME
 fi
+export ORACLE_HOME="/home/magregor/Library/oracle_client/instantclient_12_1"
+export ECLIPSE_HOME="/Applications/sts-eclipse"
 
 #   Set Default Editor (change 'Nano' to the editor of your choice)
 #   ------------------------------------------------------------
     #export EDITOR=/usr/bin/vim
-# prefer neovim, alt vim
-if [[ -x "/usr/local/bin/nvim" ]]; then
-    export EDITOR="/usr/local/bin/nvim"
-elif [[ -x "/usr/local/bin/vim" ]]; then
-    export EDTOR="/usr/local/bin/vim"
-elif [[ -x "/usr/bin/nvim" ]]; then
-    export EDITOR="/usr/bin/nvim"
-elif [[ -x "/usr/bin/vim" ]]; then
-    export EDITOR="/usr/bin/vim"
-else
-    export EDITOR="/usr/bin/nano"
-fi
-# TODO: make these less skyleach-centric
-# make some other guesses
-export VEDITOR=/usr/local/bin/nyaovim
+export EDITOR=/usr/local/bin/nvim
 export VIMHOME=${HOME}/.vim
 export NVIMHOME=${HOME}/.config/nvim
+export VEDITOR=/usr/local/bin/gvim
+
 #   Set default blocksize for ls, df, du
 #   from this: http://hints.macworld.com/comment.php?mode=view&cid=24491
 #   ------------------------------------------------------------
-export BLOCKSIZE=1k
+    export BLOCKSIZE=1k
 
 #   Add color to terminal
 #   (this is all commented out as I use Mac Terminal Profiles)
@@ -251,14 +230,14 @@ export BLOCKSIZE=1k
 #   export LSCOLORS=ExFxBxDxCxegedabagacad
 
 export WORKON_HOME="${HOME}/.virtualenvs/"
-export VIRTUALENVWRAPPER_PYTHON='/usr/local/bin/python3'
+export VIRTUALENVWRAPPER_PYTHON='/usr/bin/python3'
 [[ -z "${PYENV_ROOT}" ]] || export PYENV_ROOT=${VIRTUALENVWRAPPER_PYTHON}
 # shellcheck disable=SC1094
-[[ -f "/usr/local/bin/virtualenvwrapper.sh" ]] && . "/usr/local/bin/virtualenvwrapper.sh"
+[[ -f "/usr/share/virtualenvwrapper/virtualenvwrapper.sh" ]] && . "/usr/share/virtualenvwrapper/virtualenvwrapper.sh"
 # source "$(brew --prefix pyenv-virtualenvwrapper)/bin/pyenv-sh-virtualenvwrapper"
 
 # go envvar
-export GOPATH="/Users/magregor/.gopath"
+export GOPATH="/home/magregor/.gopath"
 
 # python module options specific to me...
 export ARCHFLAGS="-arch x86_64"
@@ -281,7 +260,7 @@ export HOMEBREW_GITHUB_API_TOKEN=$(cat "${HOME}/.gh_oa")
 if [ -z "${LD_LIBRARY_PATH}" ]; then export LD_LIBRARY_PATH="$ORACLE_HOME:${LD_LIBRARY_PATH}" else export LD_LIBRARY_PATH="$ORACLE_HOME"; fi
 # export DYLD_LIBRARY_PATH="$LD_LIBRARY_PATH:${DYLD_LIBRARY_PATH}"
 if [[ "${platform}" == "darwin" ]]; then
-    [ -f "${brew_prefix}/opt/libarchive/lib/libarchive.13.dylib" ] && export LA_LIBRARY_FILEPATH="${brew_prefix}/opt/libarchive/lib/libarchive.13.dylib"
+    [ -d "${brew_prefix}/opt/libarchive/lib/libarchive.13.dylib" ] && export LA_LIBRARY_FILEPATH="${brew_prefix}/opt/libarchive/lib/libarchive.13.dylib"
     # add an else IFF you need it for linux.  Should be found without this most of the time.
 fi
 # export LIBARCHIVE_PREFIX="${brew_prefix}/opt/libarchive"
