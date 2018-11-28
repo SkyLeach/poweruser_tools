@@ -1,7 +1,18 @@
-# fuckin' OSX path_helper is bullshit, fuck that shit
-# this MUST be at the very top of the .bash_profile
+# vim: ts=4 sts=4 sw=4 et ft=sh
+# base OS detection, do NOT touch this
+platform='unknown'
+unameraw=$(uname)
+if [[ "${unameraw}" == 'Darwin' ]]; then
+    platform='darwin'
+elif [[ "${unameraw}" == 'Linux' ]]; then
+    platform='linux'
+elif [[ "${unameraw}" == 'Bsd' ]]; then
+    platform='bsd'
+fi
+# OSX path_helper is really annoying
+# this MUST be at the very top of the .bash_profile, immediately after os detection
 # see https://superuser.com/questions/544989/does-tmux-sort-the-path-variable
-if [ -f /etc/profile ]; then
+if [[ -f /etc/profile ]] && [[ "${platform}" == 'darwin' ]]; then
     # shellcheck disable=SC2123
     PATH=''
     source /etc/profile
@@ -38,8 +49,8 @@ export PS2="|💀> "
 #   Set Paths
 #   ------------------------------------------------------------
 # needed below.  Leave
-if [ -x /usr/local/bin/bash ]; then
-    export SHELL='/usr/local/bin/bash'
+if [ -x /usr/bin/bash ]; then
+    export SHELL='/usr/bin/bash'
 elif [ -x /usr/bin/bash ]; then
     export SHELL='/usr/bin/bash'
 else
@@ -51,33 +62,33 @@ fi
 [[ ":$PATH:" != *":/sbin:"* ]] && PATH="/sbin:${PATH}"
 [[ ":$PATH:" != *":/usr/bin:"* ]] && PATH="/usr/bin:${PATH}"
 [[ ":$PATH:" != *":/usr/sbin:"* ]] && PATH="/usr/sbin:${PATH}"
-[[ ":$PATH:" != *":/usr/local/bin:"* ]] && PATH="/usr/local/bin:${PATH}"
+[[ ":$PATH:" != *":/usr/bin:"* ]] && PATH="/usr/bin:${PATH}"
 # these only make sense for darwin where conflicts can happen
 if [[ "${platform}" == "darwin" ]]; then
     [[ ":$PATH:" != *":/sw/bin:"* ]] && PATH="/sw/bin:${PATH}"
-    [[ ":$PATH:" != *":/usr/local/opt/openssl/bin:"* ]] && PATH="/usr/local/opt/openssl/bin:${PATH}"
-    [[ ":$PATH:" != *":/usr/local/Cellar/git/2.17.0/bin:"* ]] && PATH="/usr/local/Cellar/git/2.17.0/bin:${PATH}"
-    [[ ":$PATH:" != *":/usr/local/opt/mysql/bin:"* ]] && PATH="/usr/local/opt/mysql/bin:${PATH}"
-    [[ ":$PATH:" != *":/usr/local/opt/libxml2/bin:"* ]] && PATH="/usr/local/opt/libxml2/bin:${PATH}"
-    [[ ":$PATH:" != *":/usr/local/opt/ruby/bin:"* ]] && PATH="/usr/local/opt/ruby/bin:${PATH}"
+    [[ ":$PATH:" != *":/usr/opt/openssl/bin:"* ]] && PATH="/usr/opt/openssl/bin:${PATH}"
+    [[ ":$PATH:" != *":/usr/Cellar/git/2.17.0/bin:"* ]] && PATH="/usr/Cellar/git/2.17.0/bin:${PATH}"
+    [[ ":$PATH:" != *":/usr/opt/mysql/bin:"* ]] && PATH="/usr/opt/mysql/bin:${PATH}"
+    [[ ":$PATH:" != *":/usr/opt/libxml2/bin:"* ]] && PATH="/usr/opt/libxml2/bin:${PATH}"
+    [[ ":$PATH:" != *":/usr/opt/ruby/bin:"* ]] && PATH="/usr/opt/ruby/bin:${PATH}"
     # I think this may have broken a lot of stuff
-    # [[ ":$PATH:" != *":/usr/local/opt/qt@5.5/bin:"* ]] && PATH="/usr/local/opt/qt@5.5/bin:${PATH}"
+    # [[ ":$PATH:" != *":/usr/opt/qt@5.5/bin:"* ]] && PATH="/usr/opt/qt@5.5/bin:${PATH}"
     # so I'm replacing it with the newer one...
-    [[ ":$PATH:" != *":/usr/local/opt/qt/bin:"* ]] && PATH="/usr/local/opt/qt/bin:${PATH}"
+    [[ ":$PATH:" != *":/usr/opt/qt/bin:"* ]] && PATH="/usr/opt/qt/bin:${PATH}"
 fi
-[[ ":$PATH:" != *":/usr/local/sbin:"* ]] && PATH="/usr/local/sbin:${PATH}"
+[[ ":$PATH:" != *":/usr/sbin:"* ]] && PATH="/usr/sbin:${PATH}"
 [[ ":$PATH:" != *":${HOME}/sbin:"* ]] && PATH="${HOME}/sbin:${PATH}" || echo 'woah bro wtf!?'
 export PATH
 # Add QT to the path, but after system
 # and make sure it's 5.5 due to linker issues
 # legacy/secondary darwinports
 export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/Home
-#    LDFLAGS:  -L/usr/local/opt/libxml2/lib
-#    CPPFLAGS: -I/usr/local/opt/libxml2/include
-#    LDFLAGS:  -L/usr/local/opt/qt/lib
-#    CPPFLAGS: -I/usr/local/opt/qt/include
+#    LDFLAGS:  -L/usr/opt/libxml2/lib
+#    CPPFLAGS: -I/usr/opt/libxml2/include
+#    LDFLAGS:  -L/usr/opt/qt/lib
+#    CPPFLAGS: -I/usr/opt/qt/include
 #For pkg-config to find this software you may need to set:
-#    PKG_CONFIG_PATH: /usr/local/opt/libxml2/lib/pkgconfig
+#    PKG_CONFIG_PATH: /usr/opt/libxml2/lib/pkgconfig
 
 if [[ "${platform}" == "darwin" ]]; then
     [[ -z "${brew_prefix}" ]] && brew_prefix=$(brew --prefix)
@@ -88,93 +99,93 @@ fi
 
 # dunno why repack suggested, but add it if necessary
 if [[ "${platform}" == "darwin" ]]; then
-    localpkgconfig="/usr/local/lib/pkgconfig"
+    localpkgconfig="/usr/lib/pkgconfig"
     # tempt dissable extras and try to write script to minimize imports
-    # localpkgconfig+=":/usr/local/opt/atk/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/bash/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/cairo/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/ffmpeg/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/ffmpeg@3/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/fftw/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/fontconfig/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/freeglut/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/freetype/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/fribidi/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/gdk-pixbuf/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/glew/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/glib/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/gnu-scientific-library/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/gobject-introspection/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/graphite2/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/gsl/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/gtk/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/gtk+/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/gtk+3/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/harfbuzz/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/icu4c/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/ilmbase/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/isl/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/jemalloc/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/jpeg/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libarchive/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libass/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libcdio/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libevent/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libffi/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libidn2/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libjpeg/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libjpg/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libogg/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libpng/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libtermkey/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libtiff/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libusb/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libuv/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libvorbis/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libvpx/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libvterm/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libxml2/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libxml2@2.9/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/luajit/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/lz4/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/lzo/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/mpfr/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/msgpack/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/mysql/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/mysql@5.7/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/oniguruma/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/opencv/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/opencv@3/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/openexr/lib/pkgconfig"
-    localpkgconfig+=":/usr/local/opt/openssl/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/openssl@1.0/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/openssl@1.1/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/opus/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/opusfile/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/pango/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/pcre/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/pcre1/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/pixman/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/postgres/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/postgresql/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/postgresql@10.2/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/python/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/python2/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/python3/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/python@2/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/python@3/lib/pkgconfig"
-    localpkgconfig+=":/usr/local/opt/qt/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/qt@5.5/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/qt@5.10/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/qt@5.9/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/sqlite/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/sqlite3/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/theora/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/unibilium/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/x264/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/xz/lib/pkgconfig"
-    # localpkgconfig+="/usr/local/opt/sdl2/lib/pkgconfig"
-    # localpkgconfig+="/usr/local/opt/mlt/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/atk/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/bash/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/cairo/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/ffmpeg/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/ffmpeg@3/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/fftw/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/fontconfig/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/freeglut/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/freetype/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/fribidi/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/gdk-pixbuf/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/glew/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/glib/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/gnu-scientific-library/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/gobject-introspection/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/graphite2/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/gsl/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/gtk/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/gtk+/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/gtk+3/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/harfbuzz/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/icu4c/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/ilmbase/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/isl/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/jemalloc/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/jpeg/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/libarchive/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/libass/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/libcdio/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/libevent/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/libffi/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/libidn2/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/libjpeg/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/libjpg/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/libogg/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/libpng/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/libtermkey/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/libtiff/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/libusb/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/libuv/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/libvorbis/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/libvpx/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/libvterm/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/libxml2/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/libxml2@2.9/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/luajit/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/lz4/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/lzo/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/mpfr/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/msgpack/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/mysql/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/mysql@5.7/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/oniguruma/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/opencv/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/opencv@3/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/openexr/lib/pkgconfig"
+    localpkgconfig+=":/usr/opt/openssl/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/openssl@1.0/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/openssl@1.1/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/opus/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/opusfile/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/pango/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/pcre/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/pcre1/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/pixman/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/postgres/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/postgresql/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/postgresql@10.2/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/python/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/python2/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/python3/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/python@2/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/python@3/lib/pkgconfig"
+    localpkgconfig+=":/usr/opt/qt/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/qt@5.5/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/qt@5.10/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/qt@5.9/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/sqlite/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/sqlite3/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/theora/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/unibilium/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/x264/lib/pkgconfig"
+    # localpkgconfig+=":/usr/opt/xz/lib/pkgconfig"
+    # localpkgconfig+="/usr/opt/sdl2/lib/pkgconfig"
+    # localpkgconfig+="/usr/opt/mlt/lib/pkgconfig"
     # if ever a need, put in an else and drop the following outside the condition
     if [ -z "${PKG_CONFIG_PATH}" ]; then
         export PKG_CONFIG_PATH="${localpkgconfig}"
@@ -206,16 +217,28 @@ ECLIPSE_HOME="/Applications/sts-eclipse"
 if [[ -d "${ECLIPSE_HOME}" ]]; then
     export ECLIPSE_HOME
 fi
-export ORACLE_HOME="/home/magregor/Library/oracle_client/instantclient_12_1"
-export ECLIPSE_HOME="/Applications/sts-eclipse"
 
 #   Set Default Editor (change 'Nano' to the editor of your choice)
 #   ------------------------------------------------------------
     #export EDITOR=/usr/bin/vim
-export EDITOR=/usr/local/bin/nvim
+# prefer neovim, alt vim
+if [[ -x "/usr/bin/nvim" ]]; then
+    export EDITOR="/usr/bin/nvim"
+elif [[ -x "/usr/bin/vim" ]]; then
+    export EDTOR="/usr/bin/vim"
+elif [[ -x "/usr/bin/nvim" ]]; then
+    export EDITOR="/usr/bin/nvim"
+elif [[ -x "/usr/bin/vim" ]]; then
+    export EDITOR="/usr/bin/vim"
+else
+    export EDITOR="/usr/bin/nano"
+fi
+# TODO: make these less skyleach-centric
+# make some other guesses
+export VEDITOR=/usr/bin/nyaovim
 export VIMHOME=${HOME}/.vim
 export NVIMHOME=${HOME}/.config/nvim
-export VEDITOR=/usr/local/bin/gvim
+export VEDITOR=/usr/bin/gvim
 
 #   Set default blocksize for ls, df, du
 #   from this: http://hints.macworld.com/comment.php?mode=view&cid=24491
@@ -245,7 +268,7 @@ export ARCHFLAGS="-arch x86_64"
 #homebrew bash completion
 if [[ "${platform}" == "darwin" ]]; then
     # location on darwin with homebrew
-    [ -f /usr/local/etc/bash_completion ] && . /usr/local/etc/bash_completion
+    [ -f /usr/etc/bash_completion ] && . /usr/etc/bash_completion
 else
     # location on most Linux machines
     [ -f /etc/bash_completion ] && . /etc/bash_completion
@@ -266,7 +289,7 @@ fi
 # export LIBARCHIVE_PREFIX="${brew_prefix}/opt/libarchive"
 # export C_INCLUDE_PATH=$(brew --cellar lzo)/2.09/include/lzo:$(brew --cellar lzo)/2.09/include/
 # prefer usr/local for newer versions unless explicitly overridden in builds and linkers
-export LIBRARY_PATH="/usr/local/lib:/usr/lib"
+export LIBRARY_PATH="/usr/lib:/usr/lib"
 
 # shellcheck disable=SC1090
 [[ -e "${HOME}/.iterm2_shell_integration.bash" ]] && . "${HOME}/.iterm2_shell_integration.bash"
@@ -288,7 +311,7 @@ fi
 case $- in
   *i*)
       # homebrew fortune :-) should already be in PATH
-      if [ -f "/usr/local/bin/fortune" ]; then
+      if [ -f "/usr/bin/fortune" ]; then
           fortune -ao
       fi;;
   *) # we aren't interactive, so nothing below here matters
