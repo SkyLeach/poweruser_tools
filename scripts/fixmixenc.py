@@ -1,4 +1,16 @@
 #!/usr/bin/env python
+'''
+A script largely intended for vim users using pathogen or vim modules in a
+bundle directory.  It walks through vim/neovim bundles and searches for
+documentation files that contain mixed encodings.
+
+If the --in-place option has not been specified, you will only get warnings and
+nothing will be changed.
+
+If, however, you specify --in-place then the documentation files that contain
+mixed encodings will all be re-encoded as utf-8 and the original files will be
+renamed to have the supplied extension.
+'''
 # python2 compat
 from __future__ import print_function, absolute_import
 from builtins import super
