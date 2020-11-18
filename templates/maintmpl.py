@@ -1,15 +1,21 @@
-#!/usr/bin/env python
-from builtins import object, super, input
-import sys
-import os
+#!python
+'''Template script for one-off python scripts.  Main function, log setup,
+etc...'''
+from builtins import object
+from builtins import super
+from builtins import input
 import argparse
+import pprint
 
 # Configure Logging Module
 import logging
 
+
 class CustomLogFormatter(logging.Formatter):
-    err_fmt  = "ERROR: %(message)s"
-    dbg_fmt  = "DEBUG: %(module)s: %(lineno)d: %(message)s"
+    """CustomLogFormatter - Setup class for custom log formatting"""
+
+    err_fmt = "ERROR: %(message)s"
+    dbg_fmt = "DEBUG: %(module)s: %(lineno)d: %(message)s"
     # verbose same as info, just filtered
     info_fmt = "%(message)s"
 
@@ -26,6 +32,7 @@ class CustomLogFormatter(logging.Formatter):
         self._fmt = format_orig
         return result
 
+
 #########################################################################
 # Custom logging formatter, module or whole app if __name__ == '__main__'
 # -logger - add custom loglevel
@@ -34,13 +41,23 @@ logging.addLevelName(VERBOSE, 'VERBOSE')
 
 
 # add method for verbose logging
-def verbose(self, message, *args, **kwargs):
-    # Yes, logger takes its '*args' as 'args'.
+def verbose(self, message, *__args, **__kwargs):
+    """verbose.
+
+    :param message:
+    String message parameter
+    :param __args:
+    Any additional non-keyword args packed into a list
+    :param __kwargs:
+    Any additional keyword args packed into a dict
+    """
+    # Yes, logger takes its '*__args' as 'args'.
     if self.isEnabledFor(VERBOSE):
-        self._log(VERBOSE, message, args, **kwargs)
+        self._log(VERBOSE, message, __args, **__kwargs)
 
 
-logging.Logger.verbose = verbose
+# Create new verbose method/attribute for the logging
+setattr(logging.Logger, 'verbose', verbose)
 custom_log_format = CustomLogFormatter()
 handler_hook = logging.StreamHandler()
 handler_hook.setFormatter(custom_log_format)
@@ -50,9 +67,18 @@ logging.basicConfig(
     handlers=[handler_hook])
 logger = logging.getLogger(__name__)
 
-class exampleObject(object):
-    def __init__(self, *args, **kwargs):
-        super().__init__()
+
+class ExampleObject(object):
+    """exampleObject.  Just an example"""
+
+    def __init__(self, *__args, **__kwargs):
+        """__init__.
+
+        :param __args:
+        :param __kwargs:
+        """
+        super().__init__(*__args, **__kwargs)
+
 
 # main loop
 if __name__ == "__main__":
@@ -60,6 +86,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="MainTemplate")
     parser.add_argument('--debug', action='store_true')
     parser.add_argument('--verbose', action='store_true')
+    pprint.pprint(parser.parse_args)
     options, args = parser.parse_args()
 
     if args.debug:

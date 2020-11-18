@@ -13,7 +13,7 @@
     "poweruser_flask"
   ],
   "license": "MIT",
-  "homepage": "",
+  "homepage": "https://palletsprojects.com/p/flask/",
   "private": true,
   "ignore": [
     "**/.*",

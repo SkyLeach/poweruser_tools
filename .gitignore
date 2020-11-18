@@ -7,4 +7,76 @@ dist/
 flask_session/
 .DS_Store
 **/*.pyc
+googlesecrets.py
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+.DS_Store
 
+# C extensions
+*.so
+
+# Pyenv
+.python-version
+
+# Distribution / packaging
+.Python
+env/
+bin/
+build/
+_build/
+develop-eggs/
+dist/
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.cache
+nosetests.xml
+coverage.xml
+
+# Translations
+*.mo
+
+# Rope
+.ropeproject
+
+# Django stuff:
+*.log
+*.pot
+
+# Sphinx documentation
+docs/_build/
+
+# DB files
+*.db
+
+# Editor
+*sublime*
+.tag*
+*.swp*
+*.swo*
+#eclipse
+.settings
+#mypy
+**/.mypy_cache
+
+# Virtualenv
+/venv*
+
+# History completer
+completer.hist

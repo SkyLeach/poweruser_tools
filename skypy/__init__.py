@@ -6,4 +6,4 @@ which it is to play a role, but I want to keep useful updates here.'''
 
 from .clean_unicode_spooler import UnicodeSpooledTemporaryFile
 
-__all__ = [UnicodeSpooledTemporaryFile]
+__all__ = [UnicodeSpooledTemporaryFile.__name__]
