@@ -1,14 +1,19 @@
 # vim: ts=4 sts=4 sw=4 et ft=sh
+
 # base OS detection, do NOT touch this
-platform='unknown'
-unameraw=$(uname)
-if [[ "${unameraw}" == 'Darwin' ]]; then
-    platform='darwin'
-elif [[ "${unameraw}" == 'Linux' ]]; then
-    platform='linux'
-elif [[ "${unameraw}" == 'Bsd' ]]; then
-    platform='bsd'
-fi
+unameOut="$(uname -s)"
+# check for wsl
+kernel_name="$(uname -r)"
+case "${unameOut}" in
+    Linux*)     
+        [[ $(uname -r | grep -oi microsoft) ]] && platform=wsl || platform=linux;;
+    Darwin*)    platform=darwin;;
+    CYGWIN*)    platform=cygwin;;
+    MINGW*)     platform=mingw;;
+    BSD*)       platform=bsd;;
+    *)          platform="UNKNOWN:${unameOut}"
+esac
+
 # OSX path_helper is really annoying
 # this MUST be at the very top of the .bash_profile, immediately after os detection
 # see https://superuser.com/questions/544989/does-tmux-sort-the-path-variable
@@ -19,6 +24,22 @@ if [[ -f /etc/profile ]] && [[ "${platform}" == 'darwin' ]]; then
     # just in case it's still fucking with sanity...
     [[ -z "${PATH}" ]] && PATH='/bin:/usr/bin:/sbin:/usr/sbin'
 fi
+
+# WSL portable environment variables (essential for developers really)
+# see https://devblogs.microsoft.com/commandline/share-environment-vars-between-wsl-and-windows/
+# /p - translated path
+# /l - list of translated paths (like PATH)
+# /u - only WSL -> Win32
+# /w - only Win32 -> WSL
+if [[ -f /etc/profile ]] && [[ "${platform}" == 'wsl' ]]; then
+    [ -z "${WSLENV}" ] && export WSLENV="JAVA_HOME/p:CLASSPATH/l:HomePath/pu"
+    eval "$(dircolors -b ~/.dircolors.wsl)"
+    # store the IP of the host for the VM
+    export WSL_HOST_IP=$(awk '/nameserver/ { print $2 }' /etc/resolv.conf)
+else
+    eval "$(dircolors -b)"
+fi
+
 #  ---------------------------------------------------------------------------
 #
 #  Description:  This file holds all my BASH configurations and aliases
@@ -42,19 +63,26 @@ fi
 
 #   Change Prompt
 #   ------------------------------------------------------------
-export PS1="_☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠_\\n| \\w @ \\h (\\u) \\n|💀> "
+export PS1=$'_\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620_\n| \[\033[01;32m\]\\u@\\h\[\033[00m\]:\[\033[01;34m\]\\w\[\033[00m\] \n|\u2623> '
 # export PS1="_☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠_\\n| \\w @ work-mbp (abuser) \\n|\\T💀> "
-export PS2="|💀> "
-
+export PS2=$'|\u2623>'
+# export PS2="|💀> "
+export TMUX_PLUGIN_MANAGER_PATH=${HOME}/.tmux/plugins
+export DISPLAY=':0.0'
+if [[ "${platform}" == "cygwin" ]]; then
+    export CYGWIN=winsymlinks:nativestrict
+fi
 #   Set Paths
 #   ------------------------------------------------------------
 # needed below.  Leave
-if [ -x /usr/local/bin/bash ]; then
-    export SHELL='/usr/local/bin/bash'
-elif [ -x /usr/bin/bash ]; then
-    export SHELL='/usr/bin/bash'
-else
-    export SHELL='/bin/bash'
+if [ -z $SHELL ]; then  #  - do not change $SHELL if already set
+    if [ -x /usr/local/bin/bash ]; then
+        export SHELL='/usr/local/bin/bash'
+    elif [ -x /usr/bin/bash ]; then
+        export SHELL='/usr/bin/bash'
+    else
+        export SHELL='/bin/bash'
+    fi
 fi
 # start building out path requirements
 # priority goes up as the list goes down the line
@@ -75,14 +103,27 @@ if [[ "${platform}" == "darwin" ]]; then
     # [[ ":$PATH:" != *":/usr/local/opt/qt@5.5/bin:"* ]] && PATH="/usr/local/opt/qt@5.5/bin:${PATH}"
     # so I'm replacing it with the newer one...
     [[ ":$PATH:" != *":/usr/local/opt/qt/bin:"* ]] && PATH="/usr/local/opt/qt/bin:${PATH}"
+elif [[ "${platform}" == "wsl" ]]; then
+    # in WSL environments make sure the standard windows programs are available
+    [[ ":$PATH:" != *":/mnt/c/Windows:"* ]] && PATH="${PATH}:/mnt/c/Windows/System32:/mnt/c/Windows:/mnt/c/Windows/System"
+    # NOTE: check if symbolic link to script is in home and ready for path
+    if [[ ! -e "${HOME}/sbin" ]]; then
+        ln -sf "$/mnt/f/src/poweruser_tools/scripts" ${HOME}/sbin
+    fi
 fi
 [[ ":$PATH:" != *":/usr/local/sbin:"* ]] && PATH="/usr/local/sbin:${PATH}"
-[[ ":$PATH:" != *":${HOME}/sbin:"* ]] && PATH="${HOME}/sbin:${PATH}" || echo 'woah bro wtf!?'
+[[ ":$PATH:" != *":${HOME}/sbin:"* ]] && PATH="${HOME}/sbin:${PATH}"
 export PATH
 # Add QT to the path, but after system
 # and make sure it's 5.5 due to linker issues
 # legacy/secondary darwinports
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/Home
+if [[ "${platform}" == "cygwin" ]]; then
+    export CONV_TOOL='cygpath'
+elif [[ "${platform}" == "cygwin" ]]; then 
+    export CONV_TOOL='wslpath'
+fi
+[ -z "$JAVA_HOME" ] || JAVA_HOME=$("${CONV_TOOL}" -u "\"${JAVA_HOME}\"")
+[ -z "$CLASSPATH" ] || CLASSPATH=$("${CONV_TOOL}" -u "\"${CLASSPATH}\"")
 #    LDFLAGS:  -L/usr/local/opt/libxml2/lib
 #    CPPFLAGS: -I/usr/local/opt/libxml2/include
 #    LDFLAGS:  -L/usr/local/opt/qt/lib
@@ -263,7 +304,7 @@ export GOPATH="/Users/magregor/.gopath"
 # python module options specific to me...
 export ARCHFLAGS="-arch x86_64"
 
-#homebrew bash completion
+# homebrew bash completion
 if [[ "${platform}" == "darwin" ]]; then
     # location on darwin with homebrew
     [ -f /usr/local/etc/bash_completion ] && . /usr/local/etc/bash_completion
@@ -273,7 +314,8 @@ else
 fi
 
 # shellcheck disable=SC2155
-export HOMEBREW_GITHUB_API_TOKEN=$(cat "${HOME}/.gh_oa")
+GHOAPATH="${HOME}/.gh_oa"
+[[ -f "${GHOAPATH}" ]] && export HOMEBREW_GITHUB_API_TOKEN=$(cat "${GHOAPATH}")
 
 #HOMEBREW libarchive python fix
 # export LD_LIBRARY_PATH="${brew_prefix}/opt/libarchive/lib"
@@ -291,16 +333,18 @@ export LIBRARY_PATH="/usr/local/lib:/usr/lib"
 
 # shellcheck disable=SC1090
 # this is darwin-only, but the -e should solve it
-[[ -e "${HOME}/.iterm2_shell_integration.bash" ]] && . "${HOME}/.iterm2_shell_integration.bash"
+if [[ -e "${HOME}/.iterm2_shell_integration.bash" ]] && [[ "${platform}" == 'darwin' ]]; then
+    . "${HOME}/.iterm2_shell_integration.bash"
+fi
 # set shell option histverify to on so we can edit history commands before executing
 # not on mac?  find out later, not imp now.
 # setopt -s histverify
 # you can tell neovim to export by default, but this can cause issues if you use multiple sessions
-TRANS_SOCKET_LOC='/tmp/nvimsocket.tmp'
-if [ -f ${TRANS_SOCKET_LOC} ]; then
-    # shellcheck disable=SC2155
-    export NVIM_LISTEN_ADDRESS=$(cat ${TRANS_SOCKET_LOC})
-fi
+# TRANS_SOCKET_LOC='/tmp/nvimsocket.tmp'
+# if [ -f ${TRANS_SOCKET_LOC} ]; then
+#     # shellcheck disable=SC2155
+#     export NVIM_LISTEN_ADDRESS=$(cat ${TRANS_SOCKET_LOC})
+# fi
 # tsserver log
 # TSS_LOG='-level verbose -file c:\tmp\tsserver.log'
 # file defaults to __dirname\.log<PID>
@@ -310,7 +354,7 @@ fi
 case $- in
   *i*)
       # homebrew fortune :-) should already be in PATH
-      if [ -f "/usr/local/bin/fortune" ]; then
+      if [ -f "/usr/local/bin/fortune" ] || [ -f "/usr/games/fortune" ]; then
           fortune -ao
       fi;;
   *) # we aren't interactive, so nothing below here matters
@@ -326,7 +370,8 @@ esac
 alias cp='cp -iv'                         # Preferred 'cp' implementation
 alias mv='mv -iv'                         # Preferred 'mv' implementation
 alias mkdir='mkdir -pv'                   # Preferred 'mkdir' implementation
-alias ll='ls -FGlAhp'                     # Preferred 'ls' implementation
+alias ll='ls -FGlAhp --color'             # Preferred 'ls' implementation
+alias lw='ls -FGAhp --color'              # 'ls' but wide
 alias less='less -FSRXc'                  # Preferred 'less' implementation
 # function cd() { builtin cd "$@"; ll; }    # Always list directory contents upon 'cd'
 function lcd() { builtin cd "$@"; ll; }       # Never list directory contents upon 'cd'
@@ -342,7 +387,7 @@ alias vedit='"${VEDITOR}"'                # vedit:        Opens any file in ${VE
 alias f='open -a Finder ./'               # f:            Opens current directory in MacOS Finder
 # alias ~="cd ${HOME}"                      # ${HOME}:            Go Home
 alias c='clear'                           # c:            Clear terminal display
-alias which='type -all'                   # which:        Find executables
+# alias which='type -all'                   # which:        Find executables
 alias path='echo -e ${PATH//:/\\n}'       # path:         Echo all executable Paths
 alias show_options='shopt'                # Show_options: display bash options settings
 alias fix_stty='stty sane'                # fix_stty:     Restore terminal settings when screwed up
@@ -353,6 +398,10 @@ ql () { qlmanage -p "$*" >& /dev/null; }  # ql:           Opens any file in MacO
 alias DT='tee ${HOME}/Desktop/terminalOut.txt'  # DT:           Pipe content to file on MacOS Desktop
 alias grep='grep --color'
 alias vim='/usr/bin/env vim' #something on OSX is forcing /usr/bin/vim instead of my environment vim
+# SkyLeach NOTE: work on hashing this out for better find on windows
+# alias fh='find ./ -mindepth 1 -maxdepth 5 -regextype posix-extended'
+# create fuckin aliases
+[[ -e $(which thefuck 2>/dev/null) ]] && eval "$(thefuck --alias)"
 
 #   lr:  Full Recursive Directory Listing
 #   ------------------------------------------
@@ -577,5 +626,9 @@ httpHeaders () { /usr/bin/curl -I -L $@ ; }             # httpHeaders:      Grab
 #   then use: ${HOME}/Dev/Perl/randBytes 1048576 > 10MB.dat
 
 # [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
-
+##################################################################################
+# TODO: convert to function: find + alias + sed + powershell command
+# find . -mindepth 1 -maxdepth 1 -type d -name ".*" -print0 | xargs -0Ixxx wslpath -ma xxx | xargs -Ixxx $(alias powershell | sed -e "s/'//g" -e 's/alias powershell=//') -command "Add-MpPreference -ExclusionPath 'xxx'"
+##################################################################################
 # Python virtual environment settings
+alias powershell=/mnt/c/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe

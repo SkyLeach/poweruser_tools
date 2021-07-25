@@ -16,3 +16,4 @@ ForEach ($Exe in $GetChildItemColorExtensions.ExecutableList) {
     $GetChildItemColorTable.File[$Exe] = "Green"
 }
 $Global:GetChildItemColorVerticalSpace = 1
+
