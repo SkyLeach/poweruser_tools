@@ -4,12 +4,52 @@ etc...'''
 from builtins import object
 from builtins import super
 from builtins import input
+import os
+import sys
 import argparse
 import pprint
 
 # Configure Logging Module
 import logging
 
+
+def pathwalker_gen(startpath,prune=[]):
+    def skip(t):
+        for p in prune:
+            if p in t: return True
+        return False
+    for root, dirs, files in os.walk(startpath):
+        level = root.replace(startpath, '').count(os.sep)
+        # indent = ' ' * 4 * (level)
+        if skip(root): continue
+        # print('{}{}/'.format(indent, os.path.basename(root)))
+        # subindent = ' ' * 4 * (level + 1)
+        for f in files:
+            if skip(f): continue
+            yield f
+            # print('{}{}'.format(subindent, f))
+
+def load_module(self, fullname):
+    """
+    Iterate over the search path to locate and load fullname.
+    """
+    root, base, target = fullname.partition(self.root_name + '.')
+    for prefix in self.search_path:
+        try:
+            extant = prefix + target
+            __import__(extant)
+            mod = sys.modules[extant]
+            sys.modules[fullname] = mod
+            return mod
+        except ImportError:
+            pass
+    else:
+        raise ImportError(
+            "The '{target}' package is required; "
+            "normally this is bundled with this package so if you get "
+            "this warning, consult the packager of your "
+            "distribution.".format(**locals())
+        )
 
 class CustomLogFormatter(logging.Formatter):
     """CustomLogFormatter - Setup class for custom log formatting"""
