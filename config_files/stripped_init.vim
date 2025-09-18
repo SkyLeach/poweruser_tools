@@ -1,10 +1,7 @@
 " modeline
-" vi: sw=2 ts=2 sts=2 et cc=80 tw=80
+" vi: sw=2 ts=2 sts=2 et cc=80 tw=79
 " SkyLeach custom settings
 "{{ Custom variables
-" this is ultra-important as the vim-sessions plugin will prompt and that
-" breaks stuff
-" let g:session_directory = expand('~\vimfiles\sessions')
 let g:session_autoload = 'no'
 let g:session_autosave = 'no'
 let g:is_win           = has('win32') || has('win64')
@@ -14,6 +11,7 @@ let g:is_cygwin        = 0
 let g:is_wsl           = 0
 let g:is_pshell        = empty($PSVersionTable) ? 0 : 1
 " SkyLeach - 3/23/2025 10:48:07 PM - Set coc default testing
+" disabled global extensions for now
 " let g:coc_global_extensions = [
 "   \ 'coc-css',
 "   \ 'coc-json',
@@ -34,38 +32,18 @@ if has('unix')
 endif
 
 " NOTE: handle paths between windows/cygwin/wsl
-let g:bundles = "C:\\Users\\mattg\\AppData\\Local\\nvim\\bundle"
+let g:bundles = "\\Users\\mattg\\AppData\\Local\\nvim\\bundle"
 let g:pathtool = 'cygpath -ad'
 if has('unix')
   let g:pathtool = g:is_cygwin ? exepath('cygpath') . " -au" : g:pathtool
   let g:bundles = trim(system(g:pathtool . g:bundles))
-  " Special Handling for win->cygwin->win problems, WSL should have the WSLENV
-"   if empty(glob($JAVA_HOME))
-"       " Try this one likely fix
-"       let $JAVA_HOME = trim(system(g:pathtool . "'" . $JAVA_HOME."'"))
-"       if empty(glob($JAVA_HOME))
-"           echom "Unable to repair JAVA_HOME = " . $JAVA_HOME
-"       else
-"           echom "JAVA_HOME fixed!"
-"       endif
-"   endif
 endif
-" python configuration
 if executable('python')
   if g:is_win
     "  3/12/2025 5:12:16 AM
-    " let g:python_host_prog="C:\\Users\\mattg\\Envs\\srs\\Scripts\\python.exe"
     let g:python_host_prog="C:\\Python313\\python.exe"
-    " I'm really unsure why this didn't work, maybe a compile-time issue.
-    " 3/12/2025 3:17:34 PM
-    " let g:python_host_prog=trim(system("Get-Command python | Select-Object -ExpandProperty Definition"))
     let g:python3_host_prog=g:python_host_prog
-    " let g:pydocstring_doq_path="C:\\Users\\mattg\\Envs\\srs\\Scripts\\doq.exe"
-    " 3/12/2025 5:13:30 AM
     let g:pydocstring_doq_path="C:\\Python313\\Scripts\\doq.exe"
-    " let g:python_host_prog="C:/Python39/python.exe"
-    " let g:python3_host_prog=g:python_host_prog
-    " let g:pydocstring_doq_path="C:/Python39/Scripts/doq.exe"
     if g:is_wsl || g:is_cygwin
       let g:python_host_prog=trim(system(g:pathtool . g:python_host_prog))
       let g:python3_host_prog=trim(system(g:pathtool . g:python3_host_prog))
@@ -79,6 +57,7 @@ else
   echoerr 'Python 3 executable not found! You must install Python 3 and set its PATH correctly!'
 endif
 let g:virtualenv_directory = expand('~\Envs')
+" Disabled anaconda path for now and the default to Envs
 " if g:is_win && executable('conda')
 "   let g:virtualenv_directory = '\tools\miniconda3\envs'
 " else
@@ -117,7 +96,6 @@ set nowritebackup
 " Give more space for displaying messages.
 set cmdheight=2
 set signcolumn=yes
-" set signcolumn=number
 
 " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
 " delays and poor user experience.
@@ -127,23 +105,19 @@ set updatetime=300
 set shortmess+=c
 " Setting sessiontopns not to save blank buffers fixes errors on workspace
 " tools
-" set sessionoptions-=blank
-" Setting grepprg on windows is essential as default configs are for POSIX
-let rg_binary="C:/ProgramData/chocolatey/bin/rg.exe"
-let rg_format="%f:%l:%m,%f:%l%m,%f  %l%m"
-let rg_command=rg_binary . " --vimgrep --smart-case --hidden $*"
-let &grepprg=rg_command
-let &grepformat=rg_format
-" set grepprg=C:/ProgramData/chocolatey/bin/grep.exe
-" set grepformat=%f:%l:%c:%m
+set sessionoptions-=blank
+" Setting grepprg on windows is essential as default configs are or POSIX
+set grepprg="C:\ProgramData\chocolatey\bin\rg.exe\ -nir\$*"
 " reset filetype
 filetype off
 filetype plugin indent on
 
 " if/when using neovide quickly toggle transparency mode...
-nnoremap <leader>T :let g:neovide_opacity=0.90CR>
+" Safe for non-neovide
+nnoremap <leader>T :let g:neovide_opacity=0.90<CR>
 nnoremap <leader>S :let g:neovide_opacity=1<CR>
 " Fugitive Conflict Resolution
+" also safe for non-fugitive
 nnoremap <leader>gd :Gvdiff<CR>
 nnoremap <leader>dgh :diffget //2<CR>
 nnoremap <leader>dgl :diffget //3<CR>
@@ -155,7 +129,7 @@ xmap <leader>dg :diffget<CR>
 xmap <leader>dp :diffput<CR>
 nnoremap <leader>dq :diffoff<CR>
 
-" NOTE: handle key mappings when you can't use C-w in ConEmu?
+" NOTE: handle key mappings when you can't use C-w in ConEmu
 nnoremap <C-S-h> <C-w>h
 nnoremap <C-S-j> <C-w>j
 nnoremap <C-S-k> <C-w>k
@@ -220,26 +194,48 @@ nnoremap <silent><nowait> <space>f  :<C-u>CocList files<CR>
 " " coc-search cwd files
 nnoremap <silent><nowait> <space>h  :<C-u>CocSearch<CR>
 
-" Use tab for trigger completion with characters ahead and navigate.
-" NOTE: There's always complete item selected by default, you may want to enable
-" no select by `"suggest.noselect": true` in your configuration file.
-" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
-" other plugin before putting this into your config.
+
+" Use <leader>x for convert visual selected code to snippet
+xmap <leader>x  <Plug>(coc-convert-snippet)
+
 inoremap <silent><expr> <TAB>
-      \ coc#pum#visible() ? coc#pum#next(1) :
-      \ CheckBackspace() ? "\<Tab>" :
+      \ pumvisible() ? coc#_select_confirm() :
+      \ coc#expandableOrJumpable() ?
+      \ "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+      \ CheckBackSpace() ? "\<TAB>" :
       \ coc#refresh()
-inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 
-" Make <CR> to accept selected completion item or notify coc.nvim to format
-" <C-g>u breaks current undo, please make your own choice.
-inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
-                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
-function! CheckBackspace() abort
+inoremap <expr> <TAB> pumvisible() ? "\<C-y>" : "\<C-g>u\<TAB>"
+
+function! CheckBackSpace() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
+
+let g:coc_snippet_next = '<tab>'
+
+" Use <c-space> to trigger completion.
+" if has('nvim')
+"   inoremap <silent><expr> <c-space> coc#refresh()
+" else
+"   inoremap <silent><expr> <c-@> coc#refresh()
+" endif
+
+
+" Make <CR> auto-select the first completion item and notify coc.nvim to
+" format on enter, <cr> could be remapped by other vim plugin
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+" Use <leader>x for convert visual selecte" Make <CR> to accept selected completion item or notify coc.nvim to format
+" <C-g>u breaks current undo, please make your own choice.
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>
+
+" Use <leader>x for convert visual selected code to snippet
+xmap <leader>x  <Plug>(coc-convert-snippet)
 
 " Use `[g` and `]g` to navigate diagnostics
 " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
@@ -253,42 +249,36 @@ nmap <silent><nowait> gi <Plug>(coc-implementation)
 nmap <silent><nowait> gr <Plug>(coc-references)
 
 " Pydocstring code actions
-nmap <leader>gP <Plug>(coc-codeaction-line)
-xmap <leader>gP <Plug>(coc-codeaction-selected)
-nmap <leader>gPA <Plug>(coc-codeaction)
+nmap <silent> gP <Plug>(coc-codeaction-line)
+xmap <silent> gP <Plug>(coc-codeaction-selected)
+nmap <silent> gPA <Plug>(coc-codeaction)
 
 augroup mygroup
   autocmd!
   " Setup formatexpr specified filetype(s).
   au FileType typescript,json,javascript,html setl 
-    \ sw=2 sts=2 ts=2 tw=120 et ff=unix foldmethod=syntax wm=0 cc=120 tw=120
     \ formatexpr=CocAction('formatSelected')
-  au FileType sql setl 
-    \ sw=2 sts=2 ts=2 tw=100 et ff=unix foldmethod=syntax wm=0 cc=100 tw=100
-    \ formatexpr=CocAction('formatSelected')
-  au FileType markdown setl
-    \ sw=4 sts=4 ts=4 tw=80 et ff=unix syn=markdown foldmethod=indent
-    " \ formatexpr=CocAction('formatSelected')
+    \ sw=2 sts=2 ts=2 tw=79 et ff=unix foldmethod=syntax
   au FileType markdown_web setl
+    \ formatexpr=CocAction('formatSelected')
     \ sw=4 sts=4 ts=4 tw=300 cc=300 et ff=unix syn=markdown foldmethod=indent
-    " \ formatexpr=CocAction('formatSelected')
+  au FileType markdown setl
+    \ formatexpr=CocAction('formatSelected')
+    \ sw=4 sts=4 ts=4 tw=79 cc=79 et ff=unix syn=markdown foldmethod=indent
+  au FileType python,py,python3,sh,bat,ps1,md setl
+    \ formatexpr=CocAction('formatSelected')
+    \ sw=4 sts=4 ts=4 tw=79 et ff=unix foldmethod=indent
   au FileType vim setl
-    \ sw=2 sts=2 ts=2 tw=80 et foldmethod=indent
-    " \ formatexpr=CocAction('formatSelected')
-  " SkyLeach NOTE: foldmethod for python
-  " au BufNewFile,BufRead *.py setl foldmethod=indent
-  " au BufNewFile,BufRead *.json setl foldmethod=syntax
-  " au BufNewFile,BufRead *.js setl foldmethod=syntax
-  " SkyLeach Note: workon on javascript autocmd/autohandling
-  " autocmd FileType javascript setl sw=2 sts=2 ts=2 et formatexpr(
+    \ formatexpr=CocAction('formatSelected')
+    \ sw=2 sts=2 ts=2 tw=79 et foldmethod=indent
   " Update signature help on jump placeholder.
   autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
 augroup end
 augroup json_ft
   au!
   autocmd BufNewFile,BufRead *.json,*.ipynb setl
-        \ sw=2 sts=2 ts=2 tw=80 syn=json et ff=unix foldmethod=syntax
         \ formatexpr=CocAction('formatSelected')
+        \ sw=2 sts=2 ts=2 tw=79 syn=json et ff=unix foldmethod=syntax
 augroup END
 
 " Applying code actions to the selected code block
@@ -538,7 +528,7 @@ let g:airline#extensions#virtualenv#enabled = 1
 """"""""""""""""""""""""""""""
 " Put these lines at the very end (ish) of your vimrc file.
 " lastish
-set cc=80 sw=4 sts=4 ts=4 et tw=80 wm=80
+set cc=80 sw=4 sts=4 ts=4 et
 syn on
 set wildignore+=node_modules/**,package-lock.json,dist/**,frontend/node_modules/**,build/**
 
@@ -726,29 +716,17 @@ if g:is_win
   " set shellquote   = \"
   " let &shellpipe    = '| Out-File -Encoding UTF8 %s'
   " let &shellredir   = '| Out-File -Encoding UTF8 %s'
-  " **************** from documentation: ****************
-  " let &shell = executable('pwsh') ? 'pwsh' : 'powershell'
-  " let &shellcmdflag = '-NoLogo -NonInteractive -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new();$PSDefaultParameterValues[''Out-File:Encoding'']=''utf8'';$PSStyle.OutputRendering=''plaintext'';Remove-Alias -Force -ErrorAction SilentlyContinue tee;'
-  " let &shellredir = '2>&1 | %%{ "$_" } | Out-File %s; exit $LastExitCode'
-  " let &shellpipe  = '2>&1 | %%{ "$_" } | tee %s; exit $LastExitCode'
-  " set shellquote= shellxquote=
   " **************** NEW powershell ****************
-  " set shell=powershell
-  set shell=C:\PROGRA~1\PowerShell\7\pwsh.exe
+  set shell=C:\PROGRA~1\WindowsApps\Microsoft.PowerShell_7.5.0.0_x64__8wekyb3d8bbwe\pwsh.exe
   let g:neoterm_shell=&shell
-  " set shellxquote=
+  set shellxquote=
   " let &shellcmdflag = '-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command '
-  " let &shellcmdflag="-NoLogo -NoProfile -NonInteractive -ExecutionPolicy AllSigned -c $($PSStyle.OutputRendering='PlainText');[Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;"
-  let &shellcmdflag = '-NoLogo -NonInteractive -ExecutionPolicy RemoteSigned -c [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new();$PSDefaultParameterValues[''Out-File:Encoding'']=''utf8'';$PSStyle.OutputRendering=''plaintext'';Remove-Alias -Force -ErrorAction SilentlyContinue tee;'
-  set shellquote= shellxquote=
-  " set shellquote="
-  let &shellredir = '2>&1 | %%{ "$_" } | Out-File %s; exit $LastExitCode'
-  let &shellpipe  = '2>&1 | %%{ "$_" } | tee %s; exit $LastExitCode'
-  " let &shellpipe    = '| Out-File -Encoding UTF8 %s'
-  " let &shellredir   = '| Out-File -Encoding UTF8 %s'
-  " let &shellredir = "-RedirectStandardOutput %s -NoNewWindow -Wait"
+  set shellcmdflag=-NoLogo\ -NoProfile\ -NonInteractive\ -ExecutionPolicy\ AllSigned\ -Command\ [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;$($PSStyle.OutputRendering='PlainText');
+  set shellquote="
+  let &shellpipe    = '| Out-File -Encoding UTF8 %s'
+  let &shellredir   = '| Out-File -Encoding UTF8 %s'
   " let &errorformat  = 'oogyboogy'
-  " set errorformat=%f:%l:%c:\ error:\ %m
+  set errorformat=%f:%l:%c:\ error:\ %m
   " set shellquote= shellpipe=2>&1\ \|\ Out-File\ -Encoding\ UTF8\ %s;\ exit\ $LastExitCode shellredir=-ExecutionPolicy\ RemoteSigned shellxquote=
   " set shellquote=  shellredir=> shellxquote=
   " set shellquote= shellpipe='| Out-File -Encoding UTF8 %s' shellredir='| Out-File -Encoding UTF8 %s' shellxquote=
@@ -762,7 +740,7 @@ vnoremap <leader><cr> :TREPLSendSelection<cr> " send current selection
 " SkyLeach Note: CtrlP
 " settings for opening NerdTree to the neovim bundles location
 " figure out how to make this work
-nnoremap <leader>ntb :execute ":NERDTree" g:bundles<CR>
+nnoremap <leader>ntb :NERDTree "g:bundles"<cr>
 nnoremap <leader>nt :NERDTree<cr>
 nnoremap <leader>ntf :NERDTreeFind %<cr>
 let g:src = expand('~\src')
@@ -793,9 +771,9 @@ if exists("g:lexical#dictionary")
 else
   let g:lexical#dictionary = [ tempstr ]
 endif
-let tempstr = "/Users/mattg/.vim/spell/en.utf-8.add" 
+let tempstr = "\Users\mattg\.vim\spell\en.utf-8.add" 
 if !g:is_win
-  let tempstr = trim(system("&" . g:pathtool . " " . tempstr))
+  let tempstr = trim(system(g:pathtool . tempstr))
 endif
 if exists("g:lexical#spellfile")
   let g:lexical#spellfile += [ tempstr ]
@@ -823,11 +801,11 @@ let g:easy_align_ignore_groups = ['Comment', 'String']
 " endfunction
 function SetBrowserCmd(browser)
   if ( a:browser == "chrome" )
-      return "'C:/Program Files/Google/Chrome/Application/chrome.exe'"
+      return "C:/Program` Files/Google/Chrome/Application/chrome.exe"
   elseif ( a:browser == "edge" || a:browser == "msedge" || a:browser == "iexplore" )
-      return "'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe'"
+      return "C:/Program` Files` (x86)/Microsoft/Edge/Application/msedge.exe"
   elseif ( a:browser == "firefox" )
-      return "'C:/Program Files/Mozilla Firefox/firefox.exe'" 
+      return "c:/Program` Files/Mozilla Firefox/firefox.exe" 
 " c:/Program\ Files/Mozilla\ Firefox/firefox.exe
   else
       return "elinks"
@@ -867,12 +845,12 @@ vnoremap <Leader><c-h>w y:call ViewHtmlText(@@)<CR>
 " On Linux, use @* for current selection or @+ for text in clipboard.
 " nnoremap <Leader><c-h>lw :call ViewHtmlText(@+)<CR>
 " On Windows, make the default g:browsercmd for opening current file
-nnoremap <leader><c-f> :echo trim(system('&' . g:browsercmd . " -new-tab file://" . expand("%:p")))<CR>
+nnoremap <leader><c-f> :exec trim(system(g:browsercmd . " -new-tab file://" . expand("%:p")))<CR>
 " On Windows, open URL under cursor in GUI browser
 " nnoremap <leader><c-i> :let g:browsercmd=SetBrowserCmd("msedge")<bar>exec trim(system(g:browsercmd . " -new-tab " . expand("<cfile>")))<CR>
-nnoremap <leader><c-f>ew :exec trim(system('&' . SetBrowserCmd("msedge") . " -new-tab " . expand("<cfile>")))<CR>
-nnoremap <leader><c-f>fw :exec trim(system('&' . SetBrowserCmd("firefox") . " -new-tab " . expand("<cfile>")))<CR>
-nnoremap <leader><c-f>cw :exec trim(system('&' . SetBrowserCmd("chrome") . " -new-tab " . expand("<cfile>")))<CR>
+nnoremap <leader><c-f>ew :exec trim(system(SetBrowserCmd("msedge") . " -new-tab " . expand("<cfile>")))<CR>
+nnoremap <leader><c-f>fw :exec trim(system(SetBrowserCmd("firefox") . " -new-tab " . expand("<cfile>")))<CR>
+nnoremap <leader><c-f>cw :exec trim(system(SetBrowserCmd("chrome") . " -new-tab " . expand("<cfile>")))<CR>
 " On Windows, update and open current file in associated browser.
 nnoremap <leader><c-f>we :update<Bar>exec trim(system(SetBrowserCmd("msedge") . " -new-tab file://" . expand("%")))<CR>
 nnoremap <leader><c-f>wf :update<Bar>exec trim(system(SetBrowserCmd("firefox") . " -new-tab file://" . expand("%")))<CR>
@@ -933,6 +911,35 @@ let g:vimspector_enable_mappings = 'HUMAN'
 "   rest (un-accessed) fuzzy part of a subgroup ... example: s#\v(\w)(\S*)#\u\1\L\2#g
 call pathogen#infect()
 call pathogen#helptags()
+let g:postinfect = stdpath('config')."/postinfect_inject.vim"
+execute 'source ' . g:postinfect
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" coc-translator settings
+" SkyLeach
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" NOTE: do NOT use `nore` mappings
+" popup
+nmap <Leader>t <Plug>(coc-translator-p)
+vmap <Leader>t <Plug>(coc-translator-pv)
+" echo
+nmap <Leader>e <Plug>(coc-translator-e)
+vmap <Leader>e <Plug>(coc-translator-ev)
+" replace
+nmap <Leader>r <Plug>(coc-translator-r)
+vmap <Leader>r <Plug>(coc-translator-rv)
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" JIRA autocompletion for Caregility (this time)
+" SkyLeach Note: can be set per-buffer with b: instead of global g:
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" nmap <silent> <unique> <leader>jj <Plug>JiraComplete
+" NOTE: if cert issue, change to dict with verify=false {'url': "", 'verify':
+" false}
+" let g:jiracomplete_url = 'http://https://caregilitycore.atlassian.net/jira/projects/'
+" let g:jiracomplete_username = 'mgregory@caregility.com'
+" again, [b,g] buffer/global and format for variables is adjustable
+" let g:jiracomplete_format = 'v:val.abbr . " -> " . v:val.menu'
+" let g:jiracomplete_password = ''  " optional - manual for now?
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Firenvim and cromenvim in-browser neovim headless editing.
 " SkyLeach Note: move this to exernal config file later?
@@ -958,10 +965,8 @@ if exists('g:started_by_firenvim') && g:started_by_firenvim
     " TODO: review all of this if/when you get time, I don't trust it yet?
     " also, testing as of 7/26/2021 9:28:56 AM
     " set laststatus=0
-    au BufEnter youtube.com_*.txt set filetype=markdown
     au BufEnter github.com_*.txt set filetype=markdown
     au BufEnter reddit.com_*.txt set filetype=markdown
-    au BufEnter facebook.com_*.txt set filetype=markdown
     au BufEnter observablehq.com_*.txt set filetype=javascript
     au BufEnter atlassian.net_*.txt set filetype=confluencewiki
     " NOTE: takeover settings from doc:
@@ -1040,31 +1045,9 @@ if exists('g:started_by_firenvim') && g:started_by_firenvim
         \ 'eval("'.s:get_visual_selection().'")', 'EvalMyText')
     nnoremap <Esc><Esc> :call firenvim#focus_page()<CR>
     nnoremap <C-z> :call firenvim#hide_frame()<CR>
-" else
-"     set laststatus=2
+else
+    set laststatus=2
 endif
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" mappings for coc.nvim's coc-prettier
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-command! -nargs=0 Prettier :CocCommand prettier.forceFormatDocument
-vmap <leader>f  <Plug>(coc-format-selected)
-nmap <leader>f  <Plug>(coc-format-selected)
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Vim-Test mappings and config
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-nmap <silent> <leader>tn :TestNearest<CR>
-nmap <silent> <leader>tf :TestFile<CR>
-nmap <silent> <leader>ts :TestSuite<CR>
-nmap <silent> <leader>tl :TestLast<CR>
-nmap <silent> <leader>tv :TestVisit<CR>
-let g:test#neovim#start_normal = 1 " If using neovim strategy
-let g:test#basic#start_normal = 1 " If using basic strategy
-let g:test#preserve_screen = 1
-" make test commands execute using dispatch.vim
-" let test#strategy = "neovim_sticky"
-" let test#strategy = "asyncrun_background"
-let test#strategy = "dispatch"
-" let g:asyncrun_open = 1
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Personal Function taken from stackoverflow 7/26/2021 9:52:07 AM
 " (here TBE)[https://stackoverflow.com/questions/1533565/how-to-get-visually-selected-text-in-vimscript].
@@ -1096,10 +1079,7 @@ let g:NERDCreateDefaultMappings = 1
 let g:NERDSpaceDelims = 1
 
 " Use compact syntax for prettified multi-line comments
-let g:NERDCompactSexyComs = 0
-
-" re-comment nested comments
-let NERDDefaultNesting = 0
+let g:NERDCompactSexyComs = 1
 
 " Align line-wise comment delimiters flush left instead of following code indentation
 let g:NERDDefaultAlign = 'left'
@@ -1120,8 +1100,6 @@ let g:NERDTrimTrailingWhitespace = 1
 let g:NERDToggleCheckAllLines = 0
 
 " Copilot-Chat / ChatGPT
-" autocomplete for copilot_chat
-set completeopt=menu,popup,preview,noselect,noinsert
 let g:copilot_chat_filetypes = {
       \ '*' : 1,
       \ 'markdown': 1,
@@ -1188,7 +1166,7 @@ let g:copilot_chat_filetypes = {
 "  nnoremap <silent> <leader>c# :CopilotChatTopic<CR>
 "  nnoremap <silent> <leader>c% :CopilotChatContext<CR>
 "  nnoremap <silent> <leader>c^ :CopilotChatSummarize<CR>
-"
+
 " Added largefile handling to the end.  The idea here is to work around
 " accidentally hitting big files that then kill my editor or I have to take a
 " 30m break...
@@ -1229,6 +1207,7 @@ endfunction
 " EOF
 lua <<EOF
 require("mason").setup()
+
 -- local utils = require('CopilotChat.config.utils')
 -- local icons = require('config.icons')
 -- utils.desc('<leader>a', 'AI')
@@ -1255,16 +1234,6 @@ chat.setup({
 --         assistant = icons.ui.Bot,
 --         tool = icons.ui.Tool,
 --     },
-    providers = {
-      ollama = {
-        get_url = function(opts) return "https://127.0.0.1:11434" end,
-        -- get_headers = function() return { ["Authorization"] = "Bearer " .. api_key } end,
-        get_models = function() return { { id = "gemma3:1b", name = "gemma3:1b" } } end,
-        prepare_input = require('CopilotChat.config.providers').copilot.prepare_input,
-        prepare_output = require('CopilotChat.config.providers').copilot.prepare_output,
-      }
-    },
-
     mappings = {
         reset = false,
         complete = {
@@ -1323,13 +1292,13 @@ chat.setup({
 -- })
 
 -- Setup keymaps
-    vim.keymap.set({ 'n' }, '<leader>aa', chat.toggle, { desc = 'AI Toggle' })
-    vim.keymap.set({ 'v' }, '<leader>aa', chat.open, { desc = 'AI Open' })
-    vim.keymap.set({ 'n' }, '<leader>ax', chat.reset, { desc = 'AI Reset' })
-    vim.keymap.set({ 'n' }, '<leader>as', chat.stop, { desc = 'AI Stop' })
-    vim.keymap.set({ 'n' }, '<leader>am', chat.select_model, { desc = 'AI Models' })
-    vim.keymap.set({ 'n', 'v' }, '<leader>ap', chat.select_prompt, { desc = 'AI Prompts' })
-    vim.keymap.set({ 'n', 'v' }, '<leader>aq', function()
+vim.keymap.set({ 'n' }, '<leader>aa', chat.toggle, { desc = 'AI Toggle' })
+vim.keymap.set({ 'v' }, '<leader>aa', chat.open, { desc = 'AI Open' })
+vim.keymap.set({ 'n' }, '<leader>ax', chat.reset, { desc = 'AI Reset' })
+vim.keymap.set({ 'n' }, '<leader>as', chat.stop, { desc = 'AI Stop' })
+vim.keymap.set({ 'n' }, '<leader>am', chat.select_model, { desc = 'AI Models' })
+vim.keymap.set({ 'n', 'v' }, '<leader>ap', chat.select_prompt, { desc = 'AI Prompts' })
+vim.keymap.set({ 'n', 'v' }, '<leader>aq', function()
     vim.ui.input({
         prompt = 'AI Question> ',
     }, function(input)
@@ -1363,8 +1332,8 @@ let g:postinfect = stdpath('config')."/postinfect_inject.vim"
 execute 'source ' . g:postinfect
 let g:gui_xtra_cfg = stdpath('config')."/init_igui.vim"
 execute 'source ' . g:gui_xtra_cfg
-let g:tokyocandy = stdpath('config')."/tokyoenable.vim"
-execute 'source ' . g:tokyocandy
+" let g:tokyocandy = stdpath('config')."/tokyoenable.vim"
+" execute 'source ' . g:tokyocandy
 " Load the colorscheme
 " colorscheme one
 " colorscheme one-dark
