@@ -1,7 +1,5 @@
 Library/
-simgame/Library/
-simgame/blender_scenes/
-simgame/__pycache__/
+**/__pycache__
 build/
 dist/
 flask_session/
@@ -9,7 +7,7 @@ flask_session/
 **/*.pyc
 googlesecrets.py
 # Byte-compiled / optimized / DLL files
-__pycache__/
+# __pycache__
 *.py[cod]
 .DS_Store
 

@@ -1,42 +1,27 @@
-#!/bin/sh
-### BEGIN INIT INFO
-# Provides:
-# Required-Start:    $remote_fs $syslog
-# Required-Stop:     $remote_fs $syslog
-# Default-Start:     2 3 4 5
-# Default-Stop:      0 1 6
-# Short-Description: Start daemon at boot time
-# Description:       Enable service provided by daemon.
-### END INIT INFO
-# MIT licensed template copied from https://github.com/fhd
+#!/bin/bash
 
 dir=""
 cmd=""
 user=""
 
-##################################################
-# NOTE: String Format NOTES
-##################################################
-# ---------------------------------
-# normal inline edit:
-# ---------------------------------
-# ```bash
-# $ filename=foo.txt
-# $ echo "${filename%.*}"
-# foo
-# ---------------------------------
-# Using the `cut` command
-# ---------------------------------
-# $ filename=hello.world
-# $ echo "$filename" | cut -f 1 -d '.'
-# hello
-# $ filename=hello.hello.hello
-# $ echo "$filename" | cut -f 1 -d '.'
-# hello
-# $ filename=hello
-# $ echo "$filename" | cut -f 1 -d '.'
-# hello
-##################################################
+# get system path to cmd.exe
+dir="$(pwd)"
+cmd=$(which cmd.exe)
+# if not found, try default
+[[ -z "${CMD}" ]] || CMD="/mnt/c/windows/System32/cmd.exe"
+# NOTE: mklink is a function, no path req
+# Loop through 1-N files and dirs, testing each first
+while read ITM; do
+    echo "testing ${ITM}"
+    if [[ -f "${ITM}" ]]; then
+        echo -n 'file: '
+        echo "${ITM}"
+    elif [[ -d "${ITM}" ]]; then
+        echo -n 'dir: '
+        echo "${ITM}"
+    fi
+done < "${1:-/dev/stdin}"
+
 
 name=`basename $0`
 pid_file="/var/run/$name.pid"

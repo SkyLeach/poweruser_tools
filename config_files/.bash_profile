@@ -22,7 +22,7 @@ if [[ -f /etc/profile ]] && [[ "${platform}" == 'darwin' ]]; then
     PATH=''
     source /etc/profile
     # just in case it's still fucking with sanity...
-    [[ -z "${PATH}" ]] && PATH='/bin:/usr/bin:/sbin:/usr/sbin'
+    [[ -z "${PATH}" ]] && export PATH='/bin:/usr/bin:/sbin:/usr/sbin'
 fi
 
 # WSL portable environment variables (essential for developers really)
@@ -31,11 +31,18 @@ fi
 # /l - list of translated paths (like PATH)
 # /u - only WSL -> Win32
 # /w - only Win32 -> WSL
+export POSH_THEMES_PATH='/mnt/c/Users/mattg/.cache/oh-my-posh/themes'
 if [[ -f /etc/profile ]] && [[ "${platform}" == 'wsl' ]]; then
-    [ -z "${WSLENV}" ] && export WSLENV="JAVA_HOME/p:CLASSPATH/l:HomePath/pu"
+    [ -z "${WSLENV}" ] && export WSLENV="1"
+    # [ -z "${WSLENV}" ] && export WSLENV="JAVA_HOME/p:CLASSPATH/l:HomePath/pu"
     eval "$(dircolors -b ~/.dircolors.wsl)"
     # store the IP of the host for the VM
     export WSL_HOST_IP=$(awk '/nameserver/ { print $2 }' /etc/resolv.conf)
+    # also set the display for wsl2<->windows xorg (and clipboard)
+    export DISPLAY="${WSL_HOST_IP}:0.0"
+    unset $( env | grep -E '^(ALLUSERSPROFILE|APPDATA|CommonProgramFiles|CommonProgramFiles(x86)?|COMPUTERNAME|ComSpec|HOMEDRIVE|HOMEPATH|LOCALAPPDATA|LOGONSERVER|NUMBER_OF_PROCESSORS|OS|Path|PATHEXT|PROCESSOR_ARCHITECTURE|PROCESSOR_IDENTIFIER|PROCESSOR_LEVEL|PROCESSOR_REVISION|ProgramData|ProgramFiles(x86)?|PROMPT|PSModulePath|PUBLIC|SystemDrive|SystemRoot|TEMP|TMP|USERDOMAIN|USERDOMAIN_ROAMINGPROFILE|USERNAME|USERPROFILE|WINDIR)=' | awk -F= '{print $1}' )
+    # pipe env through awk to strip the values from the envvars
+    # env | awk -F= '{print $1}'
 else
     eval "$(dircolors -b)"
 fi
@@ -63,13 +70,17 @@ fi
 
 #   Change Prompt
 #   ------------------------------------------------------------
-export PS1=$'_\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620_\n| \[\033[01;32m\]\\u@\\h\[\033[00m\]:\[\033[01;34m\]\\w\[\033[00m\] \n|\u2623> '
+# export PS1=$'_\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620_\n| \[\033[01;32m\]\\u@\\h\[\033[00m\]:\[\033[01;34m\]\\w\[\033[00m\] \n|\u2623> '
+# export PS2=$'|\u2623>'
 # export PS1="_☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠__☠_\\n| \\w @ work-mbp (abuser) \\n|\\T💀> "
-export PS2=$'|\u2623>'
 # export PS2="|💀> "
 export TMUX_PLUGIN_MANAGER_PATH=${HOME}/.tmux/plugins
 export DISPLAY=':0.0'
 if [[ "${platform}" == "cygwin" ]]; then
+    export PS1=$'_\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620__\u2620_\n| \[\033[01;32m\]\\u@\\h\[\033[00m\]:\[\033[01;34m\]\\w\[\033[00m\] \n|\u2623> '
+    export PS2=$'|\u2623>'
+    # For some reason I keep getting "CONFIG ERROR" when trying to use oh-my-posh from within cygwin?
+    # eval $(/cygdrive/c/Program\ Files\ \(x86\)/oh-my-posh/bin/oh-my-posh init bash --config $POSH_THEMES_PATH/sonicboom_dark.omp.json)
     export CYGWIN=winsymlinks:nativestrict
 fi
 #   Set Paths
@@ -86,34 +97,37 @@ if [ -z $SHELL ]; then  #  - do not change $SHELL if already set
 fi
 # start building out path requirements
 # priority goes up as the list goes down the line
-[[ ":$PATH:" != *":/bin:"* ]] && PATH="/bin:${PATH}"
-[[ ":$PATH:" != *":/sbin:"* ]] && PATH="/sbin:${PATH}"
-[[ ":$PATH:" != *":/usr/bin:"* ]] && PATH="/usr/bin:${PATH}"
-[[ ":$PATH:" != *":/usr/sbin:"* ]] && PATH="/usr/sbin:${PATH}"
-[[ ":$PATH:" != *":/usr/local/bin:"* ]] && PATH="/usr/local/bin:${PATH}"
+[[ ":$PATH:" != *":/bin:"* ]] && export PATH="/bin:${PATH}"
+[[ ":$PATH:" != *":/sbin:"* ]] && export PATH="/sbin:${PATH}"
+[[ ":$PATH:" != *":/usr/bin:"* ]] && export PATH="/usr/bin:${PATH}"
+[[ ":$PATH:" != *":/usr/sbin:"* ]] && export PATH="/usr/sbin:${PATH}"
+[[ ":$PATH:" != *":/usr/local/bin:"* ]] && export PATH="/usr/local/bin:${PATH}"
+[[ ":$PATH:" != *":${HOME}/bin:"* ]] && export PATH="${HOME}/bin:${PATH}"
 # these only make sense for darwin where conflicts can happen
 if [[ "${platform}" == "darwin" ]]; then
-    [[ ":$PATH:" != *":/sw/bin:"* ]] && PATH="/sw/bin:${PATH}"
-    [[ ":$PATH:" != *":/usr/local/opt/openssl/bin:"* ]] && PATH="/usr/local/opt/openssl/bin:${PATH}"
-    [[ ":$PATH:" != *":/usr/local/Cellar/git/2.17.0/bin:"* ]] && PATH="/usr/local/Cellar/git/2.17.0/bin:${PATH}"
-    [[ ":$PATH:" != *":/usr/local/opt/mysql/bin:"* ]] && PATH="/usr/local/opt/mysql/bin:${PATH}"
-    [[ ":$PATH:" != *":/usr/local/opt/libxml2/bin:"* ]] && PATH="/usr/local/opt/libxml2/bin:${PATH}"
-    [[ ":$PATH:" != *":/usr/local/opt/ruby/bin:"* ]] && PATH="/usr/local/opt/ruby/bin:${PATH}"
+    [[ ":$PATH:" != *":/sw/bin:"* ]] && export PATH="/sw/bin:${PATH}"
+    [[ ":$PATH:" != *":/usr/local/opt/openssl/bin:"* ]] && export PATH="/usr/local/opt/openssl/bin:${PATH}"
+    [[ ":$PATH:" != *":/usr/local/Cellar/git/2.17.0/bin:"* ]] && export PATH="/usr/local/Cellar/git/2.17.0/bin:${PATH}"
+    [[ ":$PATH:" != *":/usr/local/opt/mysql/bin:"* ]] && export PATH="/usr/local/opt/mysql/bin:${PATH}"
+    [[ ":$PATH:" != *":/usr/local/opt/libxml2/bin:"* ]] && export PATH="/usr/local/opt/libxml2/bin:${PATH}"
+    [[ ":$PATH:" != *":/usr/local/opt/ruby/bin:"* ]] && export PATH="/usr/local/opt/ruby/bin:${PATH}"
     # I think this may have broken a lot of stuff
-    # [[ ":$PATH:" != *":/usr/local/opt/qt@5.5/bin:"* ]] && PATH="/usr/local/opt/qt@5.5/bin:${PATH}"
+    # [[ ":$PATH:" != *":/usr/local/opt/qt@5.5/bin:"* ]] && export PATH="/usr/local/opt/qt@5.5/bin:${PATH}"
     # so I'm replacing it with the newer one...
-    [[ ":$PATH:" != *":/usr/local/opt/qt/bin:"* ]] && PATH="/usr/local/opt/qt/bin:${PATH}"
+    [[ ":$PATH:" != *":/usr/local/opt/qt/bin:"* ]] && export PATH="/usr/local/opt/qt/bin:${PATH}"
 elif [[ "${platform}" == "wsl" ]]; then
     # in WSL environments make sure the standard windows programs are available
-    [[ ":$PATH:" != *":/mnt/c/Windows:"* ]] && PATH="${PATH}:/mnt/c/Windows/System32:/mnt/c/Windows:/mnt/c/Windows/System"
+    [[ ":$PATH:" != *":/mnt/c/Windows:"* ]] && export PATH="${PATH}:/mnt/c/Windows/System32:/mnt/c/Windows:/mnt/c/Windows/System"
     # NOTE: check if symbolic link to script is in home and ready for path
     if [[ ! -e "${HOME}/sbin" ]]; then
         ln -sf "$/mnt/f/src/poweruser_tools/scripts" ${HOME}/sbin
     fi
+    eval "$(oh-my-posh init bash --config $POSH_THEMES_PATH/sonicboom_dark.omp.json)"
 fi
-[[ ":$PATH:" != *":/usr/local/sbin:"* ]] && PATH="/usr/local/sbin:${PATH}"
-[[ ":$PATH:" != *":${HOME}/sbin:"* ]] && PATH="${HOME}/sbin:${PATH}"
-export PATH
+[[ ":$PATH:" != *":/usr/local/sbin:"* ]] && export PATH="/usr/local/sbin:${PATH}"
+[[ ":$PATH:" != *":${HOME}/sbin:"* ]] && export PATH="${HOME}/sbin:${PATH}"
+[[ ":$PATH:" != *":${HOME}/.local/bin:"* ]] && export PATH="${HOME}/.local/bin:${PATH}"
+export TEMP="${HOME}/AppData/Local/Temp"
 # Add QT to the path, but after system
 # and make sure it's 5.5 due to linker issues
 # legacy/secondary darwinports
@@ -141,92 +155,108 @@ fi
 # dunno why repack suggested, but add it if necessary
 if [[ "${platform}" == "darwin" ]]; then
     localpkgconfig="/usr/local/lib/pkgconfig"
+    pkgimportprefix=":/usr/local/opt"
+    # localpkgconfig+=":${pkgimportprefix}/atk/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/bash/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/cairo/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/ffmpeg/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/ffmpeg@3/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/fftw/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/fontconfig/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/freeglut/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/freetype/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/fribidi/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/gdk-pixbuf/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/glew/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/glib/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/gnu-scientific-library/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/gobject-introspection/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/graphite2/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/gsl/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/gtk/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/gtk+/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/gtk+3/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/harfbuzz/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/icu4c/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/ilmbase/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/isl/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/jemalloc/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/jpeg/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/libarchive/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/libass/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/libcdio/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/libevent/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/libffi/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/libidn2/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/libjpeg/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/libjpg/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/libogg/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/libpng/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/libtermkey/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/libtiff/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/libusb/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/libuv/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/libvorbis/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/libvpx/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/libvterm/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/libxml2/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/libxml2@2.9/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/luajit/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/lz4/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/lzo/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/mpfr/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/msgpack/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/mysql/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/mysql@5.7/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/oniguruma/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/opencv/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/opencv@3/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/openexr/lib/pkgconfig"
+    localpkgconfig+=":${pkgimportprefix}/openssl/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/openssl@1.0/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/openssl@1.1/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/opus/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/opusfile/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/pango/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/pcre/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/pcre1/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/pixman/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/postgres/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/postgresql/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/postgresql@10.2/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/python/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/python2/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/python3/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/python@2/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/python@3/lib/pkgconfig"
+    localpkgconfig+=":${pkgimportprefix}/qt/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/qt@5.5/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/qt@5.10/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/qt@5.9/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/sqlite/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/sqlite3/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/theora/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/unibilium/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/x264/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/xz/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/sdl2/lib/pkgconfig"
+    # localpkgconfig+=":${pkgimportprefix}/mlt/lib/pkgconfig"
+elif [[ "${platform}" == "wsl" ]]; then
+    localpkgconfig="/usr/share/pkgconfig"
+    pkgimportprefix="${localpkgconfig}"
+    # localpkgconfig+=":${pkgimportprefix}/adwaita-icon-theme.pc"
+    # localpkgconfig+=":${pkgimportprefix}/bash-completion.pc"
+    # localpkgconfig+=":${pkgimportprefix}/iso-codes.pc"
+    # localpkgconfig+=":${pkgimportprefix}/nautilus-python.pc"
+    # localpkgconfig+=":${pkgimportprefix}/shared-mime-info.pc"
+    # localpkgconfig+=":${pkgimportprefix}/systemd.pc"
+    # localpkgconfig+=":${pkgimportprefix}/udev.pc"
+    # localpkgconfig+=":${pkgimportprefix}/xbitmaps.pc"
+    # localpkgconfig+=":${pkgimportprefix}/xkeyboard-config.pc"
+fi
+if [ -z "${pkgimportprefix}" ]; then
     # tempt dissable extras and try to write script to minimize imports
-    # localpkgconfig+=":/usr/local/opt/atk/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/bash/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/cairo/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/ffmpeg/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/ffmpeg@3/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/fftw/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/fontconfig/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/freeglut/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/freetype/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/fribidi/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/gdk-pixbuf/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/glew/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/glib/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/gnu-scientific-library/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/gobject-introspection/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/graphite2/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/gsl/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/gtk/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/gtk+/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/gtk+3/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/harfbuzz/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/icu4c/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/ilmbase/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/isl/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/jemalloc/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/jpeg/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libarchive/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libass/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libcdio/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libevent/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libffi/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libidn2/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libjpeg/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libjpg/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libogg/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libpng/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libtermkey/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libtiff/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libusb/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libuv/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libvorbis/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libvpx/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libvterm/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libxml2/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/libxml2@2.9/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/luajit/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/lz4/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/lzo/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/mpfr/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/msgpack/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/mysql/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/mysql@5.7/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/oniguruma/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/opencv/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/opencv@3/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/openexr/lib/pkgconfig"
-    localpkgconfig+=":/usr/local/opt/openssl/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/openssl@1.0/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/openssl@1.1/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/opus/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/opusfile/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/pango/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/pcre/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/pcre1/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/pixman/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/postgres/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/postgresql/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/postgresql@10.2/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/python/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/python2/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/python3/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/python@2/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/python@3/lib/pkgconfig"
-    localpkgconfig+=":/usr/local/opt/qt/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/qt@5.5/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/qt@5.10/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/qt@5.9/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/sqlite/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/sqlite3/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/theora/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/unibilium/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/x264/lib/pkgconfig"
-    # localpkgconfig+=":/usr/local/opt/xz/lib/pkgconfig"
-    # localpkgconfig+="/usr/local/opt/sdl2/lib/pkgconfig"
-    # localpkgconfig+="/usr/local/opt/mlt/lib/pkgconfig"
+    #
     # if ever a need, put in an else and drop the following outside the condition
     if [ -z "${PKG_CONFIG_PATH}" ]; then
         export PKG_CONFIG_PATH="${localpkgconfig}"
@@ -291,11 +321,11 @@ export BLOCKSIZE=1k
 #   export CLICOLOR=1
 #   export LSCOLORS=ExFxBxDxCxegedabagacad
 
-export WORKON_HOME="${HOME}/.virtualenvs/"
+export WORKON_HOME="${HOME}/.virtualenvs/:${HOME}/Envs"
 export VIRTUALENVWRAPPER_PYTHON='/usr/local/bin/python3'
 [[ -z "${PYENV_ROOT}" ]] || export PYENV_ROOT=${VIRTUALENVWRAPPER_PYTHON}
 # shellcheck disable=SC1094
-[[ -f "/usr/local/bin/virtualenvwrapper.sh" ]] && . "/usr/local/bin/virtualenvwrapper.sh"
+[[ -f "/usr/local/bin/virtualenvwrapper.sh" && -f /usr/bin/python3 ]] && . "/usr/local/bin/virtualenvwrapper.sh"
 # source "$(brew --prefix pyenv-virtualenvwrapper)/bin/pyenv-sh-virtualenvwrapper"
 
 # go envvar
@@ -336,6 +366,18 @@ export LIBRARY_PATH="/usr/local/lib:/usr/lib"
 if [[ -e "${HOME}/.iterm2_shell_integration.bash" ]] && [[ "${platform}" == 'darwin' ]]; then
     . "${HOME}/.iterm2_shell_integration.bash"
 fi
+
+#finally let's try to keep any duplicates out of the path...
+export PATH=$(echo -n "$PATH" | awk -v RS=':' -v ORS=':' '!a[$0]++' | sed 's/:$//')
+# clean up extra environment variables
+if [[ $platform == 'wsl' ]]; then
+    # get a list of environment variables that are windows specific and not
+    # needed in wsl
+
+    unset $( env | grep -E '^(ALLUSERSPROFILE|APPDATA|CommonProgramFiles|CommonProgramFiles(x86)?|COMPUTERNAME|ComSpec|HOMEDRIVE|HOMEPATH|LOCALAPPDATA|LOGONSERVER|NUMBER_OF_PROCESSORS|OS|Path|PATHEXT|PROCESSOR_ARCHITECTURE|PROCESSOR_IDENTIFIER|PROCESSOR_LEVEL|PROCESSOR_REVISION|ProgramData|ProgramFiles(x86)?|PROMPT|PSModulePath|PUBLIC|SystemDrive|SystemRoot|TEMP|TMP|USERDOMAIN|USERDOMAIN_ROAMINGPROFILE|USERNAME|USERPROFILE|WINDIR)=' | awk -F= '{print $1}' )
+    # pipe env through awk to strip the values from the envvars
+    env | awk -F= '{print $1}'
+fi
 # set shell option histverify to on so we can edit history commands before executing
 # not on mac?  find out later, not imp now.
 # setopt -s histverify
@@ -351,11 +393,13 @@ fi
 # setting the log file *will* break VimR.app
 # export TSS_LOG="-level verbose ${HOME}/tmp/tsserver.log"
 
-case $- in
+case $- in #interactive
   *i*)
       # homebrew fortune :-) should already be in PATH
       if [ -f "/usr/local/bin/fortune" ] || [ -f "/usr/games/fortune" ]; then
-          fortune -ao
+          fortune -aoc
+          # also just for kicks put a least one ascii
+          fortune -aoc ascii-art
       fi;;
   *) # we aren't interactive, so nothing below here matters
       return

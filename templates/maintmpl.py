@@ -29,27 +29,31 @@ def pathwalker_gen(startpath,prune=[]):
             yield f
             # print('{}{}'.format(subindent, f))
 
-def load_module(self, fullname):
-    """
-    Iterate over the search path to locate and load fullname.
-    """
-    root, base, target = fullname.partition(self.root_name + '.')
-    for prefix in self.search_path:
-        try:
-            extant = prefix + target
-            __import__(extant)
-            mod = sys.modules[extant]
-            sys.modules[fullname] = mod
-            return mod
-        except ImportError:
-            pass
-    else:
-        raise ImportError(
-            "The '{target}' package is required; "
-            "normally this is bundled with this package so if you get "
-            "this warning, consult the packager of your "
-            "distribution.".format(**locals())
-        )
+
+#  def load_module(self, fullname):
+# need to come back to this I don't remember why I had a class func here.
+# 8/30/2025 2:42:50 PM 
+#  def load_module(fullname):
+#      """
+#      Iterate over the search path to locate and load fullname.
+#      """
+#      root, base, target = fullname.partition(root_name + '.')
+#      for prefix in self.search_path:
+#          try:
+#              extant = prefix + target
+#              __import__(extant)
+#              mod = sys.modules[extant]
+#              sys.modules[fullname] = mod
+#              return mod
+#          except ImportError:
+#              pass
+#      else:
+#          raise ImportError(
+#              "The '{target}' package is required; "
+#              "normally this is bundled with this package so if you get "
+#              "this warning, consult the packager of your "
+#              "distribution.".format(**locals())
+#          )
 
 class CustomLogFormatter(logging.Formatter):
     """CustomLogFormatter - Setup class for custom log formatting"""

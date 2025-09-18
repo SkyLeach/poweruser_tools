@@ -7,7 +7,7 @@
 // @include     https://*.reddit.com/r/*/comments/*
 // @version     0.1
 // @grant       GM_addStyle
-// @require https://unpkg.com/compromise@latest/builds/compromise.min.js
+// @require https://unpkg.com/compromise@latest/builds/compromise.js
 // @require https://d3js.org/d3.v4.min.js
 // @require https://d3js.org/d3-scale-chromatic.v1.min.js
 // ==/UserScript==
