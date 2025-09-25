@@ -257,6 +257,15 @@ nmap <leader>gP <Plug>(coc-codeaction-line)
 xmap <leader>gP <Plug>(coc-codeaction-selected)
 nmap <leader>gPA <Plug>(coc-codeaction)
 
+augroup json_ft
+  au!
+  " set ojs filetype.  typescript handled in next group.
+  autocmd BufNewFile,BufRead *.ojs set filetype=typescript
+  autocmd BufNewFile,BufRead *.json,*.ipynb setl
+        \ sw=2 sts=2 ts=2 tw=80 syn=json et ff=unix foldmethod=syntax
+        \ formatexpr=CocAction('formatSelected')
+augroup END
+
 augroup mygroup
   autocmd!
   " Setup formatexpr specified filetype(s).
@@ -284,13 +293,6 @@ augroup mygroup
   " Update signature help on jump placeholder.
   autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
 augroup end
-augroup json_ft
-  au!
-  autocmd BufNewFile,BufRead *.json,*.ipynb setl
-        \ sw=2 sts=2 ts=2 tw=80 syn=json et ff=unix foldmethod=syntax
-        \ formatexpr=CocAction('formatSelected')
-augroup END
-
 " Applying code actions to the selected code block
 " Example: `<leader>aap` for current paragraph
 xmap <leader>a  <Plug>(coc-codeaction-selected)
@@ -708,11 +710,28 @@ let g:neoterm_size=16 " terminal split size
 let g:neoterm_autoscroll=1 " scroll to the bottom when running a command
 " let g:neoterm_repl_python = ['C:\Users\mattg\Envs\srs\Scripts\Activate.ps1', 'ipython']
 " 3/12/2025 5:14:17 AM
-let g:neoterm_repl_python = ['C:\\Python313\\Scripts\\ipython.exe']
+let g:neoterm_repl_python = ['C:/Python313/Scripts/ipython.exe']
+" Tell neoterm not to automatically close the window when the process exits.
+let g:neoterm_autoclose = 0
 " *********************** SET UP POWERSHELL ***********************
-" let g:neoterm_repl_python = ['C:\Users\mattg\Envs\srs\Scripts\activate.bat', 'ipython']
-" let g:neoterm_shell=$PSHOME . '\pwsh.exe'
+let g:neoterm_repl_python = ['C:/Users/mattg/srs/python-scanner/activate', 'ipython']
+" set g:neoterm_shell = system get-command path to pwsh.exe like
+" =system('get-command pwsh').stdouttrim()
+
+" When set to 1 neoterm will send the commands to the neoterm buffer linked to
+" the current tab instead of the last active neoterm.
+" Default value: 0
+let g:neoterm_term_per_tab=1
+" set powershel as the DEFAULT
+let g:neoterm_shell='C:/PROGRA~1/PowerShell/7/pwsh.exe'
 " let g:neoterm_shell='C:\Users\mattg\AppData\Local\Microsoft\WindowsApps\Microsoft.PowerShell_8wekyb3d8bbwe\pwsh.exe'
+" visually map to send REPL to neoterm (or other REPL)
+" Use gx{text-object} in normal mode
+nmap gx <Plug>(neoterm-repl-send)
+" Send selected contents in visual mode.
+xmap gx <Plug>(neoterm-repl-send)
+" Like |<Plug>(neoterm-repl-send)|, but for lines. For example,
+nmap gxx <Plug>(neoterm-repl-send-line)
 " 10/12/2024 2:04:12 PM - try using alternative way to set shell as I'm having issues with the above method
 if g:is_win
   " **** CMD.EXE
@@ -733,8 +752,10 @@ if g:is_win
   " let &shellpipe  = '2>&1 | %%{ "$_" } | tee %s; exit $LastExitCode'
   " set shellquote= shellxquote=
   " **************** NEW powershell ****************
+" use correct comment market for powershell
+  let g:neoterm_marker = ';#neoterm'
   " set shell=powershell
-  set shell=C:\PROGRA~1\PowerShell\7\pwsh.exe
+  set shell=C:/PROGRA~1/PowerShell/7/pwsh.exe
   let g:neoterm_shell=&shell
   " set shellxquote=
   " let &shellcmdflag = '-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command '
