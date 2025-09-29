@@ -1249,6 +1249,9 @@ endfunction
 " require("config.lazy")
 " EOF
 lua <<EOF
+require('fzf-lua').register_ui_select()
+-- FzfLua.files()
+
 require("mason").setup()
 -- local utils = require('CopilotChat.config.utils')
 -- local icons = require('config.icons')
@@ -1256,40 +1259,61 @@ require("mason").setup()
 
 -- Copilot autosuggestions
 -- vim.g.copilot_no_tab_map = true
--- vim.g.copilot_hide_during_completion = false
+vim.g.copilot_hide_during_completion = false
 -- vim.g.copilot_proxy_strict_ssl = false
 -- vim.keymap.set('i', '<S-Tab>', 'copilot#Accept("\\<S-Tab>")', { expr = true, replace_keycodes = false })
 
 -- Copilot chat
+vim.g.copilot_no_tab_map = true
+vim.keymap.set('i', '<S-Tab>', 'copilot#Accept("\\<S-Tab>")', { expr = true, replace_keycodes = false })
 local chat = require('CopilotChat')
 chat.setup({
-    model = 'gpt-4.1',
-    debug = false,
-    temperature = 0,
-    sticky = {
-        '#buffers',
-    },
-    chat_autocomplete = false,
-    auto_fold = true,
+    -- model = 'Claude sonnet-1.3', -- claude-2, claude-instant-100k, gpt-4o, gpt-4o-mini, gpt-4o-2024-08-06, gemma3:1b
+    -- model = '1', -- claude-2, claude-instant-100k, gpt-4o, gpt-4o-mini, gpt-4o-2024-08-06, gemma3:1b
+    debug = true,
+    -- temperature = 0,
+    temperature = 0.3,           -- Lower = focused, higher = creative
+    window = {
+        layout = 'float',       -- 'vertical', 'horizontal', 'float'
+        -- width = 0.5,              -- 50% of screen width
+        width = 80, -- Fixed width in columns
+        height = 20, -- Fixed height in rows
+        border = 'rounded', -- 'single', 'double', 'rounded', 'solid'
+        title = '🤖 AI Assistant',
+        zindex = 100, -- Ensure window stays on top
+        },
+    headers = {
+        user = '👤 You',
+        assistant = '🤖 Copilot',
+        tool = '🔧 Tool',
+        },
+    separator = '━━',
+    auto_fold = true, -- Automatically folds non-assistant messages
+    auto_insert_mode = true,     -- Enter insert mode when opening
+   -- sticky = {
+   --     '#buffers',
+   -- },
+    chat_autocomplete = true,
+    -- auto_fold = true,
 --     headers = {
 --         user = icons.ui.User,
 --         assistant = icons.ui.Bot,
 --         tool = icons.ui.Tool,
 --     },
-    providers = {
-      ollama = {
-        get_url = function(opts) return "https://127.0.0.1:11434" end,
-        -- get_headers = function() return { ["Authorization"] = "Bearer " .. api_key } end,
-        get_models = function() return { { id = "gemma3:1b", name = "gemma3:1b" } } end,
-        prepare_input = require('CopilotChat.config.providers').copilot.prepare_input,
-        prepare_output = require('CopilotChat.config.providers').copilot.prepare_output,
-      }
-    },
+   -- providers = {
+   --   ollama = {
+   --     get_url = function(opts) return--https://127.0.0.1:11434" end,
+   --     -- get_headers = function() return { ["Authorization"] =--Bearer-- .. api_key } end,
+   --     get_models = function() return { { id ="gemma3:1b", name ="gemma3:1b" } } end,
+   --     prepare_input = require('CopilotChat.config.providers').copilot.prepare_input,
+   --     prepare_output = require('CopilotChat.config.providers').copilot.prepare_output,
+   --   }
+   -- },
 
     mappings = {
         reset = false,
         complete = {
-            insert = '<Tab>',
+            insert = '<S-Tab>',
         },
         show_diff = {
             full_diff = true,
@@ -1325,11 +1349,32 @@ chat.setup({
             description = 'AI Generate Commit',
         },
     },
-    providers = {
-        github_models = {
-            disabled = false,
-        },
-    },
+    -- providers = {
+    --   ollama = {
+    --     get_url = function(opts) return "https://127.0.0.1:11434" end,
+    --     -- get_headers = function() return { ["Authorization"] = "Bearer " .. api_key } end,
+    --     get_models = function() return {
+    --         { id = "deepseek-r1:latest", name = "deepseek-r1:latest" },
+    --         { id = "testing:latest", name = "testing:latest" },
+    --         { id = "dolphin3:8b", name = "dolphin3:8b" },
+    --         { id = "dolphin-mixtral:8x7b", name = "dolphin-mixtral:8x7b" },
+    --         { id = "dolphin-mixtral:8x22b", name = "dolphin-mixtral:8x22b" },
+    --         { id = "gemma3:1b", name = "gemma3:1b" }
+    --     } end,
+    --     prepare_input = require('CopilotChat.config.providers').copilot.prepare_input,
+    --     prepare_output = require('CopilotChat.config.providers').copilot.prepare_output,
+    --   },
+    --   github_models = {
+    --     get_models = function() return {
+    --         { id = "gpt-4o", name = "gpt-4o" },
+    --         { id = "gpt-4o-mini", name = "gpt-4o-mini" },
+    --         { id = "gpt-4o-2024-08-06", name = "gpt-4o-2024-08-06" },
+    --         { id = "claude-2", name = "claude-2" },
+    --         { id = "claude-instant-100k", name = "claude-instant-100k" },
+    --     } end,
+    --     disabled = false,
+    --   },
+    -- },
 })
 -- Setup extensions
 -- require('config.copilot_extensions')
@@ -1351,14 +1396,13 @@ chat.setup({
     vim.keymap.set({ 'n' }, '<leader>am', chat.select_model, { desc = 'AI Models' })
     vim.keymap.set({ 'n', 'v' }, '<leader>ap', chat.select_prompt, { desc = 'AI Prompts' })
     vim.keymap.set({ 'n', 'v' }, '<leader>aq', function()
-    vim.ui.input({
-        prompt = 'AI Question> ',
-    }, function(input)
-        if input ~= '' then
+      vim.ui.input({ prompt = 'AI Question> ', },
+        function(input)
+          if input ~= '' then
             chat.ask(input)
-        end
-    end)
-end, { desc = 'AI Question' })
+          end
+        end)
+      end, { desc = 'AI Question' })
 
 -- MCP hub
 -- require('mcphub').setup({
