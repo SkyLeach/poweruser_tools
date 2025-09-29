@@ -1,0 +1,8 @@
+{
+  "max_memory": "12GB",
+  "num_ctx": 2048,
+  "num_batch": 512,
+  "num_threads": 8,
+  "use_mmap": true,
+  "use_mlock": false
+}
