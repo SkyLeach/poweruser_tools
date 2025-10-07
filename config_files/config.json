@@ -1,0 +1,45 @@
+{
+  "gpu": true,
+  "cpu_only": false,
+  "models": [
+    {
+      "name": "gemma3:1b",
+      "format": "ggml",
+      "model_type": "gemma3",
+      "vocab_type": "gpt2",
+      "context_length": 4096,
+      "embedding_length": 4096,
+      "num_vocab": 50257,
+      "num_ctx": 4096,
+      "num_embd": 2048,
+      "num_head": 16,
+      "num_layer": 24,
+      "description": "Gemma 3 1B model"
+    }, {
+      "name": "gpt-oss:20b-cloud",
+      "description": "GPT-OSS 20B Cloud model"
+    }, {
+      "name": "dolphin3:8b",
+      "format": "ggml",
+      "model_type": "dolphin3",
+      "vocab_type": "gpt2",
+      "context_length": 8192,
+      "embedding_length": 8192,
+      "num_vocab": 50257,
+      "num_ctx": 8192,
+      "num_embd": 4096,
+      "num_head": 32,
+      "num_layer": 32,
+      "file_size": "8GB",
+      "description": "Dolphin 3 8B model"
+    }
+  ],
+  "default_model": "dolphin3:8b",
+  "max_memory": "32GB",
+  "temp_dir": "/Users//tmp",
+  "num_ctx": 1024,
+  "num_batch": 512,
+  "num_threads": 4,
+  "use_mmap": true,
+  "use_mlock": false
+}
