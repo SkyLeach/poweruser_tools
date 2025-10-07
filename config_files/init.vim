@@ -727,11 +727,11 @@ let g:neoterm_shell='C:/PROGRA~1/PowerShell/7/pwsh.exe'
 " let g:neoterm_shell='C:\Users\mattg\AppData\Local\Microsoft\WindowsApps\Microsoft.PowerShell_8wekyb3d8bbwe\pwsh.exe'
 " visually map to send REPL to neoterm (or other REPL)
 " Use gx{text-object} in normal mode
-nmap gx <Plug>(neoterm-repl-send)
+nmap <leader>gx <Plug>(neoterm-repl-send)
 " Send selected contents in visual mode.
-xmap gx <Plug>(neoterm-repl-send)
+xmap <leader>gx <Plug>(neoterm-repl-send)
 " Like |<Plug>(neoterm-repl-send)|, but for lines. For example,
-nmap gxx <Plug>(neoterm-repl-send-line)
+nmap <leader>gxx <Plug>(neoterm-repl-send-line)
 " 10/12/2024 2:04:12 PM - try using alternative way to set shell as I'm having issues with the above method
 if g:is_win
   " **** CMD.EXE
@@ -1264,10 +1264,96 @@ vim.g.copilot_hide_during_completion = false
 -- vim.keymap.set('i', '<S-Tab>', 'copilot#Accept("\\<S-Tab>")', { expr = true, replace_keycodes = false })
 
 -- Copilot chat
-vim.g.copilot_no_tab_map = true
+vim.g.copilot_no_tab_map = false
 vim.keymap.set('i', '<S-Tab>', 'copilot#Accept("\\<S-Tab>")', { expr = true, replace_keycodes = false })
+require('CopilotChat.config').providers.openai = {
+    prepare_input = require("CopilotChat.config.providers").copilot.prepare_input,
+    prepare_output = require("CopilotChat.config.providers").copilot.prepare_output,
+
+    get_url = function() return "https://api.openai.com/v1/chat/completions" end,
+
+    get_headers = function()
+        local api_key = assert(os.getenv("OPENAI_API_KEY"), "OPENAI_API_KEY env var not set")
+        return {
+            Authorization = "Bearer " .. api_key,
+            ["Content-Type"] = "application/json",
+        }
+    end,
+
+    get_models = function(headers)
+        local response, err =
+            require("CopilotChat.utils").curl_get("https://api.openai.com/v1/models", {
+                headers = headers,
+                json_response = true,
+            })
+        if err then error(err) end
+        return vim
+            .iter(response.body.data)
+            :filter(function(model)
+                local exclude_patterns = {
+                    "audio",
+                    "babbage",
+                    "dall%-e",
+                    "davinci",
+                    "embedding",
+                    "image",
+                    "moderation",
+                    "realtime",
+                    "transcribe",
+                    "tts",
+                    "whisper",
+                }
+                for _, pattern in ipairs(exclude_patterns) do
+                    if model.id:match(pattern) then return false end
+                end
+                return true
+            end)
+            :map(
+                function(model)
+                    return {
+                        id = model.id,
+                        name = model.id,
+                    }
+                end
+            )
+            :totable()
+    end,
+}
+require('CopilotChat.config').providers.ollama = {
+    prepare_input = require('CopilotChat.config.providers').copilot.prepare_input,
+    prepare_output = require('CopilotChat.config.providers').copilot.prepare_output,
+
+    get_models = function(headers)
+        local response, err = require('CopilotChat.utils').curl_get('http://localhost:11434/v1/models', {
+            headers = headers,
+            json_response = true,
+        })
+
+        if err then
+            error(err)
+        end
+
+        return vim.tbl_map(function(model)
+            return {
+                id = model.id,
+                name = model.id,
+            }
+        end, response.body.data)
+    end,
+
+    get_url = function()
+        return 'http://localhost:11434/v1/chat/completions'
+    end,
+}
 local chat = require('CopilotChat')
 chat.setup({
+    model = 'qwen3-coder:480b-cloud', -- claude-2, claude-instant-100k, gpt-4o, gpt-4o-mini, gpt-4o-2024-08-06, gemma3:1b
+    api_endpoint = "http://localhost:11434/v1/chat/completions", -- Replace with the actual endpoint
+    api_key = assert(os.getenv("OPENAI_API_KEY"), "OPENAI_API_KEY env var not set"), -- If authentication is required
+    temperature = 0.7, -- Adjust as needed
+    max_tokens = 1024, -- Adjust as needed
+    timeout = 30000, -- Timeout in milliseconds
+    -- system_prompt = "You are an expert coding assistant.", -- Customize as needed
     -- model = 'Claude sonnet-1.3', -- claude-2, claude-instant-100k, gpt-4o, gpt-4o-mini, gpt-4o-2024-08-06, gemma3:1b
     -- model = '1', -- claude-2, claude-instant-100k, gpt-4o, gpt-4o-mini, gpt-4o-2024-08-06, gemma3:1b
     debug = true,
@@ -1289,7 +1375,7 @@ chat.setup({
         },
     separator = '━━',
     auto_fold = true, -- Automatically folds non-assistant messages
-    auto_insert_mode = true,     -- Enter insert mode when opening
+    auto_insert_mode = false,     -- Enter insert mode when opening
    -- sticky = {
    --     '#buffers',
    -- },
@@ -1300,15 +1386,30 @@ chat.setup({
 --         assistant = icons.ui.Bot,
 --         tool = icons.ui.Tool,
 --     },
-   -- providers = {
-   --   ollama = {
-   --     get_url = function(opts) return--https://127.0.0.1:11434" end,
-   --     -- get_headers = function() return { ["Authorization"] =--Bearer-- .. api_key } end,
-   --     get_models = function() return { { id ="gemma3:1b", name ="gemma3:1b" } } end,
-   --     prepare_input = require('CopilotChat.config.providers').copilot.prepare_input,
-   --     prepare_output = require('CopilotChat.config.providers').copilot.prepare_output,
-   --   }
-   -- },
+    providers = {
+      ollamastream = {
+        -- get_url = function()
+        --     return 'http://localhost:11434/v1/chat/completions'
+        -- end,
+        get_url = function(opts) return "http://localhost:11434" end,
+        -- get_url = function() return 'http://localhost:11434/v1/chat/completions' end,
+        -- get_headers = function() return { ["Authorization"] =--Bearer-- .. api_key } end,
+        get_models = function() return {
+          { id = "deepseek-r1:latest", name = "deepseek-r1:latest" },
+          { id = "testing:latest", name = "testing:latest" },
+          { id = "dolphin3:8b", name = "dolphin3:8b" },
+          { id = "dolphin-mixtral:8x7b", name = "dolphin-mixtral:8x7b" },
+          { id = "dolphin-mixtral:8x22b", name = "dolphin-mixtral:8x22b" },
+          { id = "gemma3:1b", name = "gemma3:1b" },
+          { id ="qwen3-coder:480b-cloud", name ="qwen3-coder:480b-cloud" }
+        } end,
+
+        -- get_models = function() return { { id = "gemma3:1b", name = "gemma3:1b" }, { id ="qwen3-coder:480b-cloud", name ="qwen3-coder:480b-cloud" } } end,
+        -- get_models = function() return { { id ="qwen3-coder:480b-cloud", name ="qwen3-coder:480b-cloud" } } end,
+        prepare_input = require('CopilotChat.config.providers').copilot.prepare_input,
+        prepare_output = require('CopilotChat.config.providers').copilot.prepare_output,
+      }
+    },
 
     mappings = {
         reset = false,
@@ -1348,10 +1449,10 @@ chat.setup({
             mapping = '<leader>ac',
             description = 'AI Generate Commit',
         },
-    },
+    }
     -- providers = {
     --   ollama = {
-    --     get_url = function(opts) return "https://127.0.0.1:11434" end,
+    --     get_url = function(opts) return "http://127.0.0.1:11434" end,
     --     -- get_headers = function() return { ["Authorization"] = "Bearer " .. api_key } end,
     --     get_models = function() return {
     --         { id = "deepseek-r1:latest", name = "deepseek-r1:latest" },
@@ -1395,6 +1496,14 @@ chat.setup({
     vim.keymap.set({ 'n' }, '<leader>as', chat.stop, { desc = 'AI Stop' })
     vim.keymap.set({ 'n' }, '<leader>am', chat.select_model, { desc = 'AI Models' })
     vim.keymap.set({ 'n', 'v' }, '<leader>ap', chat.select_prompt, { desc = 'AI Prompts' })
+    vim.keymap.set({ 'n', 'v' }, '<leader>al', function()
+      vim.ui.input({ prompt = 'AI Session Load> ', },
+        function(input)
+          if input ~= '' then
+            chat.load(input)
+          end
+        end)
+      end, { desc = 'AI Session Load' })
     vim.keymap.set({ 'n', 'v' }, '<leader>aq', function()
       vim.ui.input({ prompt = 'AI Question> ', },
         function(input)
