@@ -132,6 +132,7 @@ set shortmess+=c
 let rg_binary="C:/ProgramData/chocolatey/bin/rg.exe"
 let rg_format="%f:%l:%m,%f:%l%m,%f  %l%m"
 let rg_command=rg_binary . " --vimgrep --smart-case --hidden $*"
+" let rg_command=rg_binary . " --vimgrep --smart-case --hidden 'function.*\n([^}]*\n)+^[}]$' @(Get-ChildItem .\matthew-gregory-skill-relevance-timeline\ -File -Filter "*@*.js" | ForEach-Object -Process { echo $_.FullName})
 let &grepprg=rg_command
 let &grepformat=rg_format
 " set grepprg=C:/ProgramData/chocolatey/bin/grep.exe
@@ -199,6 +200,8 @@ nnoremap <silent><nowait> <space>a  :<C-u>CocList diagnostics<cr>
 nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>
 " " Show commands.
 nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
+" " Show buffers.
+nnoremap <silent><nowait> <space>b  :<C-u>CocList buffers<cr>
 " " Find symbol of current document.
 nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
 " " coc-marketplace
@@ -333,7 +336,8 @@ if has('nvim-0.4.0') || has('patch-8.2.0750')
   vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
   vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
 endif
-
+" update coc completions with copilot
+inoremap <silent><expr><c-l> coc#refresh()
 " Use CTRL-S for selections ranges
 " Requires 'textDocument/selectionRange' support of language server
 nmap <silent> <C-s> <Plug>(coc-range-select)
@@ -722,7 +726,7 @@ let g:neoterm_repl_python = ['C:/Users/mattg/srs/python-scanner/activate', 'ipyt
 " the current tab instead of the last active neoterm.
 " Default value: 0
 let g:neoterm_term_per_tab=1
-" set powershel as the DEFAULT
+" set powershell as the DEFAULT
 let g:neoterm_shell='C:/PROGRA~1/PowerShell/7/pwsh.exe'
 " let g:neoterm_shell='C:\Users\mattg\AppData\Local\Microsoft\WindowsApps\Microsoft.PowerShell_8wekyb3d8bbwe\pwsh.exe'
 " visually map to send REPL to neoterm (or other REPL)
@@ -895,9 +899,9 @@ nnoremap <leader><c-f>ew :exec trim(system('&' . SetBrowserCmd("msedge") . " -ne
 nnoremap <leader><c-f>fw :exec trim(system('&' . SetBrowserCmd("firefox") . " -new-tab " . expand("<cfile>")))<CR>
 nnoremap <leader><c-f>cw :exec trim(system('&' . SetBrowserCmd("chrome") . " -new-tab " . expand("<cfile>")))<CR>
 " On Windows, update and open current file in associated browser.
-nnoremap <leader><c-f>we :update<Bar>exec trim(system(SetBrowserCmd("msedge") . " -new-tab file://" . expand("%")))<CR>
-nnoremap <leader><c-f>wf :update<Bar>exec trim(system(SetBrowserCmd("firefox") . " -new-tab file://" . expand("%")))<CR>
-nnoremap <leader><c-f>wc :update<Bar>exec trim(system(SetBrowserCmd("chrome") . " -new-tab " file://" . expand("%")))<CR>
+" nnoremap <leader><c-f>we :update<Bar>exec trim(system(SetBrowserCmd("msedge") . " -new-tab file://" . expand("%")))<CR>
+" nnoremap <leader><c-f>wf :update<Bar>exec trim(system(SetBrowserCmd("firefox") . " -new-tab file://" . expand("%")))<CR>
+" nnoremap <leader><c-f>wc :update<Bar>exec trim(system(SetBrowserCmd("chrome") . " -new-tab " file://" . expand("%")))<CR>
 " original settings for CMD
 " nnoremap <leader><c-o><i> :!start C:\PROGRA~2\MICROS~1\Edge\APPLIC~1\msedge.exe -new-tab  <cfile><CR>
 " nnoremap <leader><c-o><f> :!start c:\progra~1\mozill~1\firefox.exe -new-tab  <cfile><CR>
@@ -916,19 +920,20 @@ nnoremap <leader><c-f>wc :update<Bar>exec trim(system(SetBrowserCmd("chrome") . 
 " nmap <leader><c-o> <Plug>(openbrowser-open)
 " nmap <leader><c-o> :call OpenBrowserConfig("{url}")<cr>
 " send current selection
-" vmap <leader><c-o> <Plug>(openbrowser-open)
-" vmap <leader><c-o> :call OpenBrowserConfig("{url}")<cr>
+vmap <leader><c-o> <Plug>(openbrowser-open)
+vmap <leader><c-o> :call OpenBrowserConfig("{url}")<cr>
 " send current line and move down
-" nmap <leader><c-s> <Plug>(openbrowser-search)
+nmap <leader><c-s> <Plug>(openbrowser-search)
 " send current selection
-" vmap <leader><c-s> <Plug>(openbrowser-search)
-" nmap <Leader>te :vert rightb Tnew<CR>:wincmd l<CR>a<CR>C:\Users\mattg\Envs\srs\Scripts\activate.bat<CR>
-" nmap <Leader>to :vert rightb To<CR>:wincmd l<CR>a<CR>C:\Users\mattg\Envs\srs\Scripts\Activate.ps1<CR>
-" nmap <Leader>tb :Tnew<CR>:wincmd j<CR>a<CR>C:\Users\mattg\Envs\srs\Scripts\Activate.ps1<CR>
-" nmap <Leader>te :vert rightb Tnew<CR>:wincmd l<CR>source activate ./env<CR>
-" nmap <Leader>t1e :vert rightb Tnew<CR>:wincmd l<CR>source activate ../env<CR>
-" nmap <Leader>t2e :vert rightb Tnew<CR>:wincmd l<CR>source activate ../../env<CR>
-" nmap <Leader>t3e :vert rightb Tnew<CR>:wincmd l<CR>source activate ../../../env<CR>
+vmap <leader><c-s> <Plug>(openbrowser-search)
+nmap <Leader>te :horiz belowright Tnew<CR>:wincmd l<CR>a<CR>C:\Users\mattg\Envs\srs\Scripts\activate.bat<CR>
+nmap <Leader>to :horiz belowright To<CR>:wincmd l<CR>a<CR>C:\Users\mattg\Envs\srs\Scripts\Activate.ps1<CR>
+nmap <Leader>tb :Tnew<CR>:wincmd j<CR>a<CR>C:\Users\mattg\Envs\srs\Scripts\Activate.ps1<CR>
+nmap <Leader>te :horiz belowright Tnew<CR>:wincmd l<CR>source activate ./env<CR>
+nmap <Leader>t1e :horiz belowright Tnew<CR>:wincmd l<CR>source activate ../env<CR>
+nmap <Leader>t2e :horiz belowright Tnew<CR>:wincmd l<CR>source activate ../../env<CR>
+nmap <Leader>t3e :horiz belowright Tnew<CR>:wincmd l<CR>source activate ../../../env<CR>
+nnoremap <leader>tt :horizontal belowright exec 'Ttoggle'<cr>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " VIMSPECTOR config:
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -1086,6 +1091,12 @@ let g:test#preserve_screen = 1
 " let test#strategy = "asyncrun_background"
 let test#strategy = "dispatch"
 " let g:asyncrun_open = 1
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" coc-llamautoma
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Example key mappings
+nmap <silent> <Leader>lc :CocCommand llamautoma.chat<CR>
+nmap <silent> <Leader>ls :CocCommand llamautoma.sync<CR>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Personal Function taken from stackoverflow 7/26/2021 9:52:07 AM
 " (here TBE)[https://stackoverflow.com/questions/1533565/how-to-get-visually-selected-text-in-vimscript].
@@ -1259,12 +1270,12 @@ require("mason").setup()
 
 -- Copilot autosuggestions
 -- vim.g.copilot_no_tab_map = true
+vim.g.copilot_proxy = 'http://localhost:11435'  
+vim.g.copilot_proxy_strict_ssl = false
 vim.g.copilot_hide_during_completion = false
--- vim.g.copilot_proxy_strict_ssl = false
--- vim.keymap.set('i', '<S-Tab>', 'copilot#Accept("\\<S-Tab>")', { expr = true, replace_keycodes = false })
+vim.g.copilot_no_tab_map = false
 
 -- Copilot chat
-vim.g.copilot_no_tab_map = false
 vim.keymap.set('i', '<S-Tab>', 'copilot#Accept("\\<S-Tab>")', { expr = true, replace_keycodes = false })
 require('CopilotChat.config').providers.openai = {
     prepare_input = require("CopilotChat.config.providers").copilot.prepare_input,
