@@ -717,8 +717,9 @@ let g:neoterm_autoscroll=1 " scroll to the bottom when running a command
 let g:neoterm_repl_python = ['C:/Python313/Scripts/ipython.exe']
 " Tell neoterm not to automatically close the window when the process exits.
 let g:neoterm_autoclose = 0
-" *********************** SET UP POWERSHELL ***********************
 let g:neoterm_repl_python = ['C:/Users/mattg/srs/python-scanner/activate', 'ipython']
+let g:neoterm_repl_enable_ipython_paste_magic = 1
+" *********************** SET UP POWERSHELL ***********************
 " set g:neoterm_shell = system get-command path to pwsh.exe like
 " =system('get-command pwsh').stdouttrim()
 
@@ -736,6 +737,7 @@ nmap <leader>gx <Plug>(neoterm-repl-send)
 xmap <leader>gx <Plug>(neoterm-repl-send)
 " Like |<Plug>(neoterm-repl-send)|, but for lines. For example,
 nmap <leader>gxx <Plug>(neoterm-repl-send-line)
+nmap <leader>gxs :T %<cr>
 " 10/12/2024 2:04:12 PM - try using alternative way to set shell as I'm having issues with the above method
 if g:is_win
   " **** CMD.EXE
@@ -792,6 +794,15 @@ nnoremap <leader>nt :NERDTree<cr>
 nnoremap <leader>ntf :NERDTreeFind %<cr>
 let g:src = expand('~\src')
 nnoremap <leader>nts :execute ":NERDTree" g:src<CR>
+"" NERDTree configuration
+let g:NERDTreeChDirMode=2
+let g:NERDTreeIgnore=['\.rbc$', '\~$', '\.pyc$', '\.db$', '\.sqlite$', '__pycache__']
+let g:NERDTreeSortOrder=['^__\.py$', '\/$', '*', '\.swp$', '\.bak$', '\~$']
+let g:NERDTreeShowBookmarks=1
+let g:nerdtree_tabs_focus_on_files=1
+let g:NERDTreeMapOpenInTabSilent = '<RightMouse>'
+let g:NERDTreeWinSize = 60
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " SkyLeach Note: CtrlP
 " settings for CtrlP plugin
