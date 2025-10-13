@@ -12,7 +12,8 @@ let g:is_linux         = 0
 let g:is_mac           = 0
 let g:is_cygwin        = 0
 let g:is_wsl           = 0
-let g:is_pshell        = empty($PSVersionTable) ? 0 : 1
+" set g:psver =
+let g:is_pshell        = empty(system('$PSVersionTable')) ? 0 : 1
 " SkyLeach - 3/23/2025 10:48:07 PM - Set coc default testing
 " let g:coc_global_extensions = [
 "   \ 'coc-css',
@@ -115,7 +116,7 @@ set nobackup
 set nowritebackup
 
 " Give more space for displaying messages.
-set cmdheight=2
+set cmdheight=1
 set signcolumn=yes
 " set signcolumn=number
 
@@ -266,7 +267,7 @@ augroup json_ft
   autocmd BufNewFile,BufRead *.ojs set filetype=typescript
   autocmd BufNewFile,BufRead *.json,*.ipynb setl
         \ sw=2 sts=2 ts=2 tw=80 syn=json et ff=unix foldmethod=syntax
-        \ formatexpr=CocAction('formatSelected')
+        \ formatexpr=CocActionAsync('format')
 augroup END
 
 augroup mygroup
@@ -274,19 +275,24 @@ augroup mygroup
   " Setup formatexpr specified filetype(s).
   au FileType typescript,json,javascript,html setl 
     \ sw=2 sts=2 ts=2 tw=120 et ff=unix foldmethod=syntax wm=0 cc=120 tw=120
-    \ formatexpr=CocAction('formatSelected')
+    \ formatexpr=CocActionAsync('format')
   au FileType sql setl 
     \ sw=2 sts=2 ts=2 tw=100 et ff=unix foldmethod=syntax wm=0 cc=100 tw=100
-    \ formatexpr=CocAction('formatSelected')
+    \ formatexpr=CocActionAsync('format')
+  " There are three markdowns: markdown, *_web and *-web because one is for the
+  " web, the other comments on the web 
   au FileType markdown setl
     \ sw=4 sts=4 ts=4 tw=80 et ff=unix syn=markdown foldmethod=indent
-    " \ formatexpr=CocAction('formatSelected')
+    \ formatexpr=CocActionAsync('format')
+  au FileType markdown-web setl
+    \ sw=4 sts=4 ts=4 tw=300 cc=300 et ff=unix syn=markdown wrapmargin=0 foldmethod=syntax
+    \ formatexpr=CocActionAsync('format')
   au FileType markdown_web setl
-    \ sw=4 sts=4 ts=4 tw=300 cc=300 et ff=unix syn=markdown foldmethod=indent
-    " \ formatexpr=CocAction('formatSelected')
+    \ sw=4 sts=4 ts=4 tw=300 cc=300 et ff=unix syn=markdown wrapmargin=0 foldmethod=syntax
+    \ formatexpr=CocActionAsync('format')
   au FileType vim setl
     \ sw=2 sts=2 ts=2 tw=80 et foldmethod=indent
-    " \ formatexpr=CocAction('formatSelected')
+    \ formatexpr=CocActionAsync('format')
   " SkyLeach NOTE: foldmethod for python
   " au BufNewFile,BufRead *.py setl foldmethod=indent
   " au BufNewFile,BufRead *.json setl foldmethod=syntax
@@ -364,19 +370,20 @@ omap ic <Plug>(coc-classobj-i)
 xmap ac <Plug>(coc-classobj-a)
 omap ac <Plug>(coc-classobj-a)
 " 
+" " disabled for Chat reasons SkyLeach @ 10/13/2025 6:57:49 AM
 " " Use CTRL-S for selections ranges.
 " " Requires 'textDocument/selectionRange' support of LS, ex: coc-tsserver
-nmap <silent> <C-s> <Plug>(coc-range-select)
-xmap <silent> <C-s> <Plug>(coc-range-select)
+" nmap <silent> <C-s> <Plug>(coc-range-select)
+" xmap <silent> <C-s> <Plug>(coc-range-select)
 " 
 " " Add `:Format` command to format current buffer.
-command! -nargs=0 Format :call CocAction('format')
+command! -nargs=0 Format :call CocActionAsync('format')
 " 
 " " Add `:Fold` command to fold current buffer.
-command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+command! -nargs=? Fold :call     CocActionAsync('fold', <f-args>)
 " 
 " " Add `:OR` command for organize imports of the current buffer.
-command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
+command! -nargs=0 OR   :call     CocActionAsync('runCommand', 'editor.action.organizeImport')
 "
 " end of coc mostly
 
@@ -644,7 +651,7 @@ let g:mkdp_preview_options = {
 
 " use a custom markdown style must be absolute path
 " like '/Users/username/markdown.css' or expand('~/markdown.css')
-let g:mkdp_markdown_css = ''
+let g:mkdp_markdown_css = '.vim\bundle-disable\markdown-preview.nvim\app\_static\markdown.css'
 
 " use a custom highlight style must absolute path
 " like '/Users/username/highlight.css' or expand('~/highlight.css')
@@ -737,7 +744,8 @@ nmap <leader>gx <Plug>(neoterm-repl-send)
 xmap <leader>gx <Plug>(neoterm-repl-send)
 " Like |<Plug>(neoterm-repl-send)|, but for lines. For example,
 nmap <leader>gxx <Plug>(neoterm-repl-send-line)
-nmap <leader>gxs :T %<cr>
+" REPL command to run the current (saved) buffer from file on disk
+nmap <leader>gxs :T '& ".\%"'<cr>
 " 10/12/2024 2:04:12 PM - try using alternative way to set shell as I'm having issues with the above method
 if g:is_win
   " **** CMD.EXE
@@ -946,6 +954,11 @@ nmap <Leader>t2e :horiz belowright Tnew<CR>:wincmd l<CR>source activate ../../en
 nmap <Leader>t3e :horiz belowright Tnew<CR>:wincmd l<CR>source activate ../../../env<CR>
 nnoremap <leader>tt :horizontal belowright exec 'Ttoggle'<cr>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" MRU toggle mapping:
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+nnoremap <leader>mt :exec 'MRUToggle'<cr>
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " VIMSPECTOR config:
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:vimspector_enable_mappings = 'HUMAN'
@@ -995,10 +1008,10 @@ if exists('g:started_by_firenvim') && g:started_by_firenvim
     " TODO: review all of this if/when you get time, I don't trust it yet?
     " also, testing as of 7/26/2021 9:28:56 AM
     " set laststatus=0
-    au BufEnter youtube.com_*.txt set filetype=markdown
-    au BufEnter github.com_*.txt set filetype=markdown
-    au BufEnter reddit.com_*.txt set filetype=markdown
-    au BufEnter facebook.com_*.txt set filetype=markdown
+    au BufEnter youtube.com_*.txt set filetype=markdown-web
+    au BufEnter github.com_*.txt set filetype=markdown-web
+    au BufEnter reddit.com_*.txt set filetype=markdown-web
+    au BufEnter facebook.com_*.txt set filetype=markdown-web
     au BufEnter observablehq.com_*.txt set filetype=javascript
     au BufEnter atlassian.net_*.txt set filetype=confluencewiki
     " NOTE: takeover settings from doc:
@@ -1287,6 +1300,47 @@ vim.g.copilot_hide_during_completion = false
 vim.g.copilot_no_tab_map = false
 
 -- Copilot chat
+-- Mistral AI (gregoryconsulting.info)
+require('CopilotChat.config').providers.mistral = {
+    prepare_input = require('CopilotChat.config.providers').copilot.prepare_input,
+    prepare_output = require('CopilotChat.config.providers').copilot.prepare_output,
+
+    get_headers = function()
+        local api_key = assert(os.getenv('MISTRAL_API_KEY'), 'MISTRAL_API_KEY env not set')
+        return {
+            Authorization = 'Bearer ' .. api_key,
+            ['Content-Type'] = 'application/json',
+        }
+    end,
+
+    get_models = function(headers)
+        local response, err = require('CopilotChat.utils').curl_get('https://api.mistral.ai/v1/models', {
+            headers = headers,
+            json_response = true,
+        })
+
+        if err then
+            error(err)
+        end
+
+        return vim.iter(response.body.data)
+            :filter(function(model)
+                return model.capabilities.completion_chat
+            end)
+            :map(function(model)
+                return {
+                    id = model.id,
+                    name = model.name,
+                }
+            end)
+            :totable()
+    end,
+
+    get_url = function()
+        return 'https://api.mistral.ai/v1/chat/completions'
+    end,
+}
+-- Open AI (Chat GPT)
 vim.keymap.set('i', '<S-Tab>', 'copilot#Accept("\\<S-Tab>")', { expr = true, replace_keycodes = false })
 require('CopilotChat.config').providers.openai = {
     prepare_input = require("CopilotChat.config.providers").copilot.prepare_input,
