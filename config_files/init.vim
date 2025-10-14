@@ -12,8 +12,8 @@ let g:is_linux         = 0
 let g:is_mac           = 0
 let g:is_cygwin        = 0
 let g:is_wsl           = 0
-" set g:psver =
-let g:is_pshell        = empty(system('$PSVersionTable')) ? 0 : 1
+let g:psver            = system('$PSVersionTable')
+let g:is_pshell        = empty(g:psver) ? 0 : 1
 " SkyLeach - 3/23/2025 10:48:07 PM - Set coc default testing
 " let g:coc_global_extensions = [
 "   \ 'coc-css',
@@ -21,16 +21,16 @@ let g:is_pshell        = empty(system('$PSVersionTable')) ? 0 : 1
 "   \ ]
 if has('unix')
   if !has('macunix')
-    let g:is_linux = 1
+    let g:is_linux     = 1
   else
-    let g:is_mac = 1
+    let g:is_mac       = 1
   endif
-  let res = trim(system("uname -a | grep -i microsoft"))
+  let res              = trim(system("uname -a | grep -i microsoft"))
   if v:shell_error
-    let res = trim(system("uname -a | grep -i cygwin"))
-    let g:is_cygwin = v:shell_error ? 0 : 1
+    let res            = trim(system("uname -a | grep -i cygwin"))
+    let g:is_cygwin    = v:shell_error ? 0 : 1
   else
-    let g:is_wsl = 1
+    let g:is_wsl       = 1
   endif
 endif
 
@@ -112,6 +112,7 @@ set hidden
 
 " Some servers have issues with backup files, see #649.
 set encoding=utf-8
+let &fileencoding=&encoding
 set nobackup
 set nowritebackup
 
@@ -745,7 +746,7 @@ xmap <leader>gx <Plug>(neoterm-repl-send)
 " Like |<Plug>(neoterm-repl-send)|, but for lines. For example,
 nmap <leader>gxx <Plug>(neoterm-repl-send-line)
 " REPL command to run the current (saved) buffer from file on disk
-nmap <leader>gxs :T '& ".\%"'<cr>
+nmap <leader>gxs :execute 'T & ' . shellescape(expand('%:p'))<CR>
 " 10/12/2024 2:04:12 PM - try using alternative way to set shell as I'm having issues with the above method
 if g:is_win
   " **** CMD.EXE
@@ -865,7 +866,7 @@ let g:easy_align_ignore_groups = ['Comment', 'String']
 "   let g:openbrowser_browser_commands['args'][2] = a:target
 "   :call openbrowser()
 " endfunction
-function SetBrowserCmd(browser)
+function! SetBrowserCmd(browser)
   if ( a:browser == "chrome" )
       return "'C:/Program Files/Google/Chrome/Application/chrome.exe'"
   elseif ( a:browser == "edge" || a:browser == "msedge" || a:browser == "iexplore" )
@@ -1004,16 +1005,23 @@ call pathogen#helptags()
 "   endif
 " endfunction
 " autocmd UIEnter * call OnUIEnter(deepcopy(v:event))
+" we don't actually want these conditional for firenvim since thename is specific enough and opening them from another neovim instance or with a --server flag should work as well.
+au BufEnter *youtube.com_*.txt set filetype=markdown-web
+au BufEnter *github.com_*.txt set filetype=markdown-web
+au BufEnter *reddit.com_*.txt set filetype=markdown-web
+au BufEnter *facebook.com_*.txt set filetype=markdown-web
+au BufEnter *observablehq.com_*.txt set filetype=javascript
+au BufEnter *atlassian.net_*.txt set filetype=confluencewiki
 if exists('g:started_by_firenvim') && g:started_by_firenvim
     " TODO: review all of this if/when you get time, I don't trust it yet?
     " also, testing as of 7/26/2021 9:28:56 AM
     " set laststatus=0
-    au BufEnter youtube.com_*.txt set filetype=markdown-web
-    au BufEnter github.com_*.txt set filetype=markdown-web
-    au BufEnter reddit.com_*.txt set filetype=markdown-web
-    au BufEnter facebook.com_*.txt set filetype=markdown-web
-    au BufEnter observablehq.com_*.txt set filetype=javascript
-    au BufEnter atlassian.net_*.txt set filetype=confluencewiki
+    " au BufEnter youtube.com_*.txt set filetype=markdown-web
+    " au BufEnter github.com_*.txt set filetype=markdown-web
+    " au BufEnter reddit.com_*.txt set filetype=markdown-web
+    " au BufEnter facebook.com_*.txt set filetype=markdown-web
+    " au BufEnter observablehq.com_*.txt set filetype=javascript
+    " au BufEnter atlassian.net_*.txt set filetype=confluencewiki
     " NOTE: takeover settings from doc:
     " ( [README.md](https://github.com/glacambre/firenvim)) 
     "
