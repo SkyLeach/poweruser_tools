@@ -275,7 +275,7 @@ augroup mygroup
   autocmd!
   " Setup formatexpr specified filetype(s).
   au FileType typescript,json,javascript,html setl 
-    \ sw=2 sts=2 ts=2 tw=120 et ff=unix foldmethod=syntax wm=0 cc=120 tw=120
+    \ sw=2 sts=2 ts=2 tw=0 et ff=unix foldmethod=syntax wrapmargin=0 cc=200
     \ formatexpr=CocActionAsync('format')
   au FileType sql setl 
     \ sw=2 sts=2 ts=2 tw=100 et ff=unix foldmethod=syntax wm=0 cc=100 tw=100
