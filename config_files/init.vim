@@ -801,8 +801,9 @@ vnoremap <leader><cr> :TREPLSendSelection<cr> " send current selection
 nnoremap <leader>ntb :execute ":NERDTree" g:bundles<CR>
 nnoremap <leader>nt :NERDTree<cr>
 nnoremap <leader>ntf :NERDTreeFind %<cr>
-let g:src = expand('~\src')
-nnoremap <leader>nts :execute ":NERDTree" g:src<CR>
+nnoremap <leader>ntt :NERDTreeToggle %<cr>
+" let g:src = expand('~\src')
+nnoremap <leader>nts :execute ":NERDTree" expand('~\src')<CR>
 "" NERDTree configuration
 let g:NERDTreeChDirMode=2
 let g:NERDTreeIgnore=['\.rbc$', '\~$', '\.pyc$', '\.db$', '\.sqlite$', '__pycache__']
@@ -810,7 +811,7 @@ let g:NERDTreeSortOrder=['^__\.py$', '\/$', '*', '\.swp$', '\.bak$', '\~$']
 let g:NERDTreeShowBookmarks=1
 let g:nerdtree_tabs_focus_on_files=1
 let g:NERDTreeMapOpenInTabSilent = '<RightMouse>'
-let g:NERDTreeWinSize = 60
+let g:NERDTreeWinSize = 30
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.pyc,*.db,*.sqlite
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " SkyLeach Note: CtrlP
@@ -1302,10 +1303,10 @@ require("mason").setup()
 
 -- Copilot autosuggestions
 -- vim.g.copilot_no_tab_map = true
-vim.g.copilot_proxy = 'http://localhost:11435'  
-vim.g.copilot_proxy_strict_ssl = false
+vim.g.copilot_proxy                  = 'http://localhost:11435'
+vim.g.copilot_proxy_strict_ssl       = false
 vim.g.copilot_hide_during_completion = false
-vim.g.copilot_no_tab_map = false
+vim.g.copilot_no_tab_map             = false
 
 -- Copilot chat
 -- Mistral AI (gregoryconsulting.info)
