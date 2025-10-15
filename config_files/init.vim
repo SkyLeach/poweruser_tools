@@ -170,7 +170,7 @@ nnoremap <C-S-l> <C-w>l
 " set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 " * enable/disable coc integration >
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" SkyLeach Note: cool ALE signals!
+" SkyLeach Note: cool ALE signs!
 let g:ale_sign_error             = '❌'
 let g:ale_sign_info              = '📝'
 let g:ale_sign_offset            = 1000000
@@ -1007,6 +1007,7 @@ call pathogen#helptags()
 " endfunction
 " autocmd UIEnter * call OnUIEnter(deepcopy(v:event))
 " we don't actually want these conditional for firenvim since thename is specific enough and opening them from another neovim instance or with a --server flag should work as well.
+au BufEnter outlook.live.com*.txt set filetype=html
 au BufEnter *youtube.com_*.txt set filetype=markdown-web
 au BufEnter *github.com_*.txt set filetype=markdown-web
 au BufEnter *reddit.com_*.txt set filetype=markdown-web
