@@ -951,7 +951,8 @@ vmap <leader><c-o> :call OpenBrowserConfig("{url}")<cr>
 " send current line and move down
 nmap <leader><c-s> <Plug>(openbrowser-search)
 " send current selection
-vmap <leader><c-s> <Plug>(openbrowser-search)
+" vmap <leader><c-s> <Plug>(openbrowser-search)
+vmap <leader><c-v> <Plug>(openbrowser-open)
 nmap <Leader>te :horiz belowright Tnew<CR>:wincmd l<CR>a<CR>C:\Users\mattg\Envs\srs\Scripts\activate.bat<CR>
 nmap <Leader>to :horiz belowright To<CR>:wincmd l<CR>a<CR>C:\Users\mattg\Envs\srs\Scripts\Activate.ps1<CR>
 nmap <Leader>tb :Tnew<CR>:wincmd j<CR>a<CR>C:\Users\mattg\Envs\srs\Scripts\Activate.ps1<CR>
