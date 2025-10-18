@@ -111,7 +111,8 @@ set spell spelllang=en_us
 set hidden
 
 " Some servers have issues with backup files, see #649.
-set encoding=utf-8
+set encoding=UTF-8
+" this doesn't work and '' is UTF-8 anyhow...
 let &fileencoding=&encoding
 set nobackup
 set nowritebackup
@@ -274,11 +275,14 @@ augroup END
 augroup mygroup
   autocmd!
   " Setup formatexpr specified filetype(s).
-  au FileType typescript,json,javascript,html setl 
-    \ sw=2 sts=2 ts=2 tw=0 et ff=unix foldmethod=syntax wrapmargin=0 cc=200
+  au FileType typescript,json,javascript setl 
+    \ sw=2 sts=2 ts=2 tw=80 et ff=unix foldmethod=syntax wrapmargin=80 cc=80
+    \ formatexpr=CocActionAsync('format')
+  au FileType html setl 
+    \ sw=2 sts=2 ts=2 tw=0 et ff=unix foldmethod=syntax wrapmargin=0 cc=120
     \ formatexpr=CocActionAsync('format')
   au FileType sql setl 
-    \ sw=2 sts=2 ts=2 tw=100 et ff=unix foldmethod=syntax wm=0 cc=100 tw=100
+    \ sw=2 sts=2 ts=2 tw=100 et ff=unix foldmethod=syntax wrapmargin=100 cc=100 tw=100
     \ formatexpr=CocActionAsync('format')
   " There are three markdowns: markdown, *_web and *-web because one is for the
   " web, the other comments on the web 
@@ -552,7 +556,7 @@ let g:airline#extensions#virtualenv#enabled = 1
 """"""""""""""""""""""""""""""
 " Put these lines at the very end (ish) of your vimrc file.
 " lastish
-set cc=80 sw=4 sts=4 ts=4 et tw=80 wm=80
+set cc=80 sw=4 sts=4 ts=4 et tw=80 wrapmargin=80
 syn on
 set wildignore+=node_modules/**,package-lock.json,dist/**,frontend/node_modules/**,build/**
 
@@ -1474,28 +1478,28 @@ chat.setup({
 --         tool = icons.ui.Tool,
 --     },
     providers = {
-      ollamastream = {
+      -- ollamastream = {
         -- get_url = function()
         --     return 'http://localhost:11434/v1/chat/completions'
         -- end,
-        get_url = function(opts) return "http://localhost:11434" end,
-        -- get_url = function() return 'http://localhost:11434/v1/chat/completions' end,
-        -- get_headers = function() return { ["Authorization"] =--Bearer-- .. api_key } end,
-        get_models = function() return {
-          { id = "deepseek-r1:latest", name = "deepseek-r1:latest" },
-          { id = "testing:latest", name = "testing:latest" },
-          { id = "dolphin3:8b", name = "dolphin3:8b" },
-          { id = "dolphin-mixtral:8x7b", name = "dolphin-mixtral:8x7b" },
-          { id = "dolphin-mixtral:8x22b", name = "dolphin-mixtral:8x22b" },
-          { id = "gemma3:1b", name = "gemma3:1b" },
-          { id ="qwen3-coder:480b-cloud", name ="qwen3-coder:480b-cloud" }
-        } end,
+      --  get_url = function(opts) return "http://localhost:11434" end,
+      --  -- get_url = function() return 'http://localhost:11434/v1/chat/completions' end,
+      --  -- get_headers = function() return { ["Authorization"] =--Bearer-- .. api_key } end,
+      --  get_models = function() return {
+      --    { id = "deepseek-r1:latest", name = "deepseek-r1:latest" },
+      --    { id = "testing:latest", name = "testing:latest" },
+      --    { id = "dolphin3:8b", name = "dolphin3:8b" },
+      --    { id = "dolphin-mixtral:8x7b", name = "dolphin-mixtral:8x7b" },
+      --    { id = "dolphin-mixtral:8x22b", name = "dolphin-mixtral:8x22b" },
+      --    { id = "gemma3:1b", name = "gemma3:1b" },
+      --    { id ="qwen3-coder:480b-cloud", name ="qwen3-coder:480b-cloud" }
+      --  } end,
 
         -- get_models = function() return { { id = "gemma3:1b", name = "gemma3:1b" }, { id ="qwen3-coder:480b-cloud", name ="qwen3-coder:480b-cloud" } } end,
         -- get_models = function() return { { id ="qwen3-coder:480b-cloud", name ="qwen3-coder:480b-cloud" } } end,
-        prepare_input = require('CopilotChat.config.providers').copilot.prepare_input,
-        prepare_output = require('CopilotChat.config.providers').copilot.prepare_output,
-      }
+      --   prepare_input = require('CopilotChat.config.providers').copilot.prepare_input,
+      --   prepare_output = require('CopilotChat.config.providers').copilot.prepare_output,
+      -- }
     },
 
     mappings = {
