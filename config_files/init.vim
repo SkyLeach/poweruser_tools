@@ -1411,6 +1411,7 @@ require('CopilotChat.config').providers.openai = {
             :totable()
     end,
 }
+-- Ollama (local or private vhost LLM of most types / unlimited $20 services)
 require('CopilotChat.config').providers.ollama = {
     prepare_input = require('CopilotChat.config.providers').copilot.prepare_input,
     prepare_output = require('CopilotChat.config.providers').copilot.prepare_output,
@@ -1439,7 +1440,8 @@ require('CopilotChat.config').providers.ollama = {
 }
 local chat = require('CopilotChat')
 chat.setup({
-    model = 'qwen3-coder:480b-cloud', -- claude-2, claude-instant-100k, gpt-4o, gpt-4o-mini, gpt-4o-2024-08-06, gemma3:1b
+    model = 'gpt-oss:120b-cloud',
+    -- model = 'qwen3-coder:480b-cloud', -- claude-2, claude-instant-100k, gpt-4o, gpt-4o-mini, gpt-4o-2024-08-06, gemma3:1b
     api_endpoint = "http://localhost:11434/v1/chat/completions", -- Replace with the actual endpoint
     api_key = assert(os.getenv("OPENAI_API_KEY"), "OPENAI_API_KEY env var not set"), -- If authentication is required
     temperature = 0.7, -- Adjust as needed
@@ -1472,7 +1474,7 @@ chat.setup({
    --     '#buffers',
    -- },
     chat_autocomplete = true,
-    -- auto_fold = true,
+    auto_fold = true,
 --     headers = {
 --         user = icons.ui.User,
 --         assistant = icons.ui.Bot,
@@ -1569,6 +1571,7 @@ chat.setup({
     --   },
     -- },
 })
+
 -- Setup extensions
 -- require('config.copilot_extensions')
 
@@ -1581,7 +1584,7 @@ chat.setup({
 --     end,
 -- })
 
--- Setup keymaps
+-- Setup additional keymaps
     vim.keymap.set({ 'n' }, '<leader>aa', chat.toggle, { desc = 'AI Toggle' })
     vim.keymap.set({ 'v' }, '<leader>aa', chat.open, { desc = 'AI Open' })
     vim.keymap.set({ 'n' }, '<leader>ax', chat.reset, { desc = 'AI Reset' })
@@ -1616,6 +1619,7 @@ chat.setup({
 --         },
 --     },
 -- })
+--END_CHAT_SETUP
 EOF
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " LUA DONE
