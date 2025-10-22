@@ -273,31 +273,31 @@ augroup json_ft
 augroup END
 
 augroup mygroup
-  autocmd!
-  " Setup formatexpr specified filetype(s).
-  au FileType typescript,json,javascript setl 
-    \ sw=2 sts=2 ts=2 tw=80 et ff=unix foldmethod=syntax wrapmargin=80 cc=80
-    \ formatexpr=CocActionAsync('format')
-  au FileType html setl 
-    \ sw=2 sts=2 ts=2 tw=0 et ff=unix foldmethod=syntax wrapmargin=0 cc=120
-    \ formatexpr=CocActionAsync('format')
-  au FileType sql setl 
-    \ sw=2 sts=2 ts=2 tw=100 et ff=unix foldmethod=syntax wrapmargin=100 cc=100 tw=100
-    \ formatexpr=CocActionAsync('format')
-  " There are three markdowns: markdown, *_web and *-web because one is for the
-  " web, the other comments on the web 
-  au FileType markdown setl
-    \ sw=4 sts=4 ts=4 tw=80 et ff=unix syn=markdown foldmethod=indent
-    \ formatexpr=CocActionAsync('format')
-  au FileType markdown-web setl
-    \ sw=4 sts=4 ts=4 tw=300 cc=300 et ff=unix syn=markdown wrapmargin=0 foldmethod=syntax
-    \ formatexpr=CocActionAsync('format')
-  au FileType markdown_web setl
-    \ sw=4 sts=4 ts=4 tw=300 cc=300 et ff=unix syn=markdown wrapmargin=0 foldmethod=syntax
-    \ formatexpr=CocActionAsync('format')
-  au FileType vim setl
-    \ sw=2 sts=2 ts=2 tw=80 et foldmethod=indent
-    \ formatexpr=CocActionAsync('format')
+    autocmd!
+    " Setup formatexpr specified filetype(s).
+    au FileType typescript,json,javascript setl 
+                \ sw=2 sts=2 ts=2 tw=80 et ff=unix foldmethod=syntax wrapmargin=80 cc=80
+                \ formatexpr=CocActionAsync('format')
+    au FileType html setl 
+                \ sw=2 sts=2 ts=2 tw=0 et ff=unix foldmethod=syntax wrapmargin=0 cc=120
+                \ formatexpr=CocActionAsync('format')
+    au FileType sql setl 
+                \ sw=2 sts=2 ts=2 tw=100 et ff=unix foldmethod=syntax wrapmargin=100 cc=100 tw=100
+                \ formatexpr=CocActionAsync('format')
+    " There are three markdowns: markdown, *_web and *-web because one is for the
+    " web, the other comments on the web 
+    au FileType markdown setl
+                \ sw=4 sts=4 ts=4 tw=80 et ff=unix syn=markdown foldmethod=indent
+                \ formatexpr=CocActionAsync('format')
+    au FileType markdown-web setl
+                \ sw=4 sts=4 ts=4 tw=300 cc=300 et ff=unix syn=markdown wrapmargin=0 foldmethod=syntax
+                \ formatexpr=CocActionAsync('format')
+    au FileType copilot-markdown setlocal sw=4 sts=4 ts=4 tw=800 cc=800 et ff=unix 
+                \ syn=markdown wrapmargin=0 foldmethod=syntax 
+                \ formatexpr=CocActionAsync('format')
+    au FileType vim setl
+                \ sw=2 sts=2 ts=2 tw=80 et foldmethod=indent
+                \ formatexpr=CocActionAsync('format')
   " SkyLeach NOTE: foldmethod for python
   " au BufNewFile,BufRead *.py setl foldmethod=indent
   " au BufNewFile,BufRead *.json setl foldmethod=syntax
@@ -751,6 +751,8 @@ xmap <leader>gx <Plug>(neoterm-repl-send)
 nmap <leader>gxx <Plug>(neoterm-repl-send-line)
 " REPL command to run the current (saved) buffer from file on disk
 nmap <leader>gxs :execute 'T & ' . shellescape(expand('%:p'))<CR>
+" REPL command to run the current (saved) buffer from file on disk but through Pester for Powershell
+nmap <leader>gxps :execute 'T Invoke-Pester -Path "' . shellescape(expand('%:p')) . "'"<CR>
 " 10/12/2024 2:04:12 PM - try using alternative way to set shell as I'm having issues with the above method
 if g:is_win
   " **** CMD.EXE
@@ -1013,6 +1015,8 @@ call pathogen#helptags()
 " endfunction
 " autocmd UIEnter * call OnUIEnter(deepcopy(v:event))
 " we don't actually want these conditional for firenvim since thename is specific enough and opening them from another neovim instance or with a --server flag should work as well.
+
+au BufEnter *\ccopilot*.md set filetype=copilot-markdown
 au BufEnter outlook.live.com*.txt set filetype=html
 au BufEnter *youtube.com_*.txt set filetype=markdown-web
 au BufEnter *github.com_*.txt set filetype=markdown-web
@@ -1304,6 +1308,15 @@ require('fzf-lua').register_ui_select()
 -- FzfLua.files()
 
 require("mason").setup()
+
+vim.lsp.config('powershell_es', {
+      bundle_path = "C:/Users/mattg/AppData/Local/nvim/pshelllsp/PowerShellEditorServices",
+    })
+-- old method is depricated
+-- require'lspconfig'.powershell_es.setup{
+--   bundle_path = "C:/Users/mattg/AppData/Local/nvim/pshelllsp/PowerShellEditorServices",
+-- }
+-- CopilotChat.nvim setup lua
 -- local utils = require('CopilotChat.config.utils')
 -- local icons = require('config.icons')
 -- utils.desc('<leader>a', 'AI')
@@ -1313,7 +1326,7 @@ require("mason").setup()
 vim.g.copilot_proxy                  = 'http://localhost:11435'
 vim.g.copilot_proxy_strict_ssl       = false
 vim.g.copilot_hide_during_completion = false
-vim.g.copilot_no_tab_map             = false
+vim.g.copilot_no_tab_map             = true
 
 -- Copilot chat
 -- Mistral AI (gregoryconsulting.info)
@@ -1583,30 +1596,40 @@ chat.setup({
 --         vim.opt_local.number = false
 --     end,
 -- })
+-- Without Extensions:
+-- Auto-command to customize chat buffer behavior
+vim.api.nvim_create_autocmd('BufEnter', {
+    pattern = 'copilot-*',
+    callback = function()
+    vim.opt_local.relativenumber = false
+    vim.opt_local.number = false
+    vim.opt_local.conceallevel = 0
+    end,
+})
 
 -- Setup additional keymaps
-    vim.keymap.set({ 'n' }, '<leader>aa', chat.toggle, { desc = 'AI Toggle' })
-    vim.keymap.set({ 'v' }, '<leader>aa', chat.open, { desc = 'AI Open' })
-    vim.keymap.set({ 'n' }, '<leader>ax', chat.reset, { desc = 'AI Reset' })
-    vim.keymap.set({ 'n' }, '<leader>as', chat.stop, { desc = 'AI Stop' })
-    vim.keymap.set({ 'n' }, '<leader>am', chat.select_model, { desc = 'AI Models' })
-    vim.keymap.set({ 'n', 'v' }, '<leader>ap', chat.select_prompt, { desc = 'AI Prompts' })
-    vim.keymap.set({ 'n', 'v' }, '<leader>al', function()
-      vim.ui.input({ prompt = 'AI Session Load> ', },
+vim.keymap.set({ 'n' }, '<leader>aa', chat.toggle, { desc = 'AI Toggle' })
+vim.keymap.set({ 'v' }, '<leader>aa', chat.open, { desc = 'AI Open' })
+vim.keymap.set({ 'n' }, '<leader>ax', chat.reset, { desc = 'AI Reset' })
+vim.keymap.set({ 'n' }, '<leader>as', chat.stop, { desc = 'AI Stop' })
+vim.keymap.set({ 'n' }, '<leader>am', chat.select_model, { desc = 'AI Models' })
+vim.keymap.set({ 'n', 'v' }, '<leader>ap', chat.select_prompt, { desc = 'AI Prompts' })
+vim.keymap.set({ 'n', 'v' }, '<leader>al', function()
+    vim.ui.input({ prompt = 'AI Session Load> ', },
         function(input)
-          if input ~= '' then
-            chat.load(input)
-          end
+            if input ~= '' then
+                chat.load(input)
+            end
         end)
-      end, { desc = 'AI Session Load' })
-    vim.keymap.set({ 'n', 'v' }, '<leader>aq', function()
-      vim.ui.input({ prompt = 'AI Question> ', },
+    end, { desc = 'AI Session Load' })
+vim.keymap.set({ 'n', 'v' }, '<leader>aq', function()
+    vim.ui.input({ prompt = 'AI Question> ', },
         function(input)
-          if input ~= '' then
-            chat.ask(input)
-          end
+            if input ~= '' then
+                chat.ask(input)
+            end
         end)
-      end, { desc = 'AI Question' })
+    end, { desc = 'AI Question' })
 
 -- MCP hub
 -- require('mcphub').setup({
