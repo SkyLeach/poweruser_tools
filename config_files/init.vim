@@ -89,7 +89,9 @@ let mapleader = ';'
 let g:calendar_google_calendar = 1
 let g:calendar_google_task = 1
 " for coc-vimlsp
-let g:markdown_fenced_languages = ['vim', 'help']
+
+let g:markdown_fenced_languages = ['vim', 'help', 'html', 'python',
+    \ 'bash=sh', 'json', 'javascript', 'typescript', 'ps1']
 " NOTE: SkyLeach options/prefs
 set nocompatible
 set number
@@ -292,8 +294,8 @@ augroup mygroup
     au FileType markdown-web setl
                 \ sw=4 sts=4 ts=4 tw=300 cc=300 et ff=unix syn=markdown wrapmargin=0 foldmethod=syntax
                 \ formatexpr=CocActionAsync('format')
-    au FileType copilot-markdown setlocal sw=4 sts=4 ts=4 tw=800 cc=800 et ff=unix 
-                \ syn=markdown wrapmargin=0 foldmethod=syntax 
+    au FileType copilot-markdown setlocal sw=4 sts=4 ts=4 tw=800 cc=800 et ff=unix
+                \ syn=markdown wrapmargin=0 foldmethod=syntax
                 \ formatexpr=CocActionAsync('format')
     au FileType vim setl
                 \ sw=2 sts=2 ts=2 tw=80 et foldmethod=indent
@@ -740,7 +742,7 @@ let g:neoterm_repl_enable_ipython_paste_magic = 1
 " Default value: 0
 let g:neoterm_term_per_tab=1
 " set powershell as the DEFAULT
-let g:neoterm_shell='C:/PROGRA~1/PowerShell/7/pwsh.exe'
+" let g:neoterm_shell='C:/Program Files/PowerShell/7/pwsh.exe'
 " let g:neoterm_shell='C:\Users\mattg\AppData\Local\Microsoft\WindowsApps\Microsoft.PowerShell_8wekyb3d8bbwe\pwsh.exe'
 " visually map to send REPL to neoterm (or other REPL)
 " Use gx{text-object} in normal mode
@@ -776,7 +778,8 @@ if g:is_win
 " use correct comment market for powershell
   let g:neoterm_marker = ';#neoterm'
   " set shell=powershell
-  set shell=C:/PROGRA~1/PowerShell/7/pwsh.exe
+  set shell=C:\PROGRA~1\PowerShell\7\pwsh.exe
+  " set shell=C:/PROGRA~1/PowerShell/7/pwsh.exe
   let g:neoterm_shell=&shell
   " set shellxquote=
   " let &shellcmdflag = '-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command '
@@ -796,6 +799,10 @@ if g:is_win
   " set shellquote= shellpipe='| Out-File -Encoding UTF8 %s' shellredir='| Out-File -Encoding UTF8 %s' shellxquote=
   " set shellpipe=2>&1\ \|\ Out-File\ -Encoding\ UTF8\ %s;\ exit\ \$LastExitCode
   " set shellpipe=2>&1\ \|\ Out-File\ -Encoding\ UTF8\ %s;\ exit\ \$LastExitCode
+else
+    let g:userbash='/usr/bin/bash'
+    set shell=executable(g:userbash) ? g:userbash : 'bin/bash'
+    let g:neoterm_shell = &shell
 endif
 " *****************************************************************
 nnoremap <leader><cr> :TREPLSendLine<cr>j " send current line and move down
@@ -1016,12 +1023,13 @@ call pathogen#helptags()
 " autocmd UIEnter * call OnUIEnter(deepcopy(v:event))
 " we don't actually want these conditional for firenvim since thename is specific enough and opening them from another neovim instance or with a --server flag should work as well.
 
-au BufEnter *\ccopilot*.md set filetype=copilot-markdown
+" au BufEnter *\ccopilot*.md setl filetype=markdown-web
+au BufEnter *\ccopilot*.md set filetype=copilot-markdown syn=markdown
 au BufEnter outlook.live.com*.txt set filetype=html
-au BufEnter *youtube.com_*.txt set filetype=markdown-web
-au BufEnter *github.com_*.txt set filetype=markdown-web
-au BufEnter *reddit.com_*.txt set filetype=markdown-web
-au BufEnter *facebook.com_*.txt set filetype=markdown-web
+au BufEnter *youtube.com_*.txt set filetype=markdown-web syn=markdown
+au BufEnter *github.com_*.txt set filetype=markdown-web syn=markdown
+au BufEnter *reddit.com_*.txt set filetype=markdown-web syn=markdown
+au BufEnter *facebook.com_*.txt set filetype=markdown-web syn=markdown
 au BufEnter *observablehq.com_*.txt set filetype=javascript
 au BufEnter *atlassian.net_*.txt set filetype=confluencewiki
 if exists('g:started_by_firenvim') && g:started_by_firenvim
@@ -1453,7 +1461,8 @@ require('CopilotChat.config').providers.ollama = {
 }
 local chat = require('CopilotChat')
 chat.setup({
-    model = 'gpt-oss:120b-cloud',
+    model = 'deepseek-v3.1:671b-cloud',
+    -- model = 'gpt-oss:120b-cloud',
     -- model = 'qwen3-coder:480b-cloud', -- claude-2, claude-instant-100k, gpt-4o, gpt-4o-mini, gpt-4o-2024-08-06, gemma3:1b
     api_endpoint = "http://localhost:11434/v1/chat/completions", -- Replace with the actual endpoint
     api_key = assert(os.getenv("OPENAI_API_KEY"), "OPENAI_API_KEY env var not set"), -- If authentication is required
