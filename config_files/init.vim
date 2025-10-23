@@ -286,6 +286,14 @@ augroup mygroup
     au FileType sql setl 
                 \ sw=2 sts=2 ts=2 tw=100 et ff=unix foldmethod=syntax wrapmargin=100 cc=100 tw=100
                 \ formatexpr=CocActionAsync('format')
+    au FileType python let b:coc_root_patterns = ['.git',
+                                                 \'.env',
+                                                 \'venv',
+                                                 \'.venv',
+                                                 \'setup.cfg',
+                                                 \'setup.py',
+                                                 \'pyproject.toml',
+                                                 \'pyrightconfig.json']
     " There are three markdowns: markdown, *_web and *-web because one is for the
     " web, the other comments on the web 
     au FileType markdown setl
@@ -315,11 +323,11 @@ xmap <leader>a  <Plug>(coc-codeaction-selected)
 nmap <leader>a  <Plug>(coc-codeaction-selected)
 
 " Remap keys for applying code actions at the cursor position
-nmap <leader>ac  <Plug>(coc-codeaction-cursor)
+nmap <leader>cac  <Plug>(coc-codeaction-cursor)
 " Remap keys for apply code actions affect whole buffer
-nmap <leader>as  <Plug>(coc-codeaction-source)
+nmap <leader>cas  <Plug>(coc-codeaction-source)
 " Apply the most preferred quickfix action to fix diagnostic on the current line
-nmap <leader>qf  <Plug>(coc-fix-current)
+nmap <leader>cfc  <Plug>(coc-fix-current)
 
 " Remap keys for applying refactor code actions
 nmap <silent> <leader>re <Plug>(coc-codeaction-refactor)
@@ -357,13 +365,13 @@ nmap <silent> <C-s> <Plug>(coc-range-select)
 xmap <silent> <C-s> <Plug>(coc-range-select)
 " Applying codeAction to the selected region.
 " Example: `<leader>aap` for current paragraph
-xmap <leader>a  <Plug>(coc-codeaction-selected)
-nmap <leader>a  <Plug>(coc-codeaction-selected)
+xmap <leader>cas  <Plug>(coc-codeaction-selected)
+" nmap <leader>cas  <Plug>(coc-codeaction-selected)
 " 
 " " Remap keys for applying codeAction to the current buffer.
-nmap <leader>ac  <Plug>(coc-codeaction)
+nmap <leader>ca  <Plug>(coc-codeaction)
 " " Apply AutoFix to problem on the current line.
-nmap <leader>qf  <Plug>(coc-fix-current)
+" nmap <leader>qf  <Plug>(coc-fix-current)
 " nmap <leader>qf <Plug>(ale_fix)
 " 
 " " Map function and class text objects
