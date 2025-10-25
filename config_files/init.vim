@@ -719,7 +719,10 @@ else
 endif
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " SkyLeach Note: gitgutter signs
-let g:gitgutter_git_executable               = exepath("git")
+" set gitpath=C:\PROGRA~1\Git\cmd\git.exe
+let g:fugitive_git_executable                = "C:\\PROGRA~1\\Git\\cmd\\git.exe"
+let g:gitgutter_git_executable               = g:fugitive_git_executable
+" let g:gitgutter_git_executable               = exepath('git')
 let g:gitgutter_sign_added                   = '▶️'  " +
 let g:gitgutter_sign_modified                = '🔁'  " ~
 let g:gitgutter_sign_removed                 = '◀️'  " _
@@ -1324,6 +1327,7 @@ require('fzf-lua').register_ui_select()
 -- FzfLua.files()
 
 require("mason").setup()
+require("duckytype").setup()
 
 vim.lsp.config('powershell_es', {
       bundle_path = "C:/Users/mattg/AppData/Local/nvim/pshelllsp/PowerShellEditorServices",
@@ -1332,6 +1336,50 @@ vim.lsp.config('powershell_es', {
 -- require'lspconfig'.powershell_es.setup{
 --   bundle_path = "C:/Users/mattg/AppData/Local/nvim/pshelllsp/PowerShellEditorServices",
 -- }
+-- experimental treesitter syntax/synquery - 10/23/2025 4:18:06 PM
+require'nvim-treesitter.configs'.setup {
+  -- A list of parser names, or "all" (the listed parsers MUST always be installed)
+  -- testing 'c' 10/23/2025 4:18:44 PM (not installed manually)
+  ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline" },
+
+  -- Install parsers synchronously (only applied to `ensure_installed`) - nah
+  sync_install = false,
+
+  -- Automatically install missing parsers when entering buffer
+  -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
+  -- testing with c - dunno - matt @ 10/23/2025 4:20:25 PM
+  auto_install = true,
+
+  -- List of parsers to ignore installing (or "all")
+  -- ignore_install = { "javascript" }, -- disabled by me 10/23/2025 4:20:46 PM
+
+  ---- If you need to change the installation directory of the parsers (see -> Advanced Setup)
+  -- parser_install_dir = "/some/path/to/store/parsers", -- Remember to run vim.opt.runtimepath:append("/some/path/to/store/parsers")!
+
+  highlight = {
+    enable = true,
+    -- 
+    -- NOTE: these are the names of the parsers and not the filetype. (for example if you want to
+    -- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
+    -- the name of the parser)
+    -- list of language that will be disabled
+    -- disable = { "c", "rust" }, -- disabled by matt @ 10/23/2025 4:21:22 PM
+    -- Or use a function for more flexibility, e.g. to disable slow treesitter highlight for large files
+    -- disable = function(lang, buf)
+    --     local max_filesize = 100 * 1024 -- 100 KB
+    --     local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+    --     if ok and stats and stats.size > max_filesize then
+    --         return true
+    --     end
+    -- end,
+
+    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+    -- Using this option may slow down your editor, and you may see some duplicate highlights.
+    -- Instead of true it can also be a list of languages
+    additional_vim_regex_highlighting = false, -- TODO: test in future @ Matt
+  },
+}
 -- CopilotChat.nvim setup lua
 -- local utils = require('CopilotChat.config.utils')
 -- local icons = require('config.icons')
