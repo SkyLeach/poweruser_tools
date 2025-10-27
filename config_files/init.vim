@@ -765,7 +765,7 @@ nmap <leader>gxx <Plug>(neoterm-repl-send-line)
 " REPL command to run the current (saved) buffer from file on disk
 nmap <leader>gxs :execute 'T & ' . shellescape(expand('%:p'))<CR>
 " REPL command to run the current (saved) buffer from file on disk but through Pester for Powershell
-nmap <leader>gxps :execute 'T Invoke-Pester -Path "' . shellescape(expand('%:p')) . "'"<CR>
+nmap <leader>gxps :execute 'T Invoke-Pester -Path "' . shellescape(expand('%:p')) . '"'<CR>
 " 10/12/2024 2:04:12 PM - try using alternative way to set shell as I'm having issues with the above method
 if g:is_win
   " **** CMD.EXE
@@ -1328,6 +1328,9 @@ require('fzf-lua').register_ui_select()
 
 require("mason").setup()
 require("duckytype").setup()
+require("mason-lspconfig").setup {
+  ensure_installed = { "pyrefly" },
+}
 
 vim.lsp.config('powershell_es', {
       bundle_path = "C:/Users/mattg/AppData/Local/nvim/pshelllsp/PowerShellEditorServices",
