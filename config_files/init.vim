@@ -1332,6 +1332,15 @@ require("mason-lspconfig").setup {
   ensure_installed = { "pyrefly" },
 }
 
+-- These should be default values already set during config
+-- filetypes = { "ps1" }
+-- on_new_config = function(new_config, _)
+--       local bundle_path = new_config.bundle_path
+--       new_config.cmd = make_cmd(bundle_path)
+--     end,
+-- root_dir = function(fname)
+--       return util.find_git_ancestor(fname) or vim.fn.getcwd()
+--     end,
 vim.lsp.config('powershell_es', {
       bundle_path = "C:/Users/mattg/AppData/Local/nvim/pshelllsp/PowerShellEditorServices",
     })
