@@ -742,7 +742,9 @@ let g:neoterm_autoscroll=1 " scroll to the bottom when running a command
 let g:neoterm_repl_python = ['C:/Python313/Scripts/ipython.exe']
 " Tell neoterm not to automatically close the window when the process exits.
 let g:neoterm_autoclose = 0
-let g:neoterm_repl_python = ['C:/Users/mattg/srs/python-scanner/activate', 'ipython']
+let g:neoterm_repl_python = ''
+" let g:neoterm_repl_python = ['powershell', '-ExecutionPolicy', 'Bypass', '-Command', '& { param($cwd) cd $cwd; if (Test-Path ".\env\Scripts\activate.ps1") { .\env\Scripts\activate.ps1 } elseif (Test-Path ".\venv\Scripts\activate.ps1") { .\venv\Scripts\activate.ps1 } elseif (Test-Path ".\.venv\Scripts\activate.ps1") { .\.venv\Scripts\activate.ps1 }; ipython }', '--']
+" let g:neoterm_repl_python = ['C:/Users/mattg/srs/python-scanner/activate', 'ipython']
 let g:neoterm_repl_enable_ipython_paste_magic = 1
 " *********************** SET UP POWERSHELL ***********************
 " set g:neoterm_shell = system get-command path to pwsh.exe like
@@ -1352,7 +1354,7 @@ vim.lsp.config('powershell_es', {
 require'nvim-treesitter.configs'.setup {
   -- A list of parser names, or "all" (the listed parsers MUST always be installed)
   -- testing 'c' 10/23/2025 4:18:44 PM (not installed manually)
-  ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline" },
+  ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline", "python", "typescript", "javascript" },
 
   -- Install parsers synchronously (only applied to `ensure_installed`) - nah
   sync_install = false,
