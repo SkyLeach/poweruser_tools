@@ -1,38 +1,19 @@
 #!python
 '''Template script for one-off python scripts.  Main function, log setup,
 etc...'''
-from builtins import object
-from builtins import super
 from builtins import input
 import os
-import sys
 import argparse
 import pprint
+from typing import Generator
 
 # Configure Logging Module
 import logging
 
 
-def pathwalker_gen(startpath,prune=[]):
-    def skip(t):
-        for p in prune:
-            if p in t: return True
-        return False
-    for root, dirs, files in os.walk(startpath):
-        level = root.replace(startpath, '').count(os.sep)
-        # indent = ' ' * 4 * (level)
-        if skip(root): continue
-        # print('{}{}/'.format(indent, os.path.basename(root)))
-        # subindent = ' ' * 4 * (level + 1)
-        for f in files:
-            if skip(f): continue
-            yield f
-            # print('{}{}'.format(subindent, f))
-
-
 #  def load_module(self, fullname):
 # need to come back to this I don't remember why I had a class func here.
-# 8/30/2025 2:42:50 PM 
+# 8/30/2025 2:42:50 PM
 #  def load_module(fullname):
 #      """
 #      Iterate over the search path to locate and load fullname.
@@ -101,6 +82,7 @@ def verbose(self, message, *__args, **__kwargs):
 
 
 # Create new verbose method/attribute for the logging
+#  logging.Logger.verbose = verbose # this isn't really the best option...
 setattr(logging.Logger, 'verbose', verbose)
 custom_log_format = CustomLogFormatter()
 handler_hook = logging.StreamHandler()
@@ -109,19 +91,38 @@ logging.basicConfig(
     level=logging.DEBUG,
     format='%(message)s',
     handlers=[handler_hook])
-logger = logging.getLogger(__name__)
+logger: logging.Logger = logging.getLogger(__name__)
+
+pathhistory: list[str] = []
 
 
-class ExampleObject(object):
-    """exampleObject.  Just an example"""
+def pathwalker_gen(startpath: str,
+                   prune: list[str] = [],
+                   depth: int = -1) -> Generator[str]:
+    pathhistory.append(startpath)
 
-    def __init__(self, *__args, **__kwargs):
-        """__init__.
+    def skip(t):
+        for p in prune:
+            if p in t:
+                return True
+        return False
 
-        :param __args:
-        :param __kwargs:
-        """
-        super().__init__(*__args, **__kwargs)
+    for root, dirs, files in os.walk(startpath):
+        #  level: int = root.replace(pathhistory[0], '').count(os.sep)
+        if skip(root):
+            continue
+        for f in files:
+            if skip(f):
+                continue
+            yield f
+        if depth:
+            # if > 0 then will = 0 at maxdepth, else not affected
+            for d in dirs:
+                pathwalker_gen(os.path.join(root, d),
+                               prune,
+                               depth - 1)
+        if pathhistory:
+            logger.debug(f"End of {startpath}")
 
 
 # main loop
@@ -131,16 +132,18 @@ if __name__ == "__main__":
     parser.add_argument('--debug', action='store_true')
     parser.add_argument('--verbose', action='store_true')
     pprint.pprint(parser.parse_args)
-    options, args = parser.parse_args()
+    args = parser.parse_args()
 
     if args.debug:
         logger.setLevel(logging.DEBUG)
     elif args.verbose:
         logger.setLevel(VERBOSE)
     logger.debug('Debug enabled.')
-    logger.verbose('Verbose logging enabled.')
+    logger.verbose('Verbose logging enabled.')  # type: ignore
 
-    for line in input:
-        logger.info(line)
+    inline: str = input()
+    while inline:
+        logger.info(inline)
+        inline = input()
 
-    logger.verbose("Exit Main")
+    logger.verbose("Exit Main")  # type: ignore
