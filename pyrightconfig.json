@@ -1,0 +1,24 @@
+{
+  "include": [
+    "**/*.py"
+  ],
+  "exclude": [
+    "**/node_modules",
+    "**/__pycache__",
+    "**/.*",
+    "venv"
+  ],
+  "pythonVersion": "3.14",
+  "pythonPlatform": "All", // Valid options are "All", "Windows", "Linux", "Darwin"
+  "typeCheckingMode": "basic", // Valid options are "off", "basic", "strict"
+  "reportMissingImports": true, // Valid options are true, false
+  "reportMissingTypeStubs": false, // Valid options are true, false
+  "reportUnusedImport": true, // Valid options are true, false
+  "reportUnusedClass": true, // Valid options are true, false
+  "reportUnusedFunction": true, // Valid options are true, false
+  "reportUnusedVariable": true, // Valid options are true, false
+  "reportOptionalSubscript": true, // Valid options are true, false
+  "reportOptionalMemberAccess": true, // Valid options are true, false
+  "reportOptionalCall": true, // Valid options are true, false
+  "reportPrivateImportUsage": true // Valid options are true, false
+}

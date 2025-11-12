@@ -128,11 +128,12 @@ def pathwalker_gen(startpath: str,
 # main loop
 if __name__ == "__main__":
     # Arguments
-    parser = argparse.ArgumentParser(description="MainTemplate")
+    parser: argparse.ArgumentParser = argparse.ArgumentParser(
+            description="MainTemplate")
     parser.add_argument('--debug', action='store_true')
     parser.add_argument('--verbose', action='store_true')
     pprint.pprint(parser.parse_args)
-    args = parser.parse_args()
+    args: argparse.Namespace = parser.parse_args()
 
     if args.debug:
         logger.setLevel(logging.DEBUG)
