@@ -56,6 +56,7 @@ if executable('python')
   if g:is_win
     "  3/12/2025 5:12:16 AM
     " let g:python_host_prog="C:\\Users\\mattg\\Envs\\srs\\Scripts\\python.exe"
+    let g:ruby_default_path="C:\\tools\\ruby34\\bin\\ruby.exe"
     let g:python_host_prog="C:\\Python313\\python.exe"
     " I'm really unsure why this didn't work, maybe a compile-time issue.
     " 3/12/2025 3:17:34 PM
