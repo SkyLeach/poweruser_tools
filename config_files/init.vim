@@ -57,14 +57,14 @@ if executable('python')
     "  3/12/2025 5:12:16 AM
     " let g:python_host_prog="C:\\Users\\mattg\\Envs\\srs\\Scripts\\python.exe"
     let g:ruby_default_path="C:\\tools\\ruby34\\bin\\ruby.exe"
-    let g:python_host_prog="C:\\Python313\\python.exe"
+    let g:python_host_prog="C:\\Python314\\python.exe"
     " I'm really unsure why this didn't work, maybe a compile-time issue.
     " 3/12/2025 3:17:34 PM
     " let g:python_host_prog=trim(system("Get-Command python | Select-Object -ExpandProperty Definition"))
     let g:python3_host_prog=g:python_host_prog
     " let g:pydocstring_doq_path="C:\\Users\\mattg\\Envs\\srs\\Scripts\\doq.exe"
     " 3/12/2025 5:13:30 AM
-    let g:pydocstring_doq_path="C:\\Python313\\Scripts\\doq.exe"
+    let g:pydocstring_doq_path="C:\\Python314\\Scripts\\doq.exe"
     " let g:python_host_prog="C:/Python39/python.exe"
     " let g:python3_host_prog=g:python_host_prog
     " let g:pydocstring_doq_path="C:/Python39/Scripts/doq.exe"
@@ -740,7 +740,7 @@ let g:neoterm_size=16 " terminal split size
 let g:neoterm_autoscroll=1 " scroll to the bottom when running a command
 " let g:neoterm_repl_python = ['C:\Users\mattg\Envs\srs\Scripts\Activate.ps1', 'ipython']
 " 3/12/2025 5:14:17 AM
-let g:neoterm_repl_python = ['C:/Python313/Scripts/ipython.exe']
+let g:neoterm_repl_python = ['C:/Python314/Scripts/ipython.exe']
 " Tell neoterm not to automatically close the window when the process exits.
 let g:neoterm_autoclose = 0
 let g:neoterm_repl_python = ''
