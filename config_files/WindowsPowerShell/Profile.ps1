@@ -15,8 +15,8 @@ Set-Item -Path Env:\Path -Value $(Remove-DuplicatePaths $(Resolve-EnvVariable $(
 # $env:OLLAMA_FLASH_ATTENTION   = 1
 # set the PNPM environment variable
 $env:PNPM_HOME                = "$env:LOCALAPPDATA\pnpm"
-# $MyDocuments = [Environment]::GetFolderPath("mydocuments")
-# Import-Module $MyDocuments\WindowsPowerShell\Modules\VirtualEnvWrapper.psm1
+$MyDocuments = [Environment]::GetFolderPath("mydocuments")
+Import-Module $MyDocuments\WindowsPowerShell\Modules\VirtualEnvWrapper.psm1
 # Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
 # Previous verification wasn't enough, pulled this from stackoverflow and
 # tested it finding it actually works where the previous one didn't.
@@ -58,16 +58,16 @@ if (Test-Path($ChocolateyProfile)) {
 if (!(Get-Module -ListAvailable -Name Get-ChildItemColor)) {
     Install-Module Get-ChildItemColor
 }
-Import-Module Get-ChildItemColor#
+Import-Module Get-ChildItemColor
 
 # oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\jandedobbeleer.omp.json" | Invoke-Expression
 # oh-my-posh init pwsh --config "https://github.com/JanDeDobbeleer/oh-my-posh/blob/main/themes/sonicboom_dark.omp.json" | Invoke-Expression
 oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\sonicboom_dark.omp.json" | Invoke-Expression
 #f45873b3-b655-43a6-b217-97c00aa0db58 PowerToys CommandNotFound module
 
-function workon ($env) {
-          & $env:WORKON_HOME\$env\Scripts\activate.ps1
-}
+# function workon ($env) {
+#           & $env:WORKON_HOME\$env\Scripts\activate.ps1
+# }
 
 # configure powershell preference for handling exceptions...
 $PSNativeCommandUseErrorActionPreference = $true
