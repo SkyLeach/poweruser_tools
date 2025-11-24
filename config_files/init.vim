@@ -789,7 +789,7 @@ if g:is_win
   " let &shellpipe  = '2>&1 | %%{ "$_" } | tee %s; exit $LastExitCode'
   " set shellquote= shellxquote=
   " **************** NEW powershell ****************
-" use correct comment market for powershell
+" use correct comment marker for powershell
   let g:neoterm_marker = ';#neoterm'
   " set shell=powershell
   set shell=C:\PROGRA~1\PowerShell\7\pwsh.exe
@@ -934,12 +934,12 @@ function! ViewHtmlText(url)
   endif
 endfunction
 " Save and view text for current html file.
-nnoremap <Leader><c-h>w :update<Bar>call ViewHtmlText(expand('%:p'))<CR>
+nnoremap <leader><c-h>w :update<Bar>call ViewHtmlText(expand('%:p'))<CR>
 " View text for visually selected url.
-vnoremap <Leader><c-h>w y:call ViewHtmlText(@@)<CR>
+vnoremap <leader><c-h>w y:call ViewHtmlText(@@)<CR>
 " View text for URL from clipboard.
 " On Linux, use @* for current selection or @+ for text in clipboard.
-" nnoremap <Leader><c-h>lw :call ViewHtmlText(@+)<CR>
+" nnoremap <leader><c-h>lw :call ViewHtmlText(@+)<CR>
 " On Windows, make the default g:browsercmd for opening current file
 nnoremap <leader><c-f> :echo trim(system('&' . g:browsercmd . " -new-tab file://" . expand("%:p")))<CR>
 " On Windows, open URL under cursor in GUI browser
@@ -976,13 +976,14 @@ nmap <leader><c-s> <Plug>(openbrowser-search)
 " send current selection
 " vmap <leader><c-s> <Plug>(openbrowser-search)
 vmap <leader><c-v> <Plug>(openbrowser-open)
-nmap <Leader>te :horiz belowright Tnew<CR>:wincmd l<CR>a<CR>C:\Users\mattg\Envs\srs\Scripts\activate.bat<CR>
-nmap <Leader>to :horiz belowright To<CR>:wincmd l<CR>a<CR>C:\Users\mattg\Envs\srs\Scripts\Activate.ps1<CR>
-nmap <Leader>tb :Tnew<CR>:wincmd j<CR>a<CR>C:\Users\mattg\Envs\srs\Scripts\Activate.ps1<CR>
-nmap <Leader>te :horiz belowright Tnew<CR>:wincmd l<CR>source activate ./env<CR>
-nmap <Leader>t1e :horiz belowright Tnew<CR>:wincmd l<CR>source activate ../env<CR>
-nmap <Leader>t2e :horiz belowright Tnew<CR>:wincmd l<CR>source activate ../../env<CR>
-nmap <Leader>t3e :horiz belowright Tnew<CR>:wincmd l<CR>source activate ../../../env<CR>
+nmap <leader>te :horiz belowright Tnew<CR>:wincmd l<CR>a<CR>C:\Users\mattg\Envs\srs\Scripts\activate.bat<CR>
+nmap <leader>to :horiz belowright To<CR>
+" nmap <leader>to :horiz belowright To<CR>:wincmd l<CR>a<CR>C:\Users\mattg\Envs\srs\Scripts\Activate.ps1<CR>
+nmap <leader>tb :Tnew<CR>:wincmd j<CR>a<CR>C:\Users\mattg\Envs\srs\Scripts\Activate.ps1<CR>
+nmap <leader>te :horiz belowright Tnew<CR>:wincmd l<CR>source activate ./env<CR>
+nmap <leader>t1e :horiz belowright Tnew<CR>:wincmd l<CR>source activate ../env<CR>
+nmap <leader>t2e :horiz belowright Tnew<CR>:wincmd l<CR>source activate ../../env<CR>
+nmap <leader>t3e :horiz belowright Tnew<CR>:wincmd l<CR>source activate ../../../env<CR>
 nnoremap <leader>tt :horizontal belowright exec 'Ttoggle'<cr>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " MRU toggle mapping:
@@ -1161,8 +1162,8 @@ let test#strategy = "dispatch"
 " coc-llamautoma
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Example key mappings
-nmap <silent> <Leader>lc :CocCommand llamautoma.chat<CR>
-nmap <silent> <Leader>ls :CocCommand llamautoma.sync<CR>
+nmap <silent> <leader>lc :CocCommand llamautoma.chat<CR>
+nmap <silent> <leader>ls :CocCommand llamautoma.sync<CR>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Personal Function taken from stackoverflow 7/26/2021 9:52:07 AM
 " (here TBE)[https://stackoverflow.com/questions/1533565/how-to-get-visually-selected-text-in-vimscript].
@@ -1310,6 +1311,25 @@ function! LargeFile()
    autocmd VimEnter *  echo "The file is larger than " . (g:LargeFile / 1024 / 1024) . " MB, so some options are changed (see .vimrc for details)."
 endfunction
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Copilot.vim options
+" """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:copilot_proxy                  = 'http://localhost:11435'
+let g:copilot_proxy_strict_ssl       = v:false
+let g:copilot_hide_during_completion = v:false
+" Disable auto-trigger globally
+let g:copilot_no_tab_map = v:true
+" Map manual accept key " should be controlled by coc-copilot
+" imap <silent><C-l> <Plug>(copilot-accept)
+" Optional: cycle through suggestions manually
+imap <silent><C-n> <Plug>(copilot-next)
+imap <silent><C-p> <Plug>(copilot-previous)
+
+" Optional: dismiss suggestion
+imap <silent><C-d> <Plug>(copilot-dismiss)
+
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " DO A LUA
 " Note: both mason and packer are normally installed by pathogen before it's possible to run the lua portion, so it has to be down here after infection.
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -1399,13 +1419,6 @@ require'nvim-treesitter.configs'.setup {
 -- local utils = require('CopilotChat.config.utils')
 -- local icons = require('config.icons')
 -- utils.desc('<leader>a', 'AI')
-
--- Copilot autosuggestions
--- vim.g.copilot_no_tab_map = true
-vim.g.copilot_proxy                  = 'http://localhost:11435'
-vim.g.copilot_proxy_strict_ssl       = false
-vim.g.copilot_hide_during_completion = false
-vim.g.copilot_no_tab_map             = true
 
 -- Copilot chat
 -- Mistral AI (gregoryconsulting.info)
