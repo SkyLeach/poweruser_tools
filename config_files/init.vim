@@ -1183,6 +1183,63 @@ function! s:get_visual_selection()
     return join(lines, "\n")
 endfunction
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" The function `SearchBundles()`:
+" - Uses the global `g:bundles` variable (set elsewhere in your config)
+" - Performs a non-recursive search of immediate subdirectories
+" - Does case-insensitive fuzzy matching using `=~?` operator
+" - Provides helpful error messages if the bundles directory doesn't exist
+" - Lists matching plugins in a readable format
+"
+" Usage: `:SearchBundles pattern`
+" - `:SearchBundles nerd` - finds plugins containing "nerd"
+" - `:SearchBundles ^fugitive` - finds plugins starting with "fugitive"
+" - `:SearchBundles .*airline.*` - finds plugins with "airline" anywhere in name
+"
+" The command is available in normal mode and can be used to quickly check
+" which plugins are installed in your bundles directory.
+" Search vim plugins in bundles directory with fuzzy matching
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! SearchBundles(pattern)
+    if !exists('g:bundles') || empty(g:bundles)
+        echohl ErrorMsg
+        echo "g:bundles variable is not set or empty"
+        echohl None
+        return
+    endif
+    
+    if !isdirectory(g:bundles)
+        echohl ErrorMsg
+        echo "Bundles directory does not exist: " . g:bundles
+        echohl None
+        return
+    endif
+    
+    let bundles_found = []
+    
+    " Non-recursive search of immediate subdirectories in bundles path
+    for bundle_dir in split(globpath(g:bundles, '*'), '\n')
+        if isdirectory(bundle_dir)
+            let bundle_name = fnamemodify(bundle_dir, ':t')
+            " Case-insensitive fuzzy match
+            if bundle_name =~? a:pattern
+                call add(bundles_found, bundle_name)
+            endif
+        endif
+    endfor
+    
+    if empty(bundles_found)
+        echo "No bundles found matching pattern: " . a:pattern
+    else
+        echo "Bundles matching '" . a:pattern . "':"
+        for bundle in bundles_found
+            echo "  " . bundle
+        endfor
+    endif
+endfunction
+
+" Define command to search bundles
+command! -nargs=1 SearchBundles call SearchBundles(<q-args>)
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " NERDCommenter.  Mostly defaut except that I needed to add post-comment
 " spaces.
 " SkyLeach Note: Default mappings mostly.  See
@@ -1422,100 +1479,100 @@ require'nvim-treesitter.configs'.setup {
 
 -- Copilot chat
 -- Mistral AI (gregoryconsulting.info)
-require('CopilotChat.config').providers.mistral = {
-    prepare_input = require('CopilotChat.config.providers').copilot.prepare_input,
-    prepare_output = require('CopilotChat.config.providers').copilot.prepare_output,
-
-    get_headers = function()
-        local api_key = assert(os.getenv('MISTRAL_API_KEY'), 'MISTRAL_API_KEY env not set')
-        return {
-            Authorization = 'Bearer ' .. api_key,
-            ['Content-Type'] = 'application/json',
-        }
-    end,
-
-    get_models = function(headers)
-        local response, err = require('CopilotChat.utils').curl_get('https://api.mistral.ai/v1/models', {
-            headers = headers,
-            json_response = true,
-        })
-
-        if err then
-            error(err)
-        end
-
-        return vim.iter(response.body.data)
-            :filter(function(model)
-                return model.capabilities.completion_chat
-            end)
-            :map(function(model)
-                return {
-                    id = model.id,
-                    name = model.name,
-                }
-            end)
-            :totable()
-    end,
-
-    get_url = function()
-        return 'https://api.mistral.ai/v1/chat/completions'
-    end,
-}
+-- require('CopilotChat.config').providers.mistral = {
+--     prepare_input = require('CopilotChat.config.providers').copilot.prepare_input,
+--     prepare_output = require('CopilotChat.config.providers').copilot.prepare_output,
+-- 
+--     get_headers = function()
+--         local api_key = assert(os.getenv('MISTRAL_API_KEY'), 'MISTRAL_API_KEY env not set')
+--         return {
+--             Authorization = 'Bearer ' .. api_key,
+--             ['Content-Type'] = 'application/json',
+--         }
+--     end,
+-- 
+--     get_models = function(headers)
+--         local response, err = require('CopilotChat.utils').curl_get('https://api.mistral.ai/v1/models', {
+--             headers = headers,
+--             json_response = true,
+--         })
+-- 
+--         if err then
+--             error(err)
+--         end
+-- 
+--         return vim.iter(response.body.data)
+--             :filter(function(model)
+--                 return model.capabilities.completion_chat
+--             end)
+--             :map(function(model)
+--                 return {
+--                     id = model.id,
+--                     name = model.name,
+--                 }
+--             end)
+--             :totable()
+--     end,
+-- 
+--     get_url = function()
+--         return 'https://api.mistral.ai/v1/chat/completions'
+--     end,
+-- }
 -- Open AI (Chat GPT)
 vim.keymap.set('i', '<S-Tab>', 'copilot#Accept("\\<S-Tab>")', { expr = true, replace_keycodes = false })
-require('CopilotChat.config').providers.openai = {
-    prepare_input = require("CopilotChat.config.providers").copilot.prepare_input,
-    prepare_output = require("CopilotChat.config.providers").copilot.prepare_output,
-
-    get_url = function() return "https://api.openai.com/v1/chat/completions" end,
-
-    get_headers = function()
-        local api_key = assert(os.getenv("OPENAI_API_KEY"), "OPENAI_API_KEY env var not set")
-        return {
-            Authorization = "Bearer " .. api_key,
-            ["Content-Type"] = "application/json",
-        }
-    end,
-
-    get_models = function(headers)
-        local response, err =
-            require("CopilotChat.utils").curl_get("https://api.openai.com/v1/models", {
-                headers = headers,
-                json_response = true,
-            })
-        if err then error(err) end
-        return vim
-            .iter(response.body.data)
-            :filter(function(model)
-                local exclude_patterns = {
-                    "audio",
-                    "babbage",
-                    "dall%-e",
-                    "davinci",
-                    "embedding",
-                    "image",
-                    "moderation",
-                    "realtime",
-                    "transcribe",
-                    "tts",
-                    "whisper",
-                }
-                for _, pattern in ipairs(exclude_patterns) do
-                    if model.id:match(pattern) then return false end
-                end
-                return true
-            end)
-            :map(
-                function(model)
-                    return {
-                        id = model.id,
-                        name = model.id,
-                    }
-                end
-            )
-            :totable()
-    end,
-}
+-- require('CopilotChat.config').providers.openai = {
+--     prepare_input = require("CopilotChat.config.providers").copilot.prepare_input,
+--     prepare_output = require("CopilotChat.config.providers").copilot.prepare_output,
+-- 
+--     get_url = function() return "https://api.openai.com/v1/chat/completions" end,
+-- 
+--     get_headers = function()
+--         local api_key = assert(os.getenv("OPENAI_API_KEY"), "OPENAI_API_KEY env var not set")
+--         return {
+--             Authorization = "Bearer " .. api_key,
+--             ["Content-Type"] = "application/json",
+--         }
+--     end,
+-- 
+--     get_models = function(headers)
+--         local response, err =
+--             require("CopilotChat.utils").curl_get("https://api.openai.com/v1/models", {
+--                 headers = headers,
+--                 json_response = true,
+--             })
+--         if err then error(err) end
+--         return vim
+--             .iter(response.body.data)
+--             :filter(function(model)
+--                 local exclude_patterns = {
+--                     "audio",
+--                     "babbage",
+--                     "dall%-e",
+--                     "davinci",
+--                     "embedding",
+--                     "image",
+--                     "moderation",
+--                     "realtime",
+--                     "transcribe",
+--                     "tts",
+--                     "whisper",
+--                 }
+--                 for _, pattern in ipairs(exclude_patterns) do
+--                     if model.id:match(pattern) then return false end
+--                 end
+--                 return true
+--             end)
+--             :map(
+--                 function(model)
+--                     return {
+--                         id = model.id,
+--                         name = model.id,
+--                     }
+--                 end
+--             )
+--             :totable()
+--     end,
+-- }
 -- Ollama (local or private vhost LLM of most types / unlimited $20 services)
 require('CopilotChat.config').providers.ollama = {
     prepare_input = require('CopilotChat.config.providers').copilot.prepare_input,
