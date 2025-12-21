@@ -1141,7 +1141,7 @@ endif
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 command! -nargs=0 Prettier :CocCommand prettier.forceFormatDocument
 vmap <leader>f  <Plug>(coc-format-selected)
-nmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-format)
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Vim-Test mappings and config
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -1345,6 +1345,13 @@ let g:copilot_chat_filetypes = {
 "  nnoremap <silent> <leader>c% :CopilotChatContext<CR>
 "  nnoremap <silent> <leader>c^ :CopilotChatSummarize<CR>
 "
+" 12/21/2025 5:52:41 PM - Matt function for counting chars (utf8)
+" Count characters in buffer
+nnoremap <leader>cc :echo strlen(join(getline(1, '$'), "\n"))<CR>
+
+" Count characters in visual selection
+vnoremap <leader>cc :<C-U>echo strlen(join(getline("'<", "'>"), "\n"))<CR>
+
 " Added largefile handling to the end.  The idea here is to work around
 " accidentally hitting big files that then kill my editor or I have to take a
 " 30m break...
