@@ -92,7 +92,7 @@ if exists('g:fvim_loaded') && g:fvim_loaded
 elseif exists('g:neovide') && g:neovide
     " echom "neovide loaded, setting guifont, transparency & xtra_buffer_frames"
   if exists('g:started_by_firenvim') && g:started_by_firenvim
-      set guifont=FiraCode\ NF:h8
+      set guifont=FiraCode\ NF:h12
       " set guifont=DaddyTimeMono\ Nerd\ Font\ Mono:h8 " Love it
   else
     set guifont=FiraCode\ NF:h14 " love it
