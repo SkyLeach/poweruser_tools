@@ -65,49 +65,15 @@ Import-Module Get-ChildItemColor
 oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\sonicboom_dark.omp.json" | Invoke-Expression
 #f45873b3-b655-43a6-b217-97c00aa0db58 PowerToys CommandNotFound module
 
-# function workon ($env) {
-#           & $env:WORKON_HOME\$env\Scripts\activate.ps1
-# }
-
+# vcpkg posh tool
+Import-Module 'C:\Users\mattg\src\vcpkg\scripts\posh-vcpkg'
+. 'C:\Program Files\Microsoft Visual Studio\18\Insiders\Common7\Tools\Launch-VsDevShell.ps1'
 # configure powershell preference for handling exceptions...
 $PSNativeCommandUseErrorActionPreference = $true
 #a move this to a reusable alias script later.
 Set-Alias -name ll -value "\Users\mattg\src\powershell_maint\colorized_dir_or_getchilditem.ps1"
+Set-Alias -name devshell -value `
+    "\Users\mattg\src\powershell_maint\activateVS18shell.ps1"
 
 # Import-Module -Name Microsoft.WinGet.CommandNotFound
 Import-Module -Name Microsoft.PowerToys.Configure
-#f45873b3-b655-43a6-b217-97c00aa0db58
-
-# SIG # Begin signature block
-# MIIFqgYJKoZIhvcNAQcCoIIFmzCCBZcCAQExDzANBglghkgBZQMEAgEFADB5Bgor
-# BgEEAYI3AgEEoGswaTA0BgorBgEEAYI3AgEeMCYCAwEAAAQQH8w7YFlLCE63JNLG
-# KX7zUQIBAAIBAAIBAAIBAAIBADAxMA0GCWCGSAFlAwQCAQUABCATK+Rjq3oytZz4
-# yWwXwunD9G4a+6hoGuLG8ykI45CkeKCCAxgwggMUMIIB/KADAgECAhAhJdz/pZUJ
-# l0w5S3ajUOpeMA0GCSqGSIb3DQEBBQUAMCIxIDAeBgNVBAMMF1Bvd2VyU2hlbGwg
-# Q29kZSBTaWduaW5nMB4XDTI0MTAwNzE4Mjk1NFoXDTI1MTAwNzE4NDk1NFowIjEg
-# MB4GA1UEAwwXUG93ZXJTaGVsbCBDb2RlIFNpZ25pbmcwggEiMA0GCSqGSIb3DQEB
-# AQUAA4IBDwAwggEKAoIBAQC4Bl8Hih7bUudlXaJdM9rMoU8QCbbkBQPvhjGRu2Yv
-# O/7Scsi2pu2fGSHpKijUTCgmSC2bZD/uNxcwLmaTrv+N6yuXPQWnQjedq/V1Bint
-# 5tcO1XQwZAxNwODOTT6IWWnGixJptcUJUH/WNQjN9xMQWC28Hf7WSD1BkSetRLLE
-# KdtsJUTzCucs5HphxyeBkM/22VZdiYdRAV+9db97B0m6MPuOFcBxXoBnFYeA/38D
-# VvCK3cbZ89JWc0/UwaPMiWn1gbA42ySdMsmg/XFMcRXs1gznuhFKi+H7Or35+hgF
-# IYSlCXx4FpiwTIveOFuPIqv1jjQmubsxgADj0HKMH2LxAgMBAAGjRjBEMA4GA1Ud
-# DwEB/wQEAwIHgDATBgNVHSUEDDAKBggrBgEFBQcDAzAdBgNVHQ4EFgQUDNfnWPJj
-# 818GruhRY6V7SDUpCIcwDQYJKoZIhvcNAQEFBQADggEBADx7iC/fFFVdDcRSIkNL
-# pmoN0N+VlVEc8l2onOzSlEJ1SriEprKopRIl09I/mQgGbaKXTRaD/7VEtyaKHA5h
-# VnrNi/TAYphBcrA2F4Z6DdGBrFjkg9SBc08Ao/kU8TuVpbBEYyfk10FuZY4ACrfG
-# 61nUuo5yTtpf0Ri8ryQ0msFEUkgy8eEryV0SuzRzYmQKoE6MxNbGD2tmOhGZjpaR
-# vm1aQD5B3L0aHlUzPLz8Qj9VbtVqgxPQT+z/kiDLBgc6ljCZANHtRsxrZzZMtbHA
-# RV8Scbl9QdRdsrUgBc4dL0OzIfhuF/MkiQ2mnScz3Sylf5sg+uIkAGkD49hiX7l0
-# bIsxggHoMIIB5AIBATA2MCIxIDAeBgNVBAMMF1Bvd2VyU2hlbGwgQ29kZSBTaWdu
-# aW5nAhAhJdz/pZUJl0w5S3ajUOpeMA0GCWCGSAFlAwQCAQUAoIGEMBgGCisGAQQB
-# gjcCAQwxCjAIoAKAAKECgAAwGQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYK
-# KwYBBAGCNwIBCzEOMAwGCisGAQQBgjcCARUwLwYJKoZIhvcNAQkEMSIEIOs6YW+S
-# T+XstiB1YXnHD73ohuuv1yXVd1Aicr/aOGrYMA0GCSqGSIb3DQEBAQUABIIBAHMV
-# TnBI5BoGvZw5qaFQ4Nw1EprHWZSUYcijJyXj4UTWxc/+SXTxI1fjCj0EWWZ4poDG
-# FCNyhHsqp2Itnz6g59hI1PzaTStV9a/9cBqguVdxWtTHZdFv3MZdDmyhJoBTt/+2
-# 4ZWw5Ojbn52FYe0VsLYfjnV17jls5YppFVmB2Ar6SA0Fn4g6ySMvy53DArWB5Stm
-# NCooALw03gjyum3jq7sJ8QithEXURElZOjiyFxu+/ZhQ8QN7NC+s8R1nZkH8ooO1
-# RY7BgCWybz8jLFLwpceYRBPO33xP9veyyyMbeGmsJKFHIruw/CPjuX7gEaiX2Y7y
-# MKHMuI6b++oWi4mRmaI=
-# SIG # End signature block

@@ -718,6 +718,19 @@ if exists("g:ale_virtualenv_dir_names")
 else
     let g:ale_virtualenv_dir_names = ['Envs']
 endif
+" come back to this later - Matt 12/27/2025 8:08:25 PM6
+let g:NERDTreeGitStatusIndicatorMapCustom = {
+                \ 'Modified'  :'✹',
+                \ 'Staged'    :'✚',
+                \ 'Untracked' :'✭',
+                \ 'Renamed'   :'➜',
+                \ 'Unmerged'  :'═',
+                \ 'Deleted'   :'✖',
+                \ 'Dirty'     :'✗',
+                \ 'Ignored'   :'☒',
+                \ 'Clean'     :'✔︎',
+                \ 'Unknown'   :'?',
+                \ }
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " SkyLeach Note: gitgutter signs
 " set gitpath=C:\PROGRA~1\Git\cmd\git.exe
@@ -1381,7 +1394,7 @@ let g:copilot_proxy                  = 'http://localhost:11435'
 let g:copilot_proxy_strict_ssl       = v:false
 let g:copilot_hide_during_completion = v:false
 " Disable auto-trigger globally
-let g:copilot_no_tab_map = v:false " v:true
+let g:copilot_no_tab_map = v:true
 " Map manual accept key " should be controlled by coc-copilot
 " imap <silent><C-l> <Plug>(copilot-accept)
 " Optional: cycle through suggestions manually
@@ -1526,8 +1539,7 @@ require'nvim-treesitter.configs'.setup {
 --     end,
 -- }
 -- Open AI (Chat GPT)
--- vim.keymap.set('i', '<S-Tab>', 'copilot#Accept("\\<S-Tab>")', { expr = true, replace_keycodes = false })
-vim.keymap.set('i', '<Tab>', 'copilot#Accept("\\<S-Tab>")', { expr = true, replace_keycodes = false })
+vim.keymap.set('i', '<S-Tab>', 'copilot#Accept("\\<S-Tab>")', { expr = true, replace_keycodes = false })
 -- require('CopilotChat.config').providers.openai = {
 --     prepare_input = require("CopilotChat.config.providers").copilot.prepare_input,
 --     prepare_output = require("CopilotChat.config.providers").copilot.prepare_output,
