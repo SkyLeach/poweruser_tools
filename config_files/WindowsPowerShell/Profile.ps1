@@ -54,6 +54,13 @@ if (Test-Path($ChocolateyProfile)) {
   Import-Module "$ChocolateyProfile"
 }
 
+$usershellscripts = "\Users\mattg\src\powershell_maint"
+#
+$activatevsdev = "${usershellscripts}\activatevsdev.psm1"
+if (Test-Path($activatevsdev)) {
+  Import-Module "$activatevsdev"
+}
+
 # Install and import if not already done
 if (!(Get-Module -ListAvailable -Name Get-ChildItemColor)) {
     Install-Module Get-ChildItemColor
@@ -73,8 +80,6 @@ Import-Module 'C:\Users\mattg\src\vcpkg\scripts\posh-vcpkg'
 $PSNativeCommandUseErrorActionPreference = $true
 #a move this to a reusable alias script later.
 Set-Alias -name ll -value "\Users\mattg\src\powershell_maint\colorized_dir_or_getchilditem.ps1"
-Set-Alias -name devshell -value `
-    "\Users\mattg\src\powershell_maint\activateVS18shell.ps1"
 
 # Import-Module -Name Microsoft.WinGet.CommandNotFound
 Import-Module -Name Microsoft.PowerToys.Configure
