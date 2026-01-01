@@ -67,7 +67,8 @@ oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\sonicboom_dark.omp.json" | 
 
 # vcpkg posh tool
 Import-Module 'C:\Users\mattg\src\vcpkg\scripts\posh-vcpkg'
-. 'C:\Program Files\Microsoft Visual Studio\18\Insiders\Common7\Tools\Launch-VsDevShell.ps1'
+# Disabled now that I have to use two shells - Matt 12/30/2025 8:08:52 PM
+# . 'C:\Program Files\Microsoft Visual Studio\18\Insiders\Common7\Tools\Launch-VsDevShell.ps1'
 # configure powershell preference for handling exceptions...
 $PSNativeCommandUseErrorActionPreference = $true
 #a move this to a reusable alias script later.
